@@ -3,8 +3,9 @@ import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeModes } from './shared/enums/ThemeModes.enum';
 import { FlowbiteService } from './services/flowbite/flowbite.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { THEME_SVGS } from './shared/constants/svg.constants';
+import { SafeHtml } from '@angular/platform-browser';
+import { LOGO_SVG, THEME_SVGS } from './shared/constants/svg.constants';
+import { SecurizeSVGsService } from './services/securizeSVGs/securize-svgs.service';
 
 @Component({
   selector: 'app-root',
@@ -18,65 +19,26 @@ export class AppComponent implements OnInit {
   // Themes variables
   themesModes = ThemeModes
   themeSelected: string = this.themesModes.SYSTEM
-  themeSVGS: { [key: string]: SafeHtml } = {}
+  SVGs: { [key: string]: SafeHtml } = {}
   isSystemThemeDark: boolean = false;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
     private flowbiteService: FlowbiteService,
-    private sanitizer: DomSanitizer
+    private securizeSVGsService: SecurizeSVGsService
   ) {
-
-    // Secure each SVG
-    for (const [key, svg] of Object.entries(THEME_SVGS)) {
-      this.themeSVGS[key] = this.sanitizer.bypassSecurityTrustHtml(svg);
-    }
+    
+    // Securizar cada SVG
+    this.SVGs = this.securizeSVGsService.securizeSVGs({ ...THEME_SVGS, Logo: LOGO_SVG })
 
     // Check if we are entering from a browser
     if(isPlatformBrowser(this.platformId)) {
       this.isSystemThemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      this.systemTheme()
     }
 
   }
   
   ngOnInit(): void {
     this.flowbiteService.loadFlowbite(flowbite => {});
-  }
-
-  changeTheme(typeTheme: string): void {
-
-    switch(typeTheme) {
-      case ThemeModes.LIGHT:
-        this.lightTheme()
-        this.themeSelected = ThemeModes.LIGHT
-        break
-      case ThemeModes.DARK:
-        this.darkTheme()
-        this.themeSelected = ThemeModes.DARK
-        break
-      default:
-        this.systemTheme()
-        this.themeSelected = ThemeModes.SYSTEM
-        break
-    }
-
-  }
-
-  darkTheme(): void {
-    document.querySelector('body')?.classList.add('dark')
-  }
-
-  lightTheme(): void {
-    document.querySelector('body')?.classList.remove('dark')
-  }
-
-  systemTheme(): void {
-    if(this.isSystemThemeDark) {
-      this.darkTheme();
-    } else {
-      this.lightTheme();
-    }
-    
   }
 }
