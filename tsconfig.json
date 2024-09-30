@@ -23,9 +23,6 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@spartan-ng/ui-icon-helm": [
-        "./spartan-library/ui-icon-helm/src/index.ts"
-      ],
       "@spartan-ng/ui-accordion-helm": [
         "./spartan-library/ui-accordion-helm/src/index.ts"
       ],
@@ -43,9 +40,6 @@
       ],
       "@spartan-ng/ui-badge-helm": [
         "./spartan-library/ui-badge-helm/src/index.ts"
-      ],
-      "@spartan-ng/ui-button-helm": [
-        "./spartan-library/ui-button-helm/src/index.ts"
       ],
       "@spartan-ng/ui-card-helm": [
         "./spartan-library/ui-card-helm/src/index.ts"
@@ -130,6 +124,12 @@
       ],
       "@spartan-ng/ui-menu-helm": [
         "./spartan-library/ui-menu-helm/src/index.ts"
+      ],
+      "@spartan-ng/ui-icon-helm": [
+        "./spartan-library/ui-icon-helm/src/index.ts"
+      ],
+      "@spartan-ng/ui-button-helm": [
+        "./spartan-library/ui-button-helm/src/index.ts"
       ]
     }
   },

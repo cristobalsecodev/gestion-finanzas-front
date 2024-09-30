@@ -3,7 +3,7 @@ module.exports = {
   presets: [require('@spartan-ng/ui-core/hlm-tailwind-preset')],
   content: [
     './src/**/*.{html,ts}',
-    './src/app/components/**/*.{html,ts}',
+    './spartan-library/**/*.{html,ts}',
   ],
   theme: {
     extend: {
