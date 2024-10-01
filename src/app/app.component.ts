@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, Renderer2 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SafeHtml } from '@angular/platform-browser';
 import { LOGO_SVG } from './shared/constants/svg.constants';
@@ -14,11 +14,11 @@ import {
   lucideMoon,
   lucideSun,
   lucideLaptop2,
-  lucideAlertTriangle
+  lucideAlertTriangle,
+  lucideBarChart4
 } from '@ng-icons/lucide';
 
 import {
-  HlmMenuBarComponent,
   HlmMenuComponent,
   HlmMenuGroupComponent,
   HlmMenuItemDirective,
@@ -36,15 +36,16 @@ import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
     CommonModule,
     FormsModule,
     // Spartan UI
-    BrnMenuTriggerDirective,
     HlmIconComponent,
-    HlmMenuComponent,
-    HlmMenuBarComponent,
-    HlmMenuLabelComponent,
-    HlmMenuGroupComponent,
+
+    HlmButtonDirective,
+    
+    BrnMenuTriggerDirective,
     HlmMenuItemDirective,
     HlmMenuItemIconDirective,
-    HlmButtonDirective,
+    HlmMenuComponent,
+    HlmMenuLabelComponent,
+    HlmMenuGroupComponent,
   ],
   providers: [
     // Iconos Lucide
@@ -52,7 +53,8 @@ import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
       lucideMoon,
       lucideSun,
       lucideLaptop2,
-      lucideAlertTriangle
+      lucideAlertTriangle,
+      lucideBarChart4
     })
   ],
   templateUrl: './app.component.html',
@@ -72,7 +74,8 @@ export class AppComponent {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
-    private securizeSVGsService: SecurizeSVGsService
+    private securizeSVGsService: SecurizeSVGsService,
+    private renderer: Renderer2
   ) {
     
     // Securizar cada SVG
@@ -86,18 +89,21 @@ export class AppComponent {
   }
 
   lightTheme(): void {
-    document.querySelector('body')?.classList.remove('dark')
+    this.renderer.removeClass(document.body, 'dark')
+    this.renderer.setStyle(document.body, 'backgroundColor', '#f4f5f7') // Tailwind -> bg-themeMode-100
+    
   }
 
   darkTheme(): void {
-    document.querySelector('body')?.classList.add('dark')
+    this.renderer.addClass(document.body, 'dark')
+    this.renderer.setStyle(document.body, 'backgroundColor', '#09090b') // Tailwind -> bg-themeMode-950
   }
 
   systemTheme(): void {
     if(this.isSystemThemeDark) {
-      this.darkTheme();
+      this.darkTheme()
     } else {
-      this.lightTheme();
+      this.lightTheme()
     }
     
   }
