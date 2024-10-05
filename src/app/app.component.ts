@@ -1,8 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID, Renderer2 } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { SafeHtml } from '@angular/platform-browser';
-import { LOGO_SVG } from './shared/constants/svg.constants';
 import { SecurizeSVGsService } from './services/securizeSVGs/securize-svgs.service';
 import { BrnMenuTriggerDirective } from '@spartan-ng/ui-menu-brain';
 import { HlmIconComponent } from '@spartan-ng/ui-icon-helm';
@@ -32,7 +31,8 @@ import { HlmButtonDirective } from '@spartan-ng/ui-button-helm';
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
+    RouterLink,
     CommonModule,
     FormsModule,
     // Spartan UI
@@ -74,13 +74,8 @@ export class AppComponent {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object, 
-    private securizeSVGsService: SecurizeSVGsService,
     private renderer: Renderer2
   ) {
-    
-    // Securizar cada SVG
-    this.SVGs = this.securizeSVGsService.securizeSVGs({ Logo: LOGO_SVG })
-
     // Comprueba si accedemos desde un navegador
     if(isPlatformBrowser(this.platformId)) {
       this.isSystemThemeDark = window.matchMedia('(prefers-color-scheme: dark)').matches
