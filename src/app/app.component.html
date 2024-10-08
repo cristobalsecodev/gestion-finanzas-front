@@ -1,45 +1,24 @@
-<header class="border-b border-opacity-10 dark:border-themeMode-900 border-themeMode-950">
-  <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-    <div class="relative flex h-16 items-center justify-between">
-      <nav class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-        <!-- Icono APP -->
-        <div class="flex flex-shrink-0 items-center cursor-pointer" [routerLink]="['/']">
-          <hlm-icon size="xl" name="lucideBarChart4" class="dark:text-themeMode-50 text-themeMode-950" />
-        </div>
-        <!-- Navegación -->
-        <div class="hidden sm:ml-30 sm:block">
-          <div class="flex space-x-20">
-            <button hlmBtn variant="link" class="h-12 ml-5" [routerLink]="['/mis-ingresos']">Mis ingresos</button>
-            <button hlmBtn variant="link" class="h-12" [routerLink]="['/mis-gastos']">Mis gastos</button>
-            <button hlmBtn variant="link" class="h-12" [routerLink]="['/mis-inversiones']">Mis inversiones</button>
-          </div>
-        </div>
-      </nav>
-      <!-- Icono modo visual --> 
-      <button hlmBtn size="icon" variant="ghost" [brnMenuTriggerFor]="menu">
-        <hlm-icon size="sm" class="dark:text-white" [name]="iconThemes(themeSelected !== themeModes.SYSTEM ? themeSelected : isSystemThemeDark ? themeModes.DARK : themeModes.LIGHT)" />
-      </button>
+<header>
+  <mat-toolbar class="mat-elevation-z3">
+    <!-- Navegación -->
+    <div class="hidden sm:ml-30 sm:block">
+      <div class="flex space-x-20">
+        <button mat-flat-button class="h-12 ml-5" [routerLink]="['/mis-ingresos']">Mis ingresos</button>
+        <button mat-flat-button class="h-12" [routerLink]="['/mis-gastos']">Mis gastos</button>
+        <button mat-flat-button class="h-12" [routerLink]="['/mis-inversiones']">Mis inversiones</button>
+      </div>
     </div>
-  </div>
+    <!-- Icono modo visual -->
+    <button mat-icon-button class="content-end" (click)="darkMode.set(!darkMode())">
+      @if(darkMode()) {
+        <mat-icon>dark_mode</mat-icon>
+      } @else {
+        <mat-icon>light_mode</mat-icon>
+      }
+    </button>
+  </mat-toolbar>
 </header>
 
 <main class="h-[calc(100vh-65px)]">
   <router-outlet></router-outlet>
 </main>
-
-<!-- Menú modo visual -->
-<ng-template #menu>
-  <hlm-menu>
-    <hlm-menu-group>
-
-      @for (theme of themeOptions; track theme) {
-        <button [ngClass]="{'bg-themeMode-100 dark:bg-themeMode-900': themeSelected === theme}" hlmMenuItem (click)="changeTheme(theme)">
-          <hlm-icon [name]="iconThemes(theme)" hlmMenuIcon />
-          <span>{{ theme }}</span>
-        </button>
-      }
-
-    </hlm-menu-group>
-  </hlm-menu>
-</ng-template>
-
