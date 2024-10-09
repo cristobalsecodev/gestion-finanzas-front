@@ -35,6 +35,9 @@ export class AppComponent {
 
   darkMode = signal(false)
 
+  // Comprueba si el sidenav está abierto
+  sidenavOpened: boolean = false
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private renderer: Renderer2,
@@ -58,7 +61,7 @@ export class AppComponent {
   setDarkMode = effect(() => {
     document.documentElement.classList.toggle('dark', this.darkMode())
 
-    const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--sys-surface')
+    const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--sys-surface-variant')
     this.renderer.setStyle(document.body, 'backgroundColor', backgroundColor)
 
     this.darkMode()
