@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-mis-gastos',
   standalone: true,
-  imports: [],
+  imports: [MatIcon],
   templateUrl: './mis-gastos.component.html',
   styleUrl: './mis-gastos.component.scss'
 })

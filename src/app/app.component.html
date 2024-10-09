@@ -1,15 +1,32 @@
 <header>
-  <mat-toolbar class="mat-elevation-z3">
+  <mat-toolbar class="mat-elevation-z3 min-h-14 max-h-14">
+    <section class="hidden sm:ml-30 sm:block">
+      <mat-icon class="cursor-pointer" [routerLink]="['/']">finance</mat-icon>
+    </section>
+    <!-- Menú lateral -->
+    <section class="block sm:hidden sm:ml-30">
+      <button mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </section>
     <!-- Navegación -->
-    <div class="hidden sm:ml-30 sm:block">
-      <div class="flex space-x-20">
-        <button mat-flat-button class="h-12 ml-5" [routerLink]="['/mis-ingresos']">Mis ingresos</button>
-        <button mat-flat-button class="h-12" [routerLink]="['/mis-gastos']">Mis gastos</button>
-        <button mat-flat-button class="h-12" [routerLink]="['/mis-inversiones']">Mis inversiones</button>
-      </div>
-    </div>
+    <section class="hidden sm:ml-30 sm:block space-x-20">
+      <button mat-button class="h-12 ml-5" [routerLink]="['/mis-ingresos']">
+        <mat-icon>stat_2</mat-icon>
+        Mis ingresos
+      </button>
+      <button mat-button class="h-12" [routerLink]="['/mis-gastos']">
+        <mat-icon>stat_minus_2</mat-icon>
+        Mis gastos
+      </button>
+      <button mat-button class="h-12" [routerLink]="['/mis-inversiones']">
+        <mat-icon>query_stats</mat-icon>
+        Mis inversiones
+      </button>
+    </section>
+    <span class="flex-auto"></span>
     <!-- Icono modo visual -->
-    <button mat-icon-button class="content-end" (click)="darkMode.set(!darkMode())">
+    <button mat-icon-button (click)="darkMode.set(!darkMode())">
       @if(darkMode()) {
         <mat-icon>dark_mode</mat-icon>
       } @else {
@@ -20,5 +37,25 @@
 </header>
 
 <main class="h-[calc(100vh-65px)]">
-  <router-outlet></router-outlet>
+
+  <mat-sidenav-container class="h-[calc(100vh-65px)]" hasBackdrop="false">
+    <mat-sidenav #drawer class="example-sidenav" mode="over">
+      <mat-list role="list">
+        <mat-list-item role="listitem">
+          EJEMPLO 1
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          EJEMPLO 2
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          EJEMPLO 3
+        </mat-list-item>
+      </mat-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+    <section>
+      <router-outlet></router-outlet>
+    </section>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </main>

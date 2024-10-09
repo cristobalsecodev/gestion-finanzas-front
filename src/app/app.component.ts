@@ -5,8 +5,11 @@ import { SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import {MatButtonModule} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
+import {MatIcon, MatIconRegistry} from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -18,7 +21,9 @@ import { MatToolbar } from '@angular/material/toolbar';
     // Angular Material UI
     MatToolbar,
     MatButtonModule,
-    MatIcon
+    MatIcon,
+    MatSidenavModule,
+    MatListModule
   ],
   providers: [],
   templateUrl: './app.component.html',
@@ -32,8 +37,13 @@ export class AppComponent {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    iconRegistry: MatIconRegistry
   ) {
+
+    // Añade la clase necesaria para el funcionamiento de los material symbols
+    iconRegistry.setDefaultFontSetClass('material-symbols-outlined')
+
     // Comprueba si accedemos desde un navegador
     if(isPlatformBrowser(this.platformId)) {
       const themeMode = localStorage.getItem('themeMode')
