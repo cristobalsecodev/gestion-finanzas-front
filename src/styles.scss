@@ -6,14 +6,9 @@ $custom-theme: mat.define-theme((
   color: (
     use-system-variables: true
   ),
-  density: (
-    scale: 0,
-  )
 ));
 
-html {
-  @include mat.all-component-themes($custom-theme);
-}
+// Color principal HEX: #81d5cc
 
 html {
   --sys-primary: rgb(0 106 99);
@@ -117,6 +112,10 @@ html {
   --sys-surface-container: rgb(26 33 32);
   --sys-surface-container-high: rgb(37 43 42);
   --sys-surface-container-highest: rgb(48 54 53);
+}
+
+html {
+  @include mat.all-component-themes($custom-theme);
 }
 
 @tailwind base;

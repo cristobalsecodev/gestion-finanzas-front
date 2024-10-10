@@ -61,9 +61,6 @@ export class AppComponent {
   setDarkMode = effect(() => {
     document.documentElement.classList.toggle('dark', this.darkMode())
 
-    const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--sys-surface-variant')
-    this.renderer.setStyle(document.body, 'backgroundColor', backgroundColor)
-
     this.darkMode()
       ? localStorage.setItem('themeMode', 'dark')
       : localStorage.setItem('themeMode', 'light')
