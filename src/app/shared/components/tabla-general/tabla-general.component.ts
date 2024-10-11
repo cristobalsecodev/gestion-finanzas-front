@@ -1,11 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import {MatTableModule} from '@angular/material/table';
-
-interface Transaction {
-  item: string;
-  cost: number;
-}
 
 @Component({
   selector: 'app-tabla-general',
@@ -16,19 +11,13 @@ interface Transaction {
 })
 export class TablaGeneralComponent {
 
-  displayedColumns: string[] = ['item', 'cost'];
-  transactions: Transaction[] = [
-    {item: 'Beach ball', cost: 4},
-    {item: 'Towel', cost: 5},
-    {item: 'Frisbee', cost: 2},
-    {item: 'Sunscreen', cost: 4},
-    {item: 'Cooler', cost: 25},
-    {item: 'Swim suit', cost: 15},
-  ];
+  @Input() columns: string[] = [];
 
-  /** Gets the total cost of all transactions. */
-  getTotalCost() {
-    return this.transactions.map(t => t.cost).reduce((acc, value) => acc + value, 0);
+  @Input() dataSource: any[] = [];
+
+  @Input() showActions: boolean = false;
+
+  get displayedColumns(): string[] {
+    return this.showActions ? [...this.columns, 'actions'] : this.columns;
   }
-
 }

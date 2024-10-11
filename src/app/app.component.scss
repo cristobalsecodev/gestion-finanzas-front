@@ -1,3 +1,20 @@
 .mat-toolbar-bg-color {
   background-color: var(--sys-secondary-container);
 }
+
+/* Estilo del fondo del scrollbar */
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* Estilo de la barra de scroll */
+::-webkit-scrollbar-thumb {
+  background-color: var(--sys-secondary-container) !important;
+  border-radius: 10px !important;
+  border: 3px solid transparent !important;
+}
+
+/* Cambiar color al pasar por encima */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--sys-primary) !important;
+}

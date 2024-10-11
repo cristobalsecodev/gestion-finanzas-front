@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, effect, Inject, PLATFORM_ID, Renderer2, signal } from '@angular/core';
+import { AfterViewInit, Component, effect, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import {MatIcon, MatIconRegistry} from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
+import { TablaGeneralComponent } from './shared/components/tabla-general/tabla-general.component';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ import {MatListModule} from '@angular/material/list';
     RouterLink,
     CommonModule,
     FormsModule,
+    TablaGeneralComponent,
     // Angular Material UI
     MatToolbar,
     MatButtonModule,
@@ -29,7 +31,7 @@ import {MatListModule} from '@angular/material/list';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
 
   SVGs: { [key: string]: SafeHtml } = {}
 
@@ -40,7 +42,6 @@ export class AppComponent {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private renderer: Renderer2,
     iconRegistry: MatIconRegistry
   ) {
 
@@ -58,11 +59,17 @@ export class AppComponent {
     }
   }
 
-  setDarkMode = effect(() => {
-    document.documentElement.classList.toggle('dark', this.darkMode())
+  ngAfterViewInit(): void {
+    
+  }
 
-    this.darkMode()
+  setDarkMode = effect(() => {
+    if(isPlatformBrowser(this.platformId)) {
+      document.documentElement.classList.toggle('dark', this.darkMode())
+
+      this.darkMode()
       ? localStorage.setItem('themeMode', 'dark')
       : localStorage.setItem('themeMode', 'light')
+    }
   })
 }

@@ -56,7 +56,9 @@
     <mat-sidenav-content>
     <!-- Componentes hijos -->
     <section>
-      <router-outlet></router-outlet>
+      <app-tabla-general [columns]="['Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis']"
+      [showActions]="false"></app-tabla-general>
+      <!-- <router-outlet></router-outlet> -->
     </section>
     </mat-sidenav-content>
   </mat-sidenav-container>
