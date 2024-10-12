@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, effect, Inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, effect, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -31,7 +31,7 @@ import { TablaGeneralComponent } from './shared/components/tabla-general/tabla-g
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
 
   SVGs: { [key: string]: SafeHtml } = {}
 
@@ -57,10 +57,6 @@ export class AppComponent implements AfterViewInit {
         this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches)
       }
     }
-  }
-
-  ngAfterViewInit(): void {
-    
   }
 
   setDarkMode = effect(() => {
