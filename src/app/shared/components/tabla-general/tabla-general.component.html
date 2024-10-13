@@ -23,7 +23,7 @@
 
   <!-- En caso de que no se encuentren datos -->
   <tr *matNoDataRow>
-    <td>No se han encontrado registros</td>
+    <td [attr.colspan]="displayedColumns.length" class="text-center p-5">No se han encontrado registros</td>
   </tr>
 
   <!-- Configuración de las líneas de la tabla -->
