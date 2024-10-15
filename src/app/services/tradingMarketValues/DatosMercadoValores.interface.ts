@@ -1,25 +1,17 @@
-export interface Activo {
-  information: string
-  symbol: string
-  lastRefreshed: Date
-  outputSize: string
-  timeZone: string
-  dailyValues: ValoresMercado[]
-}
-
-export interface ValoresMercado {
-  date: Date
-  open: number
+export interface ActivoDiaUnico {
+  afterHours: string
+  close: number
   high: number
   low: number
-  close: number
+  open: number
+  preMarket: number
   volume: number
+  date: Date
+  symbol: string
+  status: string
 }
 
-export interface FiltroActivo {
+export interface FiltroActivoDiaUnico {
   symbol: string
-  outputSize: string
-  periodType: string
-  startDate: Date | undefined
-  endDate: Date | undefined
+  date: Date
 }
