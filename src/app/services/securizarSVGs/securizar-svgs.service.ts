@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Injectable({
   providedIn: 'root'
 })
-export class SecurizeSVGsService {
+export class SecurizarSVGsService {
 
   constructor(private sanitizer: DomSanitizer) {}
 

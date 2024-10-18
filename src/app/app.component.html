@@ -25,6 +25,17 @@
       </button>
     </section>
     <span class="flex-auto"></span>
+    <!-- Selector cambio de moneda -->
+    <button mat-stroked-button [matMenuTriggerFor]="menuCambioMoneda" aria-label="Menú cambio de moneda">
+      <mat-icon>more_vert</mat-icon>
+      Codigo moneda país
+    </button>
+    <mat-menu #menuCambioMoneda="matMenu">
+      <button mat-menu-item>
+        <mat-icon>dialpad</mat-icon>
+        <span>Nombre país</span>
+      </button>
+    </mat-menu>
     <!-- Icono modo visual -->
     <button mat-icon-button (click)="darkMode.set(!darkMode())">
       @if(darkMode()) {
