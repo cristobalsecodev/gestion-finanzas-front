@@ -5,3 +5,8 @@
 .border-color {
   border-color: var(--sys-on-background);
 }
+
+.modificar-esquinas {
+  border-top-left-radius: 0% !important;
+  border-bottom-left-radius: 0% !important;
+}
