@@ -1,19 +1,65 @@
 <div class="md:flex">
+
   <section class="md:w-1/2 m-3">
-    <app-tabla-general 
-      [columns]="['Categoría', 'Cantidad', 'Tipo', 'Notas']"
-      [showActions]="false">
-    </app-tabla-general>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+
+      <!-- Columna categoría -->
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef class="w-1/4 !text-center"> Categoría </th>
+        <td mat-cell *matCellDef="let dataSource"> {{ dataSource }} </td>
+      </ng-container>
+
+      <!-- Columna cantidad -->
+      <ng-container matColumnDef="cantidad">
+        <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center"> Cantidad ( ) </th>
+        <td mat-cell *matCellDef="let dataSource"> {{ dataSource }} </td>
+      </ng-container>
+
+      <!-- Columna notas -->
+      <ng-container matColumnDef="notas">
+        <th mat-header-cell *matHeaderCellDef class="w-1/2 !text-center"> Notas </th>
+        <td mat-cell *matCellDef="let dataSource"> {{ dataSource }} </td>
+      </ng-container>
+
+      <!-- Columna de acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="w-1/12 !text-center">
+          <button mat-icon-button>
+            <mat-icon>add</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let dataSource">
+          <mat-icon>more_vert</mat-icon>
+        </td>
+      </ng-container>
+    
+      <!-- En caso de que no se encuentren datos -->
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length" class="text-center p-5">No se han encontrado registros</td>
+      </tr>
+    
+      <!-- Configuración de las líneas de la tabla -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let dataSource; columns: displayedColumns"></tr>
+    </table>
+
   </section>
+
   <section class="md:w-1/2 m-3">
+
     <mat-card class="example-card" appearance="outlined">
+
       <mat-card-header>
         <mat-card-title>Ejemplo</mat-card-title>
       </mat-card-header>
+
       <mat-card-content>
         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
       </mat-card-content>
+
     </mat-card>
+
   </section>
 </div>
 

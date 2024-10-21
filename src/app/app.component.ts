@@ -40,7 +40,6 @@ import { SinValor } from './shared/constants/variables.constants';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-[x: string]: any;
 
   // Modo oscuro
   darkMode = signal(false)
@@ -112,7 +111,6 @@ export class AppComponent implements OnInit {
       if(resultado.ratiosConversion.length > 0) {
         this.divisas = resultado.ratiosConversion
       }
-
 
       if(isPlatformBrowser(this.platformId)) {
         

@@ -141,3 +141,20 @@ html {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Aplica el color de fondo a las filas de registros de las tablas
+td {
+  background-color: var(--sys-on-primary) !important;
+}
+
+// Aplica un borde a la izquierda de cada columna excepto la primera
+th:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  left: 0;                                      /* Posiciona el borde a la izquierda */
+  top: 10px;                                    /* Se separa del borde superior */
+  bottom: 10px;                                 /* Se separa del borde inferior */
+  width: 1px;                                   /* Ancho del borde */
+  background-color: var(--sys-on-background);   /* Color del borde */
+  height: calc(100% - 20px);                    /* Altura ajustada para evitar las esquinas */
+}
