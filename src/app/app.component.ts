@@ -1,7 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, effect, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -17,6 +16,10 @@ import { ConversionDivisaService } from './services/ConversionDivisa/conversion-
 import { ConversionDivisa, Divisa, RatioConversion } from './services/ConversionDivisa/ConversionDivisa.interface';
 import { BANDERAS } from './shared/constants/svg.constants';
 import { SinValor } from './shared/constants/variables.constants';
+import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
+import { NotificacionesService } from './services/Notificaciones/notificaciones.service';
+import { DivisaCodigoENUM, DivisaNombreENUM } from './shared/enums/Divisa.enum';
+import { DivisaService } from './services/Divisa/divisa.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +28,6 @@ import { SinValor } from './shared/constants/variables.constants';
     RouterOutlet,
     RouterLink,
     CommonModule,
-    FormsModule,
     // Angular Material UI
     MatToolbar,
     MatButtonModule,
@@ -33,8 +35,10 @@ import { SinValor } from './shared/constants/variables.constants';
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
-    MatTooltipModule
-  ],
+    MatTooltipModule,
+
+    NotificacionesComponent
+],
   providers: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -53,6 +57,10 @@ export class AppComponent implements OnInit {
   // Divisas disponibles
   divisas: RatioConversion[] = []
 
+  // Divisas ENUM
+  divisaCodigos = DivisaCodigoENUM
+  divisaNombres = DivisaNombreENUM
+
   // Divisa seleccionada
   divisaSeleccionada: Divisa = {
     codigoDivisa: '',
@@ -68,7 +76,9 @@ export class AppComponent implements OnInit {
     private router: Router,
     private conversionDivisaService: ConversionDivisaService,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private notificacionesService: NotificacionesService,
+    private divisaService: DivisaService
   ) {
 
     // Añadimos los SVGs
@@ -103,28 +113,47 @@ export class AppComponent implements OnInit {
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe(() => {
       this.currentUrl.set(this.router.url)
-    });
+    })
 
     // Devolvemos los tipos de cambio de las principales divisas 
-    this.conversionDivisaService.obtenerConversionDivisa('USD').subscribe(((resultado: ConversionDivisa) => {
+    this.conversionDivisaService.obtenerConversionDivisa(this.divisaCodigos.USD).subscribe({
 
-      if(resultado.ratiosConversion.length > 0) {
-        this.divisas = resultado.ratiosConversion
-      }
+      next: (resultado: ConversionDivisa) => {
 
-      if(isPlatformBrowser(this.platformId)) {
-        
-        // Lógica para comprobar si el usuario ya tiene una divisa seleccionada
-        const divisa = localStorage.getItem('divisa')
-        if(divisa) {
-          this.divisaSeleccionada = JSON.parse(divisa)
-        } else {
-          this.divisaSeleccionada = this.divisas.find(divisa => divisa.codigoDivisa === 'EUR') ?? {codigoDivisa: '', nombreDivisa: ''}
+        if(resultado.ratiosConversion.length > 0) {
+
+          this.divisas = resultado.ratiosConversion
+
         }
-        
-      }
+  
+        if(isPlatformBrowser(this.platformId)) {
+          
+          // Lógica para comprobar si el usuario ya tiene una divisa seleccionada
+          const divisa = localStorage.getItem('divisa')
 
-    }))
+          if(divisa) {
+
+            this.divisaSeleccionada = JSON.parse(divisa)
+
+          } else {
+
+            this.divisaSeleccionada = this.divisas.find(
+              divisa => divisa.codigoDivisa === this.divisaCodigos.USD) 
+                ?? {
+                    codigoDivisa: this.divisaCodigos.USD, 
+                    nombreDivisa: this.divisaNombres.USD
+                  }
+
+          }
+
+          this.divisaService.cambioDivisa(this.divisaSeleccionada)
+          
+        }
+      },
+
+      error: () => this.notificacionesService.addNotificacion('Ha fallado el servicio de divisa', 'error')
+
+    })
 
   }
 
@@ -136,6 +165,8 @@ export class AppComponent implements OnInit {
     }
 
     this.divisaSeleccionada = divisa
+
+    this.divisaService.cambioDivisa(divisa)
 
     localStorage.setItem('divisa', JSON.stringify(divisa))
 
@@ -152,4 +183,5 @@ export class AppComponent implements OnInit {
     }
 
   })
+
 }
