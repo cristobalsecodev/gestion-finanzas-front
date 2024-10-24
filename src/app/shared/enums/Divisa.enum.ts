@@ -1,4 +1,5 @@
 export enum DivisaCodigoENUM {
+
   EUR = 'EUR',
   USD = 'USD',
   AUD = 'AUD',
@@ -9,9 +10,11 @@ export enum DivisaCodigoENUM {
   INR = 'INR',
   JPY = 'JPY',
   NZD = 'NZD'
+
 }
 
 export enum DivisaNombreENUM {
+
   EUR = 'Euro',
   USD = 'Dólar estadounidense',
   AUD = 'Dólar australiano',
@@ -22,4 +25,5 @@ export enum DivisaNombreENUM {
   INR = 'Rupia india',
   JPY = 'Yen japonés',
   NZD = 'Dólar neozelandés'
+  
 }

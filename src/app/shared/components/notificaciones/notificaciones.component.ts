@@ -1,14 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
-import { Notificacion, NotificacionesService } from 'src/app/services/Notificaciones/notificaciones.service';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+
+import { MatIcon } from '@angular/material/icon';
+
+import { Notificacion, NotificacionesService } from 'src/app/services/Notificaciones/notificaciones.service';
 
 @Component({
   selector: 'app-notificaciones',
   standalone: true,
   imports: [
+    // Angular core
     CommonModule,
+    // Angular material
     MatIcon
   ],
   animations: [

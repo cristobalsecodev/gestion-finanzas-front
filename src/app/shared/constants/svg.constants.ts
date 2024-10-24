@@ -1,14 +1,17 @@
 import { BANDERA_AUSTRALIA, BANDERA_CANADA, BANDERA_CHINA, BANDERA_EUROPA, BANDERA_INDIA, BANDERA_JAPON, BANDERA_NUEVA_ZELANDA, BANDERA_REINO_UNIDO, BANDERA_SUIZA, BANDERA_USA } from "src/assets/SVGs";
+import { DivisaCodigoENUM } from "../enums/Divisa.enum";
+
+const divisaCodigo = DivisaCodigoENUM
 
 export const BANDERAS = [
-  {codigoDivisa: 'USD', svg: BANDERA_USA},
-  {codigoDivisa: 'AUD', svg: BANDERA_AUSTRALIA},
-  {codigoDivisa: 'JPY', svg: BANDERA_JAPON},
-  {codigoDivisa: 'EUR', svg: BANDERA_EUROPA},
-  {codigoDivisa: 'INR', svg: BANDERA_INDIA},
-  {codigoDivisa: 'CNY', svg: BANDERA_CHINA},
-  {codigoDivisa: 'NZD', svg: BANDERA_NUEVA_ZELANDA},
-  {codigoDivisa: 'CHF', svg: BANDERA_SUIZA},
-  {codigoDivisa: 'CAD', svg: BANDERA_CANADA},
-  {codigoDivisa: 'GBP', svg: BANDERA_REINO_UNIDO}
+  {codigoDivisa: divisaCodigo.USD, svg: BANDERA_USA},
+  {codigoDivisa: divisaCodigo.AUD, svg: BANDERA_AUSTRALIA},
+  {codigoDivisa: divisaCodigo.JPY, svg: BANDERA_JAPON},
+  {codigoDivisa: divisaCodigo.EUR, svg: BANDERA_EUROPA},
+  {codigoDivisa: divisaCodigo.INR, svg: BANDERA_INDIA},
+  {codigoDivisa: divisaCodigo.CNY, svg: BANDERA_CHINA},
+  {codigoDivisa: divisaCodigo.NZD, svg: BANDERA_NUEVA_ZELANDA},
+  {codigoDivisa: divisaCodigo.CHF, svg: BANDERA_SUIZA},
+  {codigoDivisa: divisaCodigo.CAD, svg: BANDERA_CANADA},
+  {codigoDivisa: divisaCodigo.GBP, svg: BANDERA_REINO_UNIDO}
 ]

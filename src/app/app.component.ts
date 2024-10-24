@@ -25,10 +25,11 @@ import { DivisaService } from './services/Divisa/divisa.service';
   selector: 'app-root',
   standalone: true,
   imports: [
+    // Angular core
     RouterOutlet,
     RouterLink,
     CommonModule,
-    // Angular Material UI
+    // Angular Material
     MatToolbar,
     MatButtonModule,
     MatIcon,
@@ -36,10 +37,9 @@ import { DivisaService } from './services/Divisa/divisa.service';
     MatListModule,
     MatMenuModule,
     MatTooltipModule,
-
+    // Componentes
     NotificacionesComponent
-],
-  providers: [],
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -58,8 +58,8 @@ export class AppComponent implements OnInit {
   divisas: RatioConversion[] = []
 
   // Divisas ENUM
-  divisaCodigos = DivisaCodigoENUM
-  divisaNombres = DivisaNombreENUM
+  readonly divisaCodigo = DivisaCodigoENUM
+  readonly divisaNombre = DivisaNombreENUM
 
   // Divisa seleccionada
   divisaSeleccionada: Divisa = {
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
   }
 
   // Sin valor
-  sinValor = SinValor
+  readonly sinValor = SinValor
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
     })
 
     // Devolvemos los tipos de cambio de las principales divisas 
-    this.conversionDivisaService.obtenerConversionDivisa(this.divisaCodigos.USD).subscribe({
+    this.conversionDivisaService.obtenerConversionDivisa(this.divisaCodigo.USD).subscribe({
 
       next: (resultado: ConversionDivisa) => {
 
@@ -138,10 +138,10 @@ export class AppComponent implements OnInit {
           } else {
 
             this.divisaSeleccionada = this.divisas.find(
-              divisa => divisa.codigoDivisa === this.divisaCodigos.USD) 
+              divisa => divisa.codigoDivisa === this.divisaCodigo.USD) 
                 ?? {
-                    codigoDivisa: this.divisaCodigos.USD, 
-                    nombreDivisa: this.divisaNombres.USD
+                    codigoDivisa: this.divisaCodigo.USD, 
+                    nombreDivisa: this.divisaNombre.USD
                   }
 
           }
