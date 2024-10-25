@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Divisa } from 'src/app/services/ConversionDivisa/ConversionDivisa.interface';
 import { DivisaService } from 'src/app/services/Divisa/divisa.service';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
-import { MisIngresosGastosModalComponent } from './mis-ingresos-gastos-modal/mis-ingresos-gastos-modal.component';
+import { MisIngresosGastosFormularioComponent } from './mis-ingresos-gastos-formulario/mis-ingresos-gastos-formulario.component';
 import { TipoAccion } from 'src/app/shared/enums/TipoAccion.enum';
 import { IngresoGasto } from './IngresoGasto.interface';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -71,7 +71,7 @@ export class MisIngresosGastosComponent {
 
 
 
-    this.modal.open(MisIngresosGastosModalComponent, {
+    this.modal.open(MisIngresosGastosFormularioComponent, {
 
       data: tipo
 

@@ -158,3 +158,16 @@ th:not(:first-child)::before {
   background-color: var(--sys-on-background);   /* Color del borde */
   height: calc(100% - 20px);                    /* Altura ajustada para evitar las esquinas */
 }
+
+// Trunca un texto largo para añadir ... al final
+.truncar-texto-largo {
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+
+}

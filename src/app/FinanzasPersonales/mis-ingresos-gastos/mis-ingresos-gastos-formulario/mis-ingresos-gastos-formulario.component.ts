@@ -8,7 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
-  selector: 'app-mis-ingresos-gastos-modal',
+  selector: 'app-mis-ingresos-gastos-formulario',
   standalone: true,
   imports: [
     // Angular material
@@ -20,14 +20,14 @@ import { FormControl, FormGroup } from '@angular/forms';
     MatButtonModule,
     MatIcon
   ],
-  templateUrl: './mis-ingresos-gastos-modal.component.html',
-  styleUrl: './mis-ingresos-gastos-modal.component.scss',
+  templateUrl: './mis-ingresos-gastos-formulario.component.html',
+  styleUrl: './mis-ingresos-gastos-formulario.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MisIngresosGastosModalComponent {
+export class MisIngresosGastosFormularioComponent {
 
   readonly tipo = inject(MAT_DIALOG_DATA);
-  readonly modalRef = inject(MatDialogRef<MisIngresosGastosModalComponent>);
+  readonly modalRef = inject(MatDialogRef<MisIngresosGastosFormularioComponent>);
 
   formulario = new FormGroup({
     
