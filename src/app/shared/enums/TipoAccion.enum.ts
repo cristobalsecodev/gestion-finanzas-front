@@ -1,7 +1,7 @@
 export enum TipoAccion {
   
-  CREAR = 'Crear',
-  EDITAR = 'Editar',
-  BORRAR = 'Borrar'
+  CREATE = 'Crear',
+  EDIT = 'Editar',
+  DELETE = 'Borrar'
 
 }

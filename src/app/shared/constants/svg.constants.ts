@@ -1,17 +1,17 @@
-import { BANDERA_AUSTRALIA, BANDERA_CANADA, BANDERA_CHINA, BANDERA_EUROPA, BANDERA_INDIA, BANDERA_JAPON, BANDERA_NUEVA_ZELANDA, BANDERA_REINO_UNIDO, BANDERA_SUIZA, BANDERA_USA } from "src/assets/SVGs";
+import { FLAG_AUSTRALIA, FLAG_CANADA, FLAG_CHINA, FLAG_EUROPE, FLAG_INDIA, FLAG_JAPAN, FLAG_NEW_ZELAND, FLAG_SWISS, FLAG_UK, FLAG_USA } from "src/assets/SVGs";
 import { DivisaCodigoENUM } from "../enums/Divisa.enum";
 
-const divisaCodigo = DivisaCodigoENUM
+const currencyCode = DivisaCodigoENUM
 
-export const BANDERAS = [
-  {codigoDivisa: divisaCodigo.USD, svg: BANDERA_USA},
-  {codigoDivisa: divisaCodigo.AUD, svg: BANDERA_AUSTRALIA},
-  {codigoDivisa: divisaCodigo.JPY, svg: BANDERA_JAPON},
-  {codigoDivisa: divisaCodigo.EUR, svg: BANDERA_EUROPA},
-  {codigoDivisa: divisaCodigo.INR, svg: BANDERA_INDIA},
-  {codigoDivisa: divisaCodigo.CNY, svg: BANDERA_CHINA},
-  {codigoDivisa: divisaCodigo.NZD, svg: BANDERA_NUEVA_ZELANDA},
-  {codigoDivisa: divisaCodigo.CHF, svg: BANDERA_SUIZA},
-  {codigoDivisa: divisaCodigo.CAD, svg: BANDERA_CANADA},
-  {codigoDivisa: divisaCodigo.GBP, svg: BANDERA_REINO_UNIDO}
+export const FLAGS = [
+  {currencyCode: currencyCode.USD, svg: FLAG_USA},
+  {currencyCode: currencyCode.AUD, svg: FLAG_AUSTRALIA},
+  {currencyCode: currencyCode.JPY, svg: FLAG_JAPAN},
+  {currencyCode: currencyCode.EUR, svg: FLAG_EUROPE},
+  {currencyCode: currencyCode.INR, svg: FLAG_INDIA},
+  {currencyCode: currencyCode.CNY, svg: FLAG_CHINA},
+  {currencyCode: currencyCode.NZD, svg: FLAG_NEW_ZELAND},
+  {currencyCode: currencyCode.CHF, svg: FLAG_SWISS},
+  {currencyCode: currencyCode.CAD, svg: FLAG_CANADA},
+  {currencyCode: currencyCode.GBP, svg: FLAG_UK}
 ]

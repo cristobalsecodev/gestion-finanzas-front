@@ -1,12 +1,12 @@
 <section class="fixed top-16 right-2 z-50 space-y-4">
 
-  @for (notificacion of notificaciones; track $index) {
+  @for (notification of notifications; track $index) {
 
     <div [ngClass]="{
-      'bg-green-100 text-green-800 border-green-500': notificacion.tipo === 'success',
-      'bg-red-100 text-red-800 border-red-500': notificacion.tipo === 'error',
-      'bg-orange-100 text-orange-800 border-orange-500': notificacion.tipo === 'warning',
-      'bg-blue-100 text-blue-800 border-blue-500': notificacion.tipo === 'info'
+      'bg-green-100 text-green-800 border-green-500': notification.tipo === 'success',
+      'bg-red-100 text-red-800 border-red-500': notification.tipo === 'error',
+      'bg-orange-100 text-orange-800 border-orange-500': notification.tipo === 'warning',
+      'bg-blue-100 text-blue-800 border-blue-500': notification.tipo === 'info'
     }" 
     [@fadeInRight]
     class="border-l-4 p-4 rounded shadow-lg transition-opacity duration-300">
@@ -14,36 +14,36 @@
     <!-- Icono de notificación -->
     <div class="flex items-center space-x-2">
 
-      @if(notificacion.tipo === 'success') {
+      @if(notification.tipo === 'success') {
 
         <mat-icon class="text-green-600">check_circle</mat-icon>
 
       }
 
-      @if(notificacion.tipo === 'error') {
+      @if(notification.tipo === 'error') {
 
         <mat-icon class="text-red-600">error</mat-icon>
 
       }
 
-      @if(notificacion.tipo === 'warning') {
+      @if(notification.tipo === 'warning') {
 
         <mat-icon class="text-orange-600">warning</mat-icon>
 
       }
 
-      @if(notificacion.tipo === 'info') {
+      @if(notification.tipo === 'info') {
 
         <mat-icon class="text-blue-600">info</mat-icon>
 
       }
 
-      <p class="font-semibold">{{ notificacion.mensaje }}</p>
+      <p class="font-semibold">{{ notification.mensaje }}</p>
 
       <span class="flex-auto"></span>
 
       <!-- Icono de cierre-->
-      <mat-icon class="cursor-pointer text-gray-500 hover:text-gray-800" (click)="cerrar(notificacion.id)">close</mat-icon>
+      <mat-icon class="cursor-pointer text-gray-500 hover:text-gray-800" (click)="close(notification.id)">close</mat-icon>
 
     </div>
 

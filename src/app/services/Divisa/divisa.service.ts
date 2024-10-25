@@ -10,10 +10,10 @@ export class DivisaService {
 
   // Crear un BehaviorSubject para almacenar el cambio de divisa
   private divisaSubject = new BehaviorSubject<Divisa>({codigoDivisa: DivisaCodigoENUM.USD, nombreDivisa: DivisaNombreENUM.USD})
-  divisa$ = this.divisaSubject.asObservable()
+  currency$ = this.divisaSubject.asObservable()
   
   // Método para cambiar la divisa
-  cambioDivisa(divisa: Divisa) {
+  currencyChange(divisa: Divisa) {
     this.divisaSubject.next(divisa)
   }
 

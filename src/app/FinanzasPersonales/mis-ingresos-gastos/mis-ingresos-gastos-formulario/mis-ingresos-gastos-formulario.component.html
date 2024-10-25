@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>{{ tipo }} ingreso / gasto</h2>
+<h2 mat-dialog-title>{{ type }} ingreso / gasto</h2>
 <mat-dialog-content>This dialog showcases the title, close, content and actions elements.</mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-flat-button (click)="aceptarFormulario()">
+  <button mat-flat-button (click)="submitForm()">
     <mat-icon>add</mat-icon>
-    {{ tipo }}
+    {{ type }}
   </button>
 </mat-dialog-actions>

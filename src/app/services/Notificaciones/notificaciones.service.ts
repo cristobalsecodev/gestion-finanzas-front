@@ -15,30 +15,30 @@ export class NotificacionesService {
 
   private notificacionSubject = new BehaviorSubject<Notificacion[]>([])
 
-  notificacion$ = this.notificacionSubject.asObservable()
+  notification$ = this.notificacionSubject.asObservable()
 
-  private idContador = 0
+  private counterId = 0
 
-  addNotificacion(mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') {
+  addNotification(mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') {
     
     const nuevaNotificacion: Notificacion = {
       mensaje,
       tipo,
-      id: this.idContador++
+      id: this.counterId++
     }
 
-    const notificacionesActuales = this.notificacionSubject.value
-    this.notificacionSubject.next([...notificacionesActuales, nuevaNotificacion])
+    const currentNotifications = this.notificacionSubject.value
+    this.notificacionSubject.next([...currentNotifications, nuevaNotificacion])
 
   }
 
-  removeNotificacion(id: number) {
+  removeNotification(id: number) {
 
-    const notificacionesActuales = this.notificacionSubject.value.filter(
-      (notificacion) => notificacion.id !== id
+    const currentNotifications = this.notificacionSubject.value.filter(
+      (notification) => notification.id !== id
     )
 
-    this.notificacionSubject.next(notificacionesActuales)
+    this.notificacionSubject.next(currentNotifications)
 
   }
 }

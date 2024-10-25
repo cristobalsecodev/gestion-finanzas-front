@@ -7,8 +7,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { Divisa } from 'src/app/services/ConversionDivisa/ConversionDivisa.interface';
-import { DivisaService } from 'src/app/services/Divisa/divisa.service';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { MisIngresosGastosFormularioComponent } from './mis-ingresos-gastos-formulario/mis-ingresos-gastos-formulario.component';
 import { TipoAccion } from 'src/app/shared/enums/TipoAccion.enum';
@@ -36,7 +34,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 })
 export class MisIngresosGastosComponent {
 
-  displayedColumns: string[] = ['fecha', 'categoria', 'cantidad', 'notas', 'acciones']
+  displayedColumns: string[] = ['date', 'category', 'amount', 'notes', 'actions']
 
   dataSource: IngresoGasto[] = [
     {
@@ -51,31 +49,21 @@ export class MisIngresosGastosComponent {
     }
   ]
 
-  codigoDivisa: string = ''
+  readonly actionType = TipoAccion
 
-  readonly tipoAccion = TipoAccion
+  readonly dialog = inject(MatDialog)
 
-  readonly modal = inject(MatDialog)
+  constructor() {}
 
-  constructor(
-    private divisaService: DivisaService
-  ) {
-
-    this.divisaService.divisa$.subscribe((divisa: Divisa) => {
-      this.codigoDivisa = divisa.codigoDivisa
-    })
-
-  }
-
-  abrirModal(tipo: string): void {
+  openDialog(type: string): void {
 
 
 
-    this.modal.open(MisIngresosGastosFormularioComponent, {
+    this.dialog.open(MisIngresosGastosFormularioComponent, {
 
-      data: tipo
+      data: type
 
-    }).afterClosed().subscribe((registro => {
+    }).afterClosed().subscribe((record => {
 
 
 

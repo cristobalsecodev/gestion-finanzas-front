@@ -26,10 +26,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class MisIngresosGastosFormularioComponent {
 
-  readonly tipo = inject(MAT_DIALOG_DATA);
-  readonly modalRef = inject(MatDialogRef<MisIngresosGastosFormularioComponent>);
+  readonly type = inject(MAT_DIALOG_DATA);
+  readonly dialogRef = inject(MatDialogRef<MisIngresosGastosFormularioComponent>);
 
-  formulario = new FormGroup({
+  form = new FormGroup({
     
     fecha: new FormControl(''),
     categoria: new FormControl(''),
@@ -40,8 +40,8 @@ export class MisIngresosGastosFormularioComponent {
   })
   
 
-  aceptarFormulario(): void {
-    this.modalRef.close()
+  submitForm(): void {
+    this.dialogRef.close()
   }
 
 }

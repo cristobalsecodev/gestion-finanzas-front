@@ -33,21 +33,21 @@ import { Notificacion, NotificacionesService } from 'src/app/services/Notificaci
 })
 export class NotificacionesComponent implements OnInit {
 
-  notificaciones: Notificacion[] = [];
+  notifications: Notificacion[] = [];
 
   constructor(private notificacionesService: NotificacionesService) {}
 
   ngOnInit(): void {
 
-    this.notificacionesService.notificacion$.subscribe(
-      (notificaciones) => (this.notificaciones = notificaciones)
+    this.notificacionesService.notification$.subscribe(
+      (notifications) => (this.notifications = notifications)
     );
 
   }
 
-  cerrar(id: number) {
+  close(id: number) {
 
-    this.notificacionesService.removeNotificacion(id)
+    this.notificacionesService.removeNotification(id)
 
   }
 

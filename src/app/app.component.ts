@@ -14,7 +14,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 
 import { ConversionDivisaService } from './services/ConversionDivisa/conversion-divisa.service';
 import { ConversionDivisa, Divisa, RatioConversion } from './services/ConversionDivisa/ConversionDivisa.interface';
-import { BANDERAS } from './shared/constants/svg.constants';
+import { FLAGS } from './shared/constants/svg.constants';
 import { SinValor } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { NotificacionesService } from './services/Notificaciones/notificaciones.service';
@@ -55,14 +55,14 @@ export class AppComponent implements OnInit {
   sidenavOpened: boolean = false
 
   // Divisas disponibles
-  divisas: RatioConversion[] = []
+  currencies: RatioConversion[] = []
 
   // Divisas ENUM
   readonly divisaCodigo = DivisaCodigoENUM
   readonly divisaNombre = DivisaNombreENUM
 
   // Divisa seleccionada
-  divisaSeleccionada: Divisa = {
+  selectedCurrency: Divisa = {
     codigoDivisa: '',
     nombreDivisa: ''
   }
@@ -82,10 +82,10 @@ export class AppComponent implements OnInit {
   ) {
 
     // Añadimos los SVGs
-    BANDERAS.forEach(bandera => {
+    FLAGS.forEach(flag => {
       this.matIconRegistry.addSvgIconLiteral(
-        bandera.codigoDivisa,
-        this.domSanitizer.bypassSecurityTrustHtml(bandera.svg)
+        flag.currencyCode,
+        this.domSanitizer.bypassSecurityTrustHtml(flag.svg)
       )
     })
 
@@ -118,27 +118,27 @@ export class AppComponent implements OnInit {
     // Devolvemos los tipos de cambio de las principales divisas 
     this.conversionDivisaService.obtenerConversionDivisa(this.divisaCodigo.USD).subscribe({
 
-      next: (resultado: ConversionDivisa) => {
+      next: (result: ConversionDivisa) => {
 
-        if(resultado.ratiosConversion.length > 0) {
+        if(result.ratiosConversion.length > 0) {
 
-          this.divisas = resultado.ratiosConversion
+          this.currencies = result.ratiosConversion
 
         }
   
         if(isPlatformBrowser(this.platformId)) {
           
           // Lógica para comprobar si el usuario ya tiene una divisa seleccionada
-          const divisa = localStorage.getItem('divisa')
+          const currency = localStorage.getItem('currency')
 
-          if(divisa) {
+          if(currency) {
 
-            this.divisaSeleccionada = JSON.parse(divisa)
+            this.selectedCurrency = JSON.parse(currency)
 
           } else {
 
-            this.divisaSeleccionada = this.divisas.find(
-              divisa => divisa.codigoDivisa === this.divisaCodigo.USD) 
+            this.selectedCurrency = this.currencies.find(
+              currency => currency.codigoDivisa === this.divisaCodigo.USD) 
                 ?? {
                     codigoDivisa: this.divisaCodigo.USD, 
                     nombreDivisa: this.divisaNombre.USD
@@ -146,29 +146,29 @@ export class AppComponent implements OnInit {
 
           }
 
-          this.divisaService.cambioDivisa(this.divisaSeleccionada)
+          this.divisaService.currencyChange(this.selectedCurrency)
           
         }
       },
 
-      error: () => this.notificacionesService.addNotificacion('Ha fallado el servicio de divisa', 'error')
+      error: () => this.notificacionesService.addNotification('Ha fallado el servicio de divisa', 'error')
 
     })
 
   }
 
-  seleccionDivisa(codigoDivisa: string, nombreDivisa: string): void {
+  currencySelection(currencyCode: string, currencyName: string): void {
 
-    let divisa: Divisa = {
-      codigoDivisa: codigoDivisa,
-      nombreDivisa: nombreDivisa
+    let currency: Divisa = {
+      codigoDivisa: currencyCode,
+      nombreDivisa: currencyName
     }
 
-    this.divisaSeleccionada = divisa
+    this.selectedCurrency = currency
 
-    this.divisaService.cambioDivisa(divisa)
+    this.divisaService.currencyChange(currency)
 
-    localStorage.setItem('divisa', JSON.stringify(divisa))
+    localStorage.setItem('currency', JSON.stringify(currency))
 
   }
 

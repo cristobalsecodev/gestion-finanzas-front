@@ -10,13 +10,13 @@
       <button mat-button class="h-12 ml-5" [routerLink]="['/mis-ingresos-gastos']" 
         [ngClass]="{'selected-button': currentUrl().includes('mis-ingresos-gastos')}">
           <mat-icon>stat_2</mat-icon>
-          Mis ingresos/gastos
+          My income/expenses
       </button>
 
       <button mat-button class="h-12" [routerLink]="['/mis-inversiones']"
         [ngClass]="{'selected-button': currentUrl().includes('mis-inversiones')}">
           <mat-icon>query_stats</mat-icon>
-          Mis inversiones
+          My investments
       </button>
 
     </section>
@@ -28,16 +28,16 @@
 
       <button mat-stroked-button 
         matTooltip="Es posible que la API haya alcanzado el máximo de llamadas"
-        [matTooltipDisabled]="divisaSeleccionada.codigoDivisa !== '' && divisaSeleccionada.nombreDivisa !== ''"
+        [matTooltipDisabled]="selectedCurrency.codigoDivisa !== '' && selectedCurrency.nombreDivisa !== ''"
         [matMenuTriggerFor]="menuCambioDivisa" aria-label="Menú cambio de divisa" class="w-24 ms-3 me-3">
   
-        @if(divisaSeleccionada.codigoDivisa !== '' && divisaSeleccionada.nombreDivisa !== '') {
+        @if(selectedCurrency.codigoDivisa !== '' && selectedCurrency.nombreDivisa !== '') {
   
-          <mat-icon [svgIcon]="divisaSeleccionada.codigoDivisa"></mat-icon>
+          <mat-icon [svgIcon]="selectedCurrency.codigoDivisa"></mat-icon>
   
         }
   
-        <span>{{ divisaSeleccionada.codigoDivisa !== '' ? divisaSeleccionada.codigoDivisa : sinValor }}</span>
+        <span>{{ selectedCurrency.codigoDivisa !== '' ? selectedCurrency.codigoDivisa : sinValor }}</span>
   
       </button>
       
@@ -45,21 +45,21 @@
 
     <mat-menu #menuCambioDivisa="matMenu">
 
-      @for(divisa of divisas; track divisa) {
+      @for(currency of currencies; track currency) {
 
-        <button mat-menu-item (click)="seleccionDivisa(divisa.codigoDivisa, divisa.nombreDivisa)">
-          <mat-icon [svgIcon]="divisa.codigoDivisa"></mat-icon>
-          @if(divisa.codigoDivisa === divisaSeleccionada.codigoDivisa) {
+        <button mat-menu-item (click)="currencySelection(currency.codigoDivisa, currency.nombreDivisa)">
+          <mat-icon [svgIcon]="currency.codigoDivisa"></mat-icon>
+          @if(currency.codigoDivisa === selectedCurrency.codigoDivisa) {
             <mat-icon>check</mat-icon>
           }
-          <span>{{ divisa.nombreDivisa }}</span>
+          <span>{{ currency.nombreDivisa }}</span>
         </button>
 
       } @empty {
 
         <button mat-menu-item>
           <mat-icon>report</mat-icon>
-          <span>No hay divisas disponibles</span>
+          <span>No currencies available</span>
         </button>
 
       }
@@ -78,6 +78,13 @@
         <mat-icon>light_mode</mat-icon>
         
       }
+
+    </button>
+
+    <!-- Icono cuenta -->
+    <button mat-icon-button>
+
+      <mat-icon>account_circle</mat-icon>
 
     </button>
 
