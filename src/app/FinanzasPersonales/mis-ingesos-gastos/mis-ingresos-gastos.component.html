@@ -1,0 +1,91 @@
+<div class="md:flex">
+
+  <section class="md:w-8/12 m-3">
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
+
+      <!-- Columna fecha -->
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef class="w-1/7 !text-center"> 
+          <span> Fecha </span> 
+        </th>
+        <td mat-cell *matCellDef="let dataSource" class="!text-center">
+          <span> {{ dataSource.fecha | date: 'dd/MM/yyyy' }} </span>
+        </td>
+      </ng-container>
+
+      <!-- Columna categoría -->
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center"> 
+          <span class="block"> Categoría </span> 
+          <span class="block text-xs"> Subcategoría </span> 
+        </th>
+        <td mat-cell *matCellDef="let dataSource">
+          <span class="block"> {{ dataSource.categoria }} </span>
+          <span class="block text-xs"> {{ dataSource.subCategoria }} </span>
+        </td>
+      </ng-container>
+
+      <!-- Columna cantidad -->
+      <ng-container matColumnDef="cantidad">
+        <th mat-header-cell *matHeaderCellDef class="w-1/6 !text-center">
+          <span class="block"> Cantidad </span>
+        </th>
+        <td mat-cell *matCellDef="let dataSource" class="!text-center"> 
+          <span> {{ 0 | simboloDivisa: dataSource.divisa }} {{ dataSource.cantidad | number: '1.2-2' }}  </span>
+        </td>
+      </ng-container>
+
+      <!-- Columna notas -->
+      <ng-container matColumnDef="notas">
+        <th mat-header-cell *matHeaderCellDef class="w-1/2 !text-center">
+          <span> Notas </span> 
+        </th>
+        <td mat-cell *matCellDef="let dataSource"
+          [matTooltip]="dataSource.notas"
+          matTooltipPosition="below"> 
+          <span class="truncar-notas"> {{ dataSource.notas }} </span>
+        </td>
+      </ng-container>
+
+      <!-- Columna de acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="w-1/12 !text-center">
+          <button mat-icon-button (click)="abrirModal(tipoAccion.CREAR)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let dataSource" class="!text-center">
+          <mat-icon>more_vert</mat-icon>
+        </td>
+      </ng-container>
+    
+      <!-- En caso de que no se encuentren datos -->
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length" class="text-center p-5">No se han encontrado registros</td>
+      </tr>
+    
+      <!-- Configuración de las líneas de la tabla -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let dataSource; columns: displayedColumns"></tr>
+    </table>
+
+  </section>
+
+  <section class="md:w-1/3 m-3">
+
+    <mat-card class="example-card" appearance="outlined">
+
+      <mat-card-header>
+        <mat-card-title>Ejemplo</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+      </mat-card-content>
+
+    </mat-card>
+
+  </section>
+</div>
+
