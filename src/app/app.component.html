@@ -1,22 +1,29 @@
 <header>
   <mat-toolbar class="min-h-14 max-h-14 border-solid border-b border-color">
-    <button mat-icon-button [routerLink]="[resumeRoute]">
+    <button mat-icon-button [routerLink]="['']">
       <mat-icon>finance</mat-icon>
     </button>
 
     <!-- Navegación -->
     <section class="hidden sm:ml-30 sm:block space-x-20">
 
+      <button mat-button class="h-12 ml-5" [routerLink]="[resumeRoute]" 
+      [ngClass]="{'selected-button': currentUrl().includes(resumeRoute)}">
+        <mat-icon>request_quote</mat-icon>
+        <span>My resume</span>
+      </button>
+
+
       <button mat-button class="h-12 ml-5" [routerLink]="[incomeExpensesRoute]" 
         [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}">
-          <mat-icon>stat_2</mat-icon>
-          My income/expenses
+          <mat-icon>payments</mat-icon>
+          <span>My income/expenses</span>
       </button>
 
       <button mat-button class="h-12" [routerLink]="[investmentsRoute]"
         [ngClass]="{'selected-button': currentUrl().includes(investmentsRoute)}">
           <mat-icon>query_stats</mat-icon>
-          My investments
+          <span>My investments</span>
       </button>
 
     </section>
@@ -24,47 +31,52 @@
     <span class="flex-auto"></span>
 
     <!-- Selector cambio de divisa -->
-    <section>
+    @if(currentUrl().includes(investmentsRoute)) {
 
-      <button mat-stroked-button 
-        matTooltip="It is possible that the API has reached its maximum call limit"
-        [matTooltipDisabled]="selectedCurrency.currencyCode !== '' && selectedCurrency.currencyName !== ''"
-        [matMenuTriggerFor]="menuCambioDivisa" aria-label="Menú cambio de divisa" class="w-24 ms-3 me-3">
+      <section>
+
+        <button mat-stroked-button 
+          matTooltip="It is possible that the API has reached its maximum call limit"
+          [matTooltipDisabled]="selectedCurrency.currencyCode !== '' && selectedCurrency.currencyName !== ''"
+          [matMenuTriggerFor]="currencyMenu" aria-label="Menú cambio de divisa" class="w-24 ms-3 me-3">
+    
+          @if(selectedCurrency.currencyCode !== '' && selectedCurrency.currencyName !== '') {
+    
+            <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
+    
+          }
+    
+          <span>{{ selectedCurrency.currencyCode !== '' ? selectedCurrency.currencyCode : noValue }}</span>
+    
+        </button>
+        
+      </section>
   
-        @if(selectedCurrency.currencyCode !== '' && selectedCurrency.currencyName !== '') {
+      <!-- Menú divisas -->
+      <mat-menu #currencyMenu="matMenu">
   
-          <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
+        @for(currency of currencies; track currency) {
+  
+          <button mat-menu-item (click)="currencySelection(currency.currencyCode, currency.currencyName)">
+            <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
+            @if(currency.currencyCode === selectedCurrency.currencyCode) {
+              <mat-icon>check</mat-icon>
+            }
+            <span>{{ currency.currencyName }}</span>
+          </button>
+  
+        } @empty {
+  
+          <button mat-menu-item>
+            <mat-icon>report</mat-icon>
+            <span>No currencies available</span>
+          </button>
   
         }
   
-        <span>{{ selectedCurrency.currencyCode !== '' ? selectedCurrency.currencyCode : noValue }}</span>
+      </mat-menu>
   
-      </button>
-      
-    </section>
-
-    <mat-menu #menuCambioDivisa="matMenu">
-
-      @for(currency of currencies; track currency) {
-
-        <button mat-menu-item (click)="currencySelection(currency.currencyCode, currency.currencyName)">
-          <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
-          @if(currency.currencyCode === selectedCurrency.currencyCode) {
-            <mat-icon>check</mat-icon>
-          }
-          <span>{{ currency.currencyName }}</span>
-        </button>
-
-      } @empty {
-
-        <button mat-menu-item>
-          <mat-icon>report</mat-icon>
-          <span>No currencies available</span>
-        </button>
-
-      }
-
-    </mat-menu>
+    }
 
     <!-- Icono modo visual -->
     <button mat-icon-button (click)="darkMode.set(!darkMode())">
@@ -82,11 +94,24 @@
     </button>
 
     <!-- Icono cuenta -->
-    <button mat-icon-button>
+    @if(isUserAuthenticated()) {
 
-      <mat-icon>account_circle</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="accountMenu">
 
-    </button>
+        <mat-icon>account_circle</mat-icon>
+  
+      </button>
+  
+      <mat-menu #accountMenu="matMenu">
+  
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+  
+      </mat-menu>
+
+    }
 
     <!-- Menú lateral -->
      @if(sidenavOpened) {
@@ -110,20 +135,25 @@
 </header>
 
 <main>
-  <mat-sidenav-container class="h-[calc(100vh-112px)]" hasBackdrop="false">
+  <mat-sidenav-container hasBackdrop="false">
     <mat-sidenav #drawer mode="over" position="end"  [(opened)]="sidenavOpened" class="modificar-esquinas">
       <mat-nav-list>
+
+        <a mat-list-item [routerLink]="[resumeRoute]" 
+        [ngClass]="{'selected-button': currentUrl().includes(resumeRoute)}">
+          <span>My resume</span>
+        </a>
 
         <a mat-list-item [routerLink]="[incomeExpensesRoute]" 
           [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}" 
           (click)="drawer.toggle()">
-            Mis ingresos/gastos
+            <span>My income/expenses</span>
         </a>
 
         <a mat-list-item [routerLink]="[investmentsRoute]" 
           [ngClass]="{'selected-button': currentUrl().includes(investmentsRoute)}" 
           (click)="drawer.toggle()">
-            Mis inversiones
+            <span>My investments</span>
         </a>
 
       </mat-nav-list>
@@ -138,9 +168,5 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </main>
-
-<footer>
-  <mat-toolbar class="mat-toolbar-bg-color min-h-14 max-h-14">Footer</mat-toolbar>
-</footer>
 
 <app-notificaciones></app-notificaciones>

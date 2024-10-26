@@ -1,12 +1,110 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [
+    // Angular material
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
+    MatStepperModule,
+    MatTooltipModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 
+  hidePassword = signal(true);
+
+  formEmail!: FormGroup
+  formName!: FormGroup
+  formPassword!: FormGroup
+
+  constructor() {
+
+    this.formEmail = new FormGroup({
+
+      email: new FormControl('', [Validators.required, Validators.email])
+
+    })
+
+    this.formName = new FormGroup({
+
+      name: new FormControl(''),
+      surnames: new FormControl(''),
+
+    })
+
+    this.formPassword = new FormGroup({
+
+      password: new FormControl('', [Validators.required]),
+      passwordConfirm: new FormControl('', [Validators.required])
+
+    }, this.passwordMatchValidator)
+
+  }
+
+  passwordMatchValidator(control: AbstractControl) {
+
+    const password = control.get('password')?.value
+    const passwordConfirm = control.get('passwordConfirm')?.value
+
+    return password === passwordConfirm ? null : { mismatch: true }
+
+  }
+
+  onSubmit(): void {
+
+    if(this.formEmail.valid && this.formPassword.valid) {
+
+
+
+    } else {
+
+
+
+    }
+
+  }
+
+  formError(type: string): string {
+    let errorMessage = '';
+
+    if (type === 'EMAIL') {
+      const emailControl = this.formEmail.get('email');
+      
+      if (emailControl?.hasError('required')) {
+        errorMessage = 'Email is required.';
+      } else if (emailControl?.hasError('email')) {
+        errorMessage = 'Email is invalid.';
+      }
+    } else if (type === 'PASSWORD') {
+      const passwordControl = this.formPassword.get('password');
+      const passwordConfirmControl = this.formPassword.get('passwordConfirm');
+      
+      if (this.formPassword.hasError('mismatch')) {
+        errorMessage = 'Passwords don’t match.';
+      } else if (passwordControl?.hasError('required') || passwordConfirmControl?.hasError('required')) {
+        errorMessage = 'Password is required.';
+      }
+    }
+  
+    return errorMessage;
+  }
+
+  
 }

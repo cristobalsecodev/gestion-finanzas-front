@@ -1,1 +1,178 @@
-<p>login works!</p>
+<div class="h-screen flex items-center justify-center">
+
+  <mat-card class="p-8 max-w-3xl w-full shadow-lg">
+  
+    <div class="md:flex">
+  
+      <section class="md:w-1/2 m-3">
+        INFO
+      </section>
+    
+      <section class="md:w-1/2 m-3">
+
+        <mat-vertical-stepper #stepper animationDuration="250">
+
+          <mat-step 
+            [stepControl]="formEmail"
+            [hasError]="formEmail.invalid" 
+            [errorMessage]="formError('EMAIL')">
+
+            <form [formGroup]="formEmail" class="text-center">
+
+              <ng-template matStepLabel>Fill out your email</ng-template>
+
+              <mat-form-field>
+
+                <mat-label>Email</mat-label>
+
+                <input matInput placeholder="example@gmail.com" formControlName="email" required>
+                
+              </mat-form-field>
+
+            </form>
+
+          </mat-step>
+
+          <mat-step 
+            [stepControl]="formName" 
+            [optional]="true">
+
+            <form [formGroup]="formName" class="text-center">
+
+              <ng-template matStepLabel>Fill out your name and surnames</ng-template>
+
+              <mat-form-field appearance="fill">
+                <mat-label> Enter your name </mat-label>
+                <input matInput formControlName="name" placeholder="John" />
+              </mat-form-field>
+              
+              <mat-form-field appearance="fill">
+                <mat-label> Enter your surnames </mat-label>
+                <input matInput formControlName="surnames" placeholder="Doe" />
+              </mat-form-field>
+        
+            </form>
+
+          </mat-step>
+
+          <mat-step 
+            [stepControl]="formPassword" 
+            [hasError]="formPassword.invalid" 
+            [errorMessage]="formError('PASSWORD')">
+            
+            <form [formGroup]="formPassword" class="text-center">
+
+              <ng-template matStepLabel>Fill out your password</ng-template>
+
+              <mat-form-field appearance="fill">
+
+                <mat-label> Enter your password </mat-label>
+
+                <input 
+                  matInput 
+                  formControlName="password" 
+                  [type]="hidePassword() ? 'password' : 'text'" 
+                  placeholder="supersecurepassword" />
+
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="hidePassword.set(!hidePassword())">
+                  <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+
+              </mat-form-field>
+            
+              <mat-form-field appearance="fill">
+
+                <mat-label> Confirm your password </mat-label>
+
+                <input 
+                  matInput 
+                  formControlName="passwordConfirm" 
+                  [type]="hidePassword() ? 'password' : 'text'" 
+                  placeholder="supersecurepassword"/>
+
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="hidePassword.set(!hidePassword())">
+                  <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+
+              </mat-form-field>
+
+            </form>
+
+          </mat-step>
+
+          <mat-step>
+
+            <ng-template matStepLabel>Create account</ng-template>
+
+            <div 
+              class="text-center"
+              matTooltip="Hay campos obligatorios que no han sido rellenos"
+              [matTooltipDisabled]="formEmail.valid && formPassword.valid">
+
+              <button 
+                mat-flat-button type="submit" 
+                [disabled]="formEmail.invalid || formPassword.invalid">
+                <mat-icon> account_box </mat-icon>
+                <span> Create account </span>
+              </button>
+
+            </div>
+
+          </mat-step>
+
+          <!-- Sobreescribimos los iconos -->
+
+          <ng-template matStepperIcon="number" let-index="index">
+
+            @switch (index) {
+              @case (0) {
+                <mat-icon>alternate_email</mat-icon>
+              }
+              @case (1) {
+                <mat-icon>badge</mat-icon>
+              }
+              @case (2) {
+                <mat-icon>key</mat-icon>
+              }
+              @case (3) {
+                <mat-icon>person_add</mat-icon>
+              }
+            }
+            
+          </ng-template>
+
+          <ng-template matStepperIcon="edit" let-index="index">
+
+            @switch (index) {
+              @case (0) {
+                <mat-icon>alternate_email</mat-icon>
+              }
+              @case (1) {
+                <mat-icon>badge</mat-icon>
+              }
+              @case (2) {
+                <mat-icon>key</mat-icon>
+              }
+              @case (3) {
+                <mat-icon>person_add</mat-icon>
+              }
+            }
+            
+          </ng-template>
+
+        </mat-vertical-stepper>
+    
+      </section>
+  
+    </div>
+  
+  </mat-card>
+
+</div>
+

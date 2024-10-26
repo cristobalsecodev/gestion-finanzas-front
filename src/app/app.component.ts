@@ -20,6 +20,7 @@ import { NotificacionesComponent } from './shared/components/notificaciones/noti
 import { NotificacionesService } from './services/Notifications/notificaciones.service';
 import { CurrencyCodeENUM, CurrencyNameENUM } from './shared/enums/Currency.enum';
 import { DivisaService } from './services/Currency/divisa.service';
+import { AuthService } from './services/Auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -83,7 +84,8 @@ export class AppComponent implements OnInit {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private notificacionesService: NotificacionesService,
-    private divisaService: DivisaService
+    private divisaService: DivisaService,
+    private authService: AuthService
   ) {
 
     // Añadimos los SVGs
@@ -101,19 +103,10 @@ export class AppComponent implements OnInit {
 
     // Comprueba si accedemos desde un navegador
     if(isPlatformBrowser(this.platformId)) {
-      
-      // Lógica para comprobar si el usuario ya tiene guardado un modo (oscuro o día)
-      const themeMode = localStorage.getItem('themeMode')
 
-      if(themeMode) {
+      this.userHasThemeModeSelected()
 
-        themeMode === 'dark' ? this.darkMode.set(true) : this.darkMode.set(false)
-
-      } else {
-
-        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches)
-        
-      }
+      this.isUserAuthenticated() ?? this.router.navigate([this.resumeRoute])
 
     }
   }
@@ -122,9 +115,11 @@ export class AppComponent implements OnInit {
 
     // Escuchar cambios en la URL
     this.router.events
-    .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe(() => {
+      .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+
       this.currentUrl.set(this.router.url)
+
     })
 
     // Devolvemos los tipos de cambio de las principales divisas 
@@ -169,6 +164,28 @@ export class AppComponent implements OnInit {
 
   }
 
+  isUserAuthenticated(): boolean {
+
+    return this.authService.isAuthenticated()
+
+  }
+
+  userHasThemeModeSelected(): void {
+
+    // Lógica para comprobar si el usuario ya tiene guardado un modo (oscuro o día)
+    const themeMode = localStorage.getItem('themeMode')
+
+    if(themeMode) {
+
+      themeMode === 'dark' ? this.darkMode.set(true) : this.darkMode.set(false)
+
+    } else {
+
+      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches)
+      
+    }
+  }
+
   currencySelection(currencyCode: string, currencyName: string): void {
 
     let currency: Currency = {
@@ -195,5 +212,10 @@ export class AppComponent implements OnInit {
     }
 
   })
+
+  logout(): void {
+    this.authService.logout()
+    this.router.navigate([''])
+  }
 
 }
