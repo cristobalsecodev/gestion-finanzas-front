@@ -1,4 +1,4 @@
-export interface ActivoDiaUnico {
+export interface StockForDay {
   afterHours: string
   close: number
   high: number
@@ -11,7 +11,7 @@ export interface ActivoDiaUnico {
   status: string
 }
 
-export interface FiltroActivoDiaUnico {
+export interface StockForDayFilter {
   symbol: string
   date: Date
 }

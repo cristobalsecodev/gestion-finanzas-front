@@ -3,28 +3,29 @@ import { NotFoundComponent } from './shared/components/not-found/not-found.compo
 import { MiResumenComponent } from './finanzasPersonales/mi-resumen/mi-resumen.component';
 import { MisInversionesComponent } from './finanzasPersonales/mis-inversiones/mis-inversiones.component';
 import { MisIngresosGastosComponent } from './finanzasPersonales/mis-ingresos-gastos/mis-ingresos-gastos.component';
-import { PresentacionComponent } from './bienvenida/presentacion/presentacion.component';
+import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
-import { authGuard } from './guards/Autenticacion/auth.guard';
+import { authGuard } from './guards/Auth/auth.guard';
+import { incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
 
 export const routes: Routes = [
   {
-    path: 'mis-ingresos-gastos', 
+    path: incomeExpensesRoute, 
     component: MisIngresosGastosComponent,
     canActivate: [authGuard]
   },
   {
-    path: 'mis-inversiones', 
+    path: investmentsRoute, 
     component: MisInversionesComponent,
     canActivate: [authGuard]
   },
   {
-    path: 'resumen', 
+    path: resumeRoute, 
     component: MiResumenComponent,
     canActivate: [authGuard]
   },
   {
-    path: 'login', component: LoginComponent
+    path: loginRoute, component: LoginComponent
   },
   {
     path: '', component: PresentacionComponent

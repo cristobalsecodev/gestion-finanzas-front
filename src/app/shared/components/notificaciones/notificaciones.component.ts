@@ -4,7 +4,7 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 
 import { MatIcon } from '@angular/material/icon';
 
-import { Notificacion, NotificacionesService } from 'src/app/services/Notificaciones/notificaciones.service';
+import { Notificacion, NotificacionesService } from 'src/app/services/Notifications/notificaciones.service';
 
 @Component({
   selector: 'app-notificaciones',

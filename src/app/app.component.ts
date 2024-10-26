@@ -12,14 +12,14 @@ import {MatListModule} from '@angular/material/list';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
-import { ConversionDivisaService } from './services/ConversionDivisa/conversion-divisa.service';
-import { ConversionDivisa, Divisa, RatioConversion } from './services/ConversionDivisa/ConversionDivisa.interface';
+import { ConversionDivisaService } from './services/CurrencyConversion/conversion-divisa.service';
+import { CurrencyConversion, Currency, ExchangeRate } from './services/CurrencyConversion/ConversionDivisa.interface';
 import { FLAGS } from './shared/constants/svg.constants';
-import { SinValor } from './shared/constants/variables.constants';
+import { incomeExpensesRoute, investmentsRoute, resumeRoute, noValue } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
-import { NotificacionesService } from './services/Notificaciones/notificaciones.service';
-import { DivisaCodigoENUM, DivisaNombreENUM } from './shared/enums/Divisa.enum';
-import { DivisaService } from './services/Divisa/divisa.service';
+import { NotificacionesService } from './services/Notifications/notificaciones.service';
+import { CurrencyCodeENUM, CurrencyNameENUM } from './shared/enums/Currency.enum';
+import { DivisaService } from './services/Currency/divisa.service';
 
 @Component({
   selector: 'app-root',
@@ -55,20 +55,25 @@ export class AppComponent implements OnInit {
   sidenavOpened: boolean = false
 
   // Divisas disponibles
-  currencies: RatioConversion[] = []
+  currencies: ExchangeRate[] = []
 
   // Divisas ENUM
-  readonly divisaCodigo = DivisaCodigoENUM
-  readonly divisaNombre = DivisaNombreENUM
+  readonly currencyCode = CurrencyCodeENUM
+  readonly currencyName = CurrencyNameENUM
+
+  // Rutas
+  readonly investmentsRoute = investmentsRoute
+  readonly incomeExpensesRoute = incomeExpensesRoute
+  readonly resumeRoute = resumeRoute
 
   // Divisa seleccionada
-  selectedCurrency: Divisa = {
-    codigoDivisa: '',
-    nombreDivisa: ''
+  selectedCurrency: Currency = {
+    currencyCode: '',
+    currencyName: ''
   }
 
   // Sin valor
-  readonly sinValor = SinValor
+  readonly noValue = noValue
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -83,10 +88,12 @@ export class AppComponent implements OnInit {
 
     // Añadimos los SVGs
     FLAGS.forEach(flag => {
+
       this.matIconRegistry.addSvgIconLiteral(
         flag.currencyCode,
         this.domSanitizer.bypassSecurityTrustHtml(flag.svg)
       )
+      
     })
 
     // Añade la clase necesaria para el funcionamiento de los material symbols (mat-icons)
@@ -97,10 +104,15 @@ export class AppComponent implements OnInit {
       
       // Lógica para comprobar si el usuario ya tiene guardado un modo (oscuro o día)
       const themeMode = localStorage.getItem('themeMode')
+
       if(themeMode) {
+
         themeMode === 'dark' ? this.darkMode.set(true) : this.darkMode.set(false)
+
       } else {
+
         this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches)
+        
       }
 
     }
@@ -116,13 +128,13 @@ export class AppComponent implements OnInit {
     })
 
     // Devolvemos los tipos de cambio de las principales divisas 
-    this.conversionDivisaService.obtenerConversionDivisa(this.divisaCodigo.USD).subscribe({
+    this.conversionDivisaService.getCurrencyConversion(this.currencyCode.USD).subscribe({
 
-      next: (result: ConversionDivisa) => {
+      next: (result: CurrencyConversion) => {
 
-        if(result.ratiosConversion.length > 0) {
+        if(result.exchangeRate.length > 0) {
 
-          this.currencies = result.ratiosConversion
+          this.currencies = result.exchangeRate
 
         }
   
@@ -138,10 +150,10 @@ export class AppComponent implements OnInit {
           } else {
 
             this.selectedCurrency = this.currencies.find(
-              currency => currency.codigoDivisa === this.divisaCodigo.USD) 
+              currency => currency.currencyCode === this.currencyCode.USD) 
                 ?? {
-                    codigoDivisa: this.divisaCodigo.USD, 
-                    nombreDivisa: this.divisaNombre.USD
+                    currencyCode: this.currencyCode.USD, 
+                    currencyName: this.currencyName.USD
                   }
 
           }
@@ -151,7 +163,7 @@ export class AppComponent implements OnInit {
         }
       },
 
-      error: () => this.notificacionesService.addNotification('Ha fallado el servicio de divisa', 'error')
+      error: () => this.notificacionesService.addNotification('The currency service has experienced a failure', 'error')
 
     })
 
@@ -159,9 +171,9 @@ export class AppComponent implements OnInit {
 
   currencySelection(currencyCode: string, currencyName: string): void {
 
-    let currency: Divisa = {
-      codigoDivisa: currencyCode,
-      nombreDivisa: currencyName
+    let currency: Currency = {
+      currencyCode: currencyCode,
+      currencyName: currencyName
     }
 
     this.selectedCurrency = currency

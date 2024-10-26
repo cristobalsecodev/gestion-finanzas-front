@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { MisIngresosGastosFormularioComponent } from './mis-ingresos-gastos-formulario/mis-ingresos-gastos-formulario.component';
-import { TipoAccion } from 'src/app/shared/enums/TipoAccion.enum';
+import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { IngresoGasto } from './IngresoGasto.interface';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
@@ -49,7 +49,7 @@ export class MisIngresosGastosComponent {
     }
   ]
 
-  readonly actionType = TipoAccion
+  readonly actionType = ActionType
 
   readonly dialog = inject(MatDialog)
 

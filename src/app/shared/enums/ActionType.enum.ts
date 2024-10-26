@@ -1,4 +1,4 @@
-export enum TipoAccion {
+export enum ActionType {
   
   CREATE = 'Crear',
   EDIT = 'Editar',

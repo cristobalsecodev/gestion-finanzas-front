@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DivisaCodigoENUM } from '../../enums/Divisa.enum';
-import { SinValor } from '../../constants/variables.constants';
+import { CurrencyCodeENUM } from '../../enums/Currency.enum';
+import { noValue } from '../../constants/variables.constants';
 
 @Pipe({
   name: 'simboloDivisa',
@@ -8,34 +8,34 @@ import { SinValor } from '../../constants/variables.constants';
 })
 export class SimboloDivisaPipe implements PipeTransform {
 
-  readonly divisaCodigo = DivisaCodigoENUM
+  readonly currencyCode = CurrencyCodeENUM
 
-  readonly sinValor = SinValor
+  readonly noValue = noValue
 
-  transform(value: number, codigoDivisa: string = this.divisaCodigo.EUR): string {
-    switch(codigoDivisa) {
-      case this.divisaCodigo.EUR:
+  transform(value: number, currencyCode: string = this.currencyCode.EUR): string {
+    switch(currencyCode) {
+      case this.currencyCode.EUR:
         return '€'
-      case this.divisaCodigo.USD:
+      case this.currencyCode.USD:
         return 'US$'
-      case this.divisaCodigo.JPY:
+      case this.currencyCode.JPY:
         return '¥'
-      case this.divisaCodigo.AUD:
+      case this.currencyCode.AUD:
         return 'A$'
-      case this.divisaCodigo.CAD:
+      case this.currencyCode.CAD:
         return 'C$'
-      case this.divisaCodigo.CHF:
+      case this.currencyCode.CHF:
         return 'CHF'
-      case this.divisaCodigo.CNY:
+      case this.currencyCode.CNY:
         return '元'
-      case this.divisaCodigo.NZD:
+      case this.currencyCode.NZD:
         return 'NZ$'
-      case this.divisaCodigo.GBP:
+      case this.currencyCode.GBP:
         return '£'
-      case this.divisaCodigo.INR:
+      case this.currencyCode.INR:
         return '₹'
       default:
-        return this.sinValor
+        return this.noValue
     }
 
   }

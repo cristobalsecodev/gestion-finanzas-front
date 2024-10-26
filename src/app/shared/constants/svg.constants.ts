@@ -1,7 +1,7 @@
 import { FLAG_AUSTRALIA, FLAG_CANADA, FLAG_CHINA, FLAG_EUROPE, FLAG_INDIA, FLAG_JAPAN, FLAG_NEW_ZELAND, FLAG_SWISS, FLAG_UK, FLAG_USA } from "src/assets/SVGs";
-import { DivisaCodigoENUM } from "../enums/Divisa.enum";
+import { CurrencyCodeENUM } from "../enums/Currency.enum";
 
-const currencyCode = DivisaCodigoENUM
+const currencyCode = CurrencyCodeENUM
 
 export const FLAGS = [
   {currencyCode: currencyCode.USD, svg: FLAG_USA},
