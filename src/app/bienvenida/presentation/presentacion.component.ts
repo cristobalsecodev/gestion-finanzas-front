@@ -1,29 +1,27 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
-import { loginRoute } from 'src/app/shared/constants/variables.constants';
+import { Router, RouterLink } from '@angular/router';
+import { createAccountRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-presentacion',
   standalone: true,
   imports: [
+    // Angular core
+    RouterLink,
     // Angular material
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './presentacion.component.html',
   styleUrl: './presentacion.component.scss'
 })
 export class PresentacionComponent {
 
-  constructor(
-    private router: Router
-  ) {}
+  readonly loginRoute = loginRoute
+  readonly createAccountRoute = createAccountRoute
 
-  redirectToLogin(): void {
+  constructor() {}
 
-    this.router.navigate([loginRoute])
-
-  }
 }

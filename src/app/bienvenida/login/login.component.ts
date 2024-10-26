@@ -1,18 +1,25 @@
 import { Component, signal } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/Auth/auth.service';
+import { SOCIAL } from 'src/app/shared/constants/svg.constants';
+import { createAccountRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
+    // Angular core
+    RouterLink,
     // Angular material
     MatFormFieldModule,
     ReactiveFormsModule,
@@ -23,6 +30,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatStepperModule,
     MatTooltipModule
   ],
+  host: { 
+    '[style.--mdc-filled-button-label-text-size]': '1.450 + "rem"',
+    '[style.--mdc-filled-button-container-shape]': '10 + "px"',
+    '[style.--mdc-filled-button-container-height]': '70 + "px"'
+  },
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -30,81 +42,48 @@ export class LoginComponent {
 
   hidePassword = signal(true);
 
-  formEmail!: FormGroup
-  formName!: FormGroup
-  formPassword!: FormGroup
+  form!: FormGroup
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+    private authService: AuthService
+  ) {
 
-    this.formEmail = new FormGroup({
+    this.form = new FormGroup({
 
-      email: new FormControl('', [Validators.required, Validators.email])
-
-    })
-
-    this.formName = new FormGroup({
-
-      name: new FormControl(''),
-      surnames: new FormControl(''),
-
-    })
-
-    this.formPassword = new FormGroup({
-
+      email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
-      passwordConfirm: new FormControl('', [Validators.required])
 
-    }, this.passwordMatchValidator)
+    })
 
-  }
+    // Añadimos los SVGs
+    SOCIAL.forEach(social => {
 
-  passwordMatchValidator(control: AbstractControl) {
-
-    const password = control.get('password')?.value
-    const passwordConfirm = control.get('passwordConfirm')?.value
-
-    return password === passwordConfirm ? null : { mismatch: true }
-
+      this.matIconRegistry.addSvgIconLiteral(
+        social.name,
+        this.domSanitizer.bypassSecurityTrustHtml(social.svg)
+      )
+      
+    })
   }
 
   onSubmit(): void {
 
-    if(this.formEmail.valid && this.formPassword.valid) {
+    if(this.form.valid) {
 
-
-
-    } else {
-
-
+      this.authService.login(
+        this.form.get('email')?.value, 
+        this.form.get('password')?.value
+      )
 
     }
-
   }
 
-  formError(type: string): string {
-    let errorMessage = '';
+  navigateToCreateAccount(): void {
 
-    if (type === 'EMAIL') {
-      const emailControl = this.formEmail.get('email');
-      
-      if (emailControl?.hasError('required')) {
-        errorMessage = 'Email is required.';
-      } else if (emailControl?.hasError('email')) {
-        errorMessage = 'Email is invalid.';
-      }
-    } else if (type === 'PASSWORD') {
-      const passwordControl = this.formPassword.get('password');
-      const passwordConfirmControl = this.formPassword.get('passwordConfirm');
-      
-      if (this.formPassword.hasError('mismatch')) {
-        errorMessage = 'Passwords don’t match.';
-      } else if (passwordControl?.hasError('required') || passwordConfirmControl?.hasError('required')) {
-        errorMessage = 'Password is required.';
-      }
-    }
-  
-    return errorMessage;
+    this.router.navigate([createAccountRoute])
+
   }
-
-  
 }

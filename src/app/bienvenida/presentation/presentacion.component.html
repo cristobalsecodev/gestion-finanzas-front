@@ -5,9 +5,13 @@
         <h1 class="text-balance text-5xl font-semibold tracking-tight sm:text-7xl">Presentation data for this page</h1>
         <p class="mt-8 text-pretty text-lg font-medium sm:text-xl/8">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat.</p>
         <div class="mt-10 flex items-center justify-center gap-x-6">
-          <button mat-flat-button (click)="redirectToLogin()">
-            <mat-icon>login</mat-icon>
-            <span>Log in</span>
+          <button mat-flat-button [routerLink]="[loginRoute]">
+            <mat-icon> login </mat-icon>
+            <span> Log in </span>
+          </button>
+          <button mat-stroked-button [routerLink]="[createAccountRoute]">
+            <mat-icon> person_add </mat-icon>
+            <span> Create acount </span>
           </button>
         </div>
       </div>

@@ -159,6 +159,13 @@ th:not(:first-child)::before {
   height: calc(100% - 20px);                    /* Altura ajustada para evitar las esquinas */
 }
 
+// Título primario
+h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+}
+
 // Trunca un texto largo para añadir ... al final
 .truncar-texto-largo {
 

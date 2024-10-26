@@ -1,4 +1,4 @@
-import { FLAG_AUSTRALIA, FLAG_CANADA, FLAG_CHINA, FLAG_EUROPE, FLAG_INDIA, FLAG_JAPAN, FLAG_NEW_ZELAND, FLAG_SWISS, FLAG_UK, FLAG_USA } from "src/assets/SVGs";
+import { FACEBOOK, FLAG_AUSTRALIA, FLAG_CANADA, FLAG_CHINA, FLAG_EUROPE, FLAG_INDIA, FLAG_JAPAN, FLAG_NEW_ZELAND, FLAG_SWISS, FLAG_UK, FLAG_USA, GOOGLE } from "src/assets/SVGs";
 import { CurrencyCodeENUM } from "../enums/Currency.enum";
 
 const currencyCode = CurrencyCodeENUM
@@ -14,4 +14,9 @@ export const FLAGS = [
   {currencyCode: currencyCode.CHF, svg: FLAG_SWISS},
   {currencyCode: currencyCode.CAD, svg: FLAG_CANADA},
   {currencyCode: currencyCode.GBP, svg: FLAG_UK}
+]
+
+export const SOCIAL = [
+  {name: 'google', svg: GOOGLE},
+  {name: 'facebook', svg: FACEBOOK}
 ]

@@ -6,7 +6,8 @@ import { MisIngresosGastosComponent } from './finanzasPersonales/mis-ingresos-ga
 import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
 import { authGuard } from './guards/Auth/auth.guard';
-import { incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
+import { createAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
+import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +27,9 @@ export const routes: Routes = [
   },
   {
     path: loginRoute, component: LoginComponent
+  },
+  {
+    path: createAccountRoute, component: CreateAccountComponent
   },
   {
     path: '', component: PresentacionComponent

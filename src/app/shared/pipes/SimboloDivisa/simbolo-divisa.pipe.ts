@@ -17,7 +17,7 @@ export class SimboloDivisaPipe implements PipeTransform {
       case this.currencyCode.EUR:
         return '€'
       case this.currencyCode.USD:
-        return 'US$'
+        return '$'
       case this.currencyCode.JPY:
         return '¥'
       case this.currencyCode.AUD:

@@ -4,7 +4,7 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 
 import { MatIcon } from '@angular/material/icon';
 
-import { Notificacion, NotificacionesService } from 'src/app/services/Notifications/notificaciones.service';
+import { Notification, NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 
 @Component({
   selector: 'app-notificaciones',
@@ -25,6 +25,15 @@ import { Notificacion, NotificacionesService } from 'src/app/services/Notificati
             style({ opacity: 1, transform: 'translateX(0)', offset: 1 })     // Fin (en pantalla)
           ])
         )
+      ]),
+      transition(':leave', [
+        animate(
+          '0.2s ease-in',
+          keyframes([
+            style({ opacity: 1, transform: 'translateX(0)', offset: 0 }),
+            style({ opacity: 0, transform: 'translateX(100%)', offset: 1 })
+          ])
+        )
       ])
     ])
   ],
@@ -33,7 +42,7 @@ import { Notificacion, NotificacionesService } from 'src/app/services/Notificati
 })
 export class NotificacionesComponent implements OnInit {
 
-  notifications: Notificacion[] = [];
+  notifications: Notification[] = [];
 
   constructor(private notificacionesService: NotificacionesService) {}
 

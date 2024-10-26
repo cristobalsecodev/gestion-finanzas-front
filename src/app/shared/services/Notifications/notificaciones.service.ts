@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export interface Notificacion {
+export interface Notification {
   mensaje: string;
   tipo: 'success' | 'error' | 'info' | 'warning';
   id: number;
@@ -13,7 +13,7 @@ export interface Notificacion {
 })
 export class NotificacionesService {
 
-  private notificacionSubject = new BehaviorSubject<Notificacion[]>([])
+  private notificacionSubject = new BehaviorSubject<Notification[]>([])
 
   notification$ = this.notificacionSubject.asObservable()
 
@@ -21,14 +21,23 @@ export class NotificacionesService {
 
   addNotification(mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') {
     
-    const nuevaNotificacion: Notificacion = {
+    // Creamos el objeto de notificación
+    const nuevaNotificacion: Notification = {
       mensaje,
       tipo,
       id: this.counterId++
     }
 
+    // Añadimos la notificación
     const currentNotifications = this.notificacionSubject.value
     this.notificacionSubject.next([...currentNotifications, nuevaNotificacion])
+
+    // Elimina la notificación tras X segundos
+    setTimeout(() => {
+
+      this.removeNotification(nuevaNotificacion.id)
+
+    }, 3500)
 
   }
 
