@@ -1,16 +1,30 @@
-<div class="h-screen grid place-items-center">
+<div class="h-screen md:grid place-items-center">
 
   <!-- Login -->
-  <mat-card class="p-9 w-[400px]">
+  <mat-card class="p-9 md:max-w-[400px] max-w-3xl w-full !rounded-none md:!rounded-lg">
 
     <!-- Sección cabecera -->
     <section class="flex space-x-4 place-content-center">
 
       <h1 class="w-1/2 mb-8">Login here</h1>
 
-      <button mat-button class="w-1/2" (click)="navigateToCreateAccount()">
-        <mat-icon> person_add </mat-icon>
-        <span> Create account </span>
+      <button 
+        id="button-lg" 
+        mat-button 
+        class="w-1/2 show-lg" 
+        (click)="navigateToCreateAccount()">
+          <mat-icon> person_add </mat-icon>
+          <span> Create account </span>
+      </button>
+
+      <span class="flex-auto show-md"></span>
+
+      <button 
+        mat-icon-button
+        matTooltip="Create account"
+        class="w-1/6 show-md" 
+        (click)="navigateToCreateAccount()">
+          <mat-icon> person_add </mat-icon>
       </button>
 
     </section>
@@ -26,7 +40,7 @@
           <mat-label> Enter your email </mat-label>
           <input matInput placeholder="example@gmail.com" formControlName="email" required>
 
-          @if(form.get('email')?.hasError('email')) {
+          @if(form.get('email')?.hasError('pattern')) {
 
             <mat-error> Email is invalid. </mat-error>
 
@@ -55,7 +69,9 @@
             mat-icon-button
             matSuffix
             (click)="hidePassword.set(!hidePassword())">
+
             <mat-icon> {{hidePassword() ? 'visibility_off' : 'visibility'}} </mat-icon>
+            
           </button>
 
           @if(form.get('password')?.hasError('required')) {

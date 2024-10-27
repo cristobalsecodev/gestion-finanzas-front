@@ -18,7 +18,7 @@ export const routes: Routes = [
   {
     path: investmentsRoute, 
     component: MisInversionesComponent,
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   {
     path: resumeRoute, 

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, effect, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
@@ -12,15 +12,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { ConversionDivisaService } from './shared/services/CurrencyConversion/conversion-divisa.service';
-import { CurrencyConversion, Currency, ExchangeRate } from './shared/services/CurrencyConversion/ConversionDivisa.interface';
 import { FLAGS } from './shared/constants/svg.constants';
-import { incomeExpensesRoute, investmentsRoute, resumeRoute, noValue } from './shared/constants/variables.constants';
+import { incomeExpensesRoute, investmentsRoute, resumeRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
-import { NotificacionesService } from './shared/services/Notifications/notificaciones.service';
-import { CurrencyCodeENUM, CurrencyNameENUM } from './shared/enums/Currency.enum';
 import { AuthService } from './shared/services/Auth/auth.service';
-import { DivisaService } from './shared/services/Currency/divisa.service';
 import { LocalStorageService } from './shared/services/LocalStorage/local-storage.service';
 
 @Component({
@@ -56,35 +51,17 @@ export class AppComponent implements OnInit {
   // Comprueba si el sidenav está abierto
   sidenavOpened: boolean = false
 
-  // Divisas disponibles
-  currencies: ExchangeRate[] = []
-
-  // Divisas ENUM
-  readonly currencyCode = CurrencyCodeENUM
-  readonly currencyName = CurrencyNameENUM
-
   // Rutas
   readonly investmentsRoute = investmentsRoute
   readonly incomeExpensesRoute = incomeExpensesRoute
   readonly resumeRoute = resumeRoute
 
-  // Divisa seleccionada
-  selectedCurrency: Currency = {
-    currencyCode: '',
-    currencyName: ''
-  }
-
-  // Sin valor
-  readonly noValue = noValue
-
   constructor(
     iconRegistry: MatIconRegistry,
     private router: Router,
-    private conversionDivisaService: ConversionDivisaService,
+    private viewportScroller: ViewportScroller,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private notificacionesService: NotificacionesService,
-    private divisaService: DivisaService,
     private authService: AuthService,
     private localStorageService: LocalStorageService
   ) {
@@ -115,44 +92,11 @@ export class AppComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => {
 
-      this.currentUrl.set(this.router.url)
+          // Actualiza la URL actual
+          this.currentUrl.set(this.router.url)
 
-    })
-
-    // Devolvemos los tipos de cambio de las principales divisas 
-    this.conversionDivisaService.getCurrencyConversion(this.currencyCode.USD).subscribe({
-
-      next: (result: CurrencyConversion) => {
-
-        if(result.exchangeRate.length > 0) {
-
-          this.currencies = result.exchangeRate
-
-        }
-
-        // Lógica para comprobar si el usuario ya tiene una divisa seleccionada
-        const currency = this.localStorageService.getItem('currency')
-
-        if(currency) {
-
-          this.selectedCurrency = JSON.parse(currency)
-
-        } else {
-
-          this.selectedCurrency = this.currencies.find(
-            currency => currency.currencyCode === this.currencyCode.USD) 
-              ?? {
-                  currencyCode: this.currencyCode.USD, 
-                  currencyName: this.currencyName.USD
-                }
-
-        }
-
-        this.divisaService.currencyChange(this.selectedCurrency)
-          
-      },
-
-      error: () => this.notificacionesService.addNotification('The currency service has experienced a failure', 'error')
+          // Desplaza el scroll al inicio
+          this.viewportScroller.scrollToPosition([0, 0])
 
     })
 
@@ -178,21 +122,6 @@ export class AppComponent implements OnInit {
       this.darkMode.set(this.localStorageService.matchMedia('(prefers-color-scheme: dark)'))
 
     }
-
-  }
-
-  currencySelection(currencyCode: string, currencyName: string): void {
-
-    let currency: Currency = {
-      currencyCode: currencyCode,
-      currencyName: currencyName
-    }
-
-    this.selectedCurrency = currency
-
-    this.divisaService.currencyChange(currency)
-
-    this.localStorageService.setItem('currency', JSON.stringify(currency))
 
   }
 

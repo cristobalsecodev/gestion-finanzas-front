@@ -2,3 +2,22 @@ mat-form-field {
   width: 100%;
   margin-bottom: 4px;
 }
+
+.show-lg {
+  display: none;
+}
+
+.show-md {
+  display: flex;
+}
+
+// Hacemos media query dependiendo del tamaño de la pantalla
+@media (min-width: 768px) {
+  .show-lg {
+    display: flex;
+  }
+
+  .show-md {
+    display: none;
+  }
+}

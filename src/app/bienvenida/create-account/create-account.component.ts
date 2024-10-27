@@ -10,6 +10,9 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';
+import { CreateUser } from 'src/app/shared/interfaces/User.interface';
+import { AuthService } from 'src/app/shared/services/Auth/auth.service';
+import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 
 @Component({
   selector: 'app-create-account',
@@ -31,7 +34,7 @@ import { loginRoute } from 'src/app/shared/constants/variables.constants';
     '[style.--mdc-filled-button-container-height]': '70 + "px"',
     '[style.--mdc-protected-button-label-text-size]': '1.450 + "rem"',
     '[style.--mdc-protected-button-container-shape]': '10 + "px"',
-    '[style.--mdc-protected-button-container-height]': '70 + "px"',
+    '[style.--mdc-protected-button-container-height]': '60 + "px"',
   },
   templateUrl: './create-account.component.html',
   styleUrl: './create-account.component.scss'
@@ -45,12 +48,17 @@ export class CreateAccountComponent {
   formPassword!: FormGroup
 
   constructor(
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
+    private notificationsService: NotificacionesService
   ) {
 
     this.formEmail = new FormGroup({
 
-      email: new FormControl('', [Validators.required, Validators.email])
+      email: new FormControl('', [
+        Validators.required, 
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ])
 
     })
 
@@ -83,14 +91,25 @@ export class CreateAccountComponent {
 
     if(this.formEmail.valid && this.formPassword.valid) {
 
+      let user: CreateUser = {
+        email: this.formEmail.get('email')?.value,
+        name: this.formName.get('name')?.value,
+        surnames: this.formName.get('surnames')?.value,
+        password: this.formPassword.get('password')?.value
+      }
 
+      this.authService.register(user).subscribe({
+        next: (response) => {
+          
+          this.notificationsService.addNotification(response, 'success')
 
-    } else {
-
-
+        },
+        error: (error) => {
+          this.notificationsService.addNotification(error.error.message, 'success')
+        }
+      });
 
     }
-
   }
 
   navigateToLoginAccount(): void {
@@ -111,7 +130,7 @@ export class CreateAccountComponent {
 
         errorMessage = 'Email is required.';
 
-      } else if (emailControl?.hasError('email')) {
+      } else if (emailControl?.hasError('pattern')) {
 
         errorMessage = 'Email is invalid.';
 
