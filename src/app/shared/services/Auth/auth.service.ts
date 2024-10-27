@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { LocalStorageService } from '../LocalStorage/local-storage.service';
 import { CreateUser } from '../../interfaces/User.interface';
 import { NotificacionesService } from '../Notifications/notificaciones.service';
+import { InfoResponse } from '../../interfaces/InfoResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +30,9 @@ export class AuthService {
       )
   }
 
-  register(user: CreateUser): Observable<string> {
+  register(user: CreateUser): Observable<InfoResponse> {
 
-    return this.http.post<string>(`${this.apiUrl}/register`, user)
+    return this.http.post<InfoResponse>(`${this.apiUrl}/register`, user)
 
   }
 

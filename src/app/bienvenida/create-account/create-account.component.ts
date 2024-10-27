@@ -10,6 +10,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';
+import { InfoResponse } from 'src/app/shared/interfaces/InfoResponse.interface';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
 import { AuthService } from 'src/app/shared/services/Auth/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
@@ -99,13 +100,14 @@ export class CreateAccountComponent {
       }
 
       this.authService.register(user).subscribe({
-        next: (response) => {
-          
-          this.notificationsService.addNotification(response, 'success')
+        next: (response: InfoResponse) => {
+
+          this.notificationsService.addNotification(response.message, 'success')
 
         },
         error: (error) => {
-          this.notificationsService.addNotification(error.error.message, 'success')
+          const errorInfo: InfoResponse = error.error
+          this.notificationsService.addNotification(errorInfo.message, 'error')
         }
       });
 
