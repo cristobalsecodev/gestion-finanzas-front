@@ -9,11 +9,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { loginRoute } from 'src/app/shared/constants/variables.constants';
+import { activateAccountRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
 import { InfoResponse } from 'src/app/shared/interfaces/InfoResponse.interface';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
-import { AuthService } from 'src/app/shared/services/Auth/auth.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { TokenResponse } from 'src/app/auth/interfaces/TokenResponse.interface';
 
 @Component({
   selector: 'app-create-account',
@@ -99,15 +100,17 @@ export class CreateAccountComponent {
         password: this.formPassword.get('password')?.value
       }
 
-      this.authService.register(user).subscribe({
-        next: (response: InfoResponse) => {
+      this.authService.signUp(user).subscribe({
+        next: () => {
 
-          this.notificationsService.addNotification(response.message, 'success')
+          this.router.navigate([activateAccountRoute])
 
         },
         error: (error) => {
+
           const errorInfo: InfoResponse = error.error
           this.notificationsService.addNotification(errorInfo.message, 'error')
+          
         }
       });
 

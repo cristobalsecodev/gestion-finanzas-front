@@ -22,7 +22,7 @@
       "dom"
     ],
     "baseUrl": "./",
-    "paths": {}
+    "paths": {},
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -5,9 +5,11 @@ import { MisInversionesComponent } from './finanzasPersonales/mis-inversiones/mi
 import { MisIngresosGastosComponent } from './finanzasPersonales/mis-ingresos-gastos/mis-ingresos-gastos.component';
 import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
-import { authGuard } from './guards/Auth/auth.guard';
-import { createAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
+import { authGuard } from './auth/guards/auth/auth.guard';
+import { activateAccountRoute, createAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
+import { ActivateAccountComponent } from './bienvenida/activate-account/activate-account.component';
+import { activateAccountGuard } from './auth/guards/activateAccount/activate-account.guard';
 
 export const routes: Routes = [
   {
@@ -18,7 +20,7 @@ export const routes: Routes = [
   {
     path: investmentsRoute, 
     component: MisInversionesComponent,
-    // canActivate: [authGuard]
+    canActivate: [authGuard]
   },
   {
     path: resumeRoute, 
@@ -30,6 +32,10 @@ export const routes: Routes = [
   },
   {
     path: createAccountRoute, component: CreateAccountComponent
+  },
+  {
+    path: activateAccountRoute, component: ActivateAccountComponent,
+    canActivate: [activateAccountGuard]
   },
   {
     path: '', component: PresentacionComponent

@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FLAGS } from './shared/constants/svg.constants';
 import { incomeExpensesRoute, investmentsRoute, resumeRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
-import { AuthService } from './shared/services/Auth/auth.service';
+import { AuthService } from './auth/service/auth.service';
 import { LocalStorageService } from './shared/services/LocalStorage/local-storage.service';
 
 @Component({

@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from 'src/app/shared/services/Auth/auth.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 

@@ -10,7 +10,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from 'src/app/shared/services/Auth/auth.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
 import { SOCIAL } from 'src/app/shared/constants/svg.constants';
 import { createAccountRoute } from 'src/app/shared/constants/variables.constants';
 
