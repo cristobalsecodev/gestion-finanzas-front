@@ -16,7 +16,7 @@ import { FLAGS } from './shared/constants/svg.constants';
 import { incomeExpensesRoute, investmentsRoute, resumeRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
-import { LocalStorageService } from './shared/services/LocalStorage/local-storage.service';
+import { StorageService } from './shared/services/Storage/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private authService: AuthService,
-    private localStorageService: LocalStorageService
+    private storageService: StorageService
   ) {
 
     // Añadimos los SVGs
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
   userHasThemeModeSelected(): void {
 
     // Lógica para comprobar si el usuario ya tiene guardado un modo (oscuro o día)
-    const themeMode = this.localStorageService.getItem('themeMode')
+    const themeMode = this.storageService.getLocal('themeMode')
 
     if(themeMode) {
 
@@ -119,7 +119,7 @@ export class AppComponent implements OnInit {
 
     } else {
 
-      this.darkMode.set(this.localStorageService.matchMedia('(prefers-color-scheme: dark)'))
+      this.darkMode.set(this.storageService.matchMedia('(prefers-color-scheme: dark)'))
 
     }
 
@@ -127,11 +127,11 @@ export class AppComponent implements OnInit {
 
   setDarkMode = effect(() => {
 
-    this.localStorageService.classListToggle('dark', this.darkMode())
+    this.storageService.classListToggle('dark', this.darkMode())
 
     this.darkMode()
-    ? this.localStorageService.setItem('themeMode', 'dark')
-    : this.localStorageService.setItem('themeMode', 'light')
+    ? this.storageService.setLocal('themeMode', 'dark')
+    : this.storageService.setLocal('themeMode', 'light')
 
   })
 

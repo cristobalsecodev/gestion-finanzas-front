@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { LocalStorageService } from '../../shared/services/LocalStorage/local-storage.service';
+import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
 import { createAccountRoute, loginRoute } from '../../shared/constants/variables.constants';
 import { TokenResponse } from '../interfaces/TokenResponse.interface';
@@ -18,7 +18,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
+    private storageService: StorageService,
     private notificationsService: NotificacionesService,
     private router: Router
   ) {}
@@ -29,7 +29,7 @@ export class AuthService {
       .pipe(
         tap(response => {
 
-          this.localStorageService.setItem('token', response.token)
+          this.storageService.setSession('token', response.token)
 
         })
       )
@@ -41,41 +41,47 @@ export class AuthService {
       .pipe(
         tap(response => {
 
-          this.localStorageService.setItem('token', response.token)
+          this.storageService.setSession('token', response.token)
 
         })
       )
 
   }
 
+  refreshToken(): Observable<TokenResponse> {
+
+    return this.http.get<TokenResponse>(`${this.apiUrl}/refresh-token`)
+
+  }
+
   logout(): void {
 
-    this.localStorageService.removeItem('token')
+    this.storageService.removeSession('token')
 
   }
 
   tokenExpirationChecker(): void {
 
-    setInterval(() => {
+    // setInterval(() => {
 
-      const expirationTime = parseInt(this.localStorageService.getItem('expirationTime') || '0', 10);
-      const currentTime = new Date().getTime();
-      const timeLeft = expirationTime - currentTime;
+    //   const expirationTime = parseInt(this.storageService.get('expirationTime') || '0', 10);
+    //   const currentTime = new Date().getTime();
+    //   const timeLeft = expirationTime - currentTime;
 
-      if(timeLeft <= 5 * 60 * 1000 && timeLeft > 0) {
+    //   if(timeLeft <= 5 * 60 * 1000 && timeLeft > 0) {
 
-        this.notificationsService.addNotification('Your sesion will expire in 5 minutes', 'warning')
+    //     this.notificationsService.addNotification('Your sesion will expire in 5 minutes', 'warning')
         
-      }
+    //   }
 
-      if(timeLeft <= 0) {
+    //   if(timeLeft <= 0) {
 
-        this.logout()
-        this.router.navigate([loginRoute])
+    //     this.logout()
+    //     this.router.navigate([loginRoute])
 
-      }
+    //   }
 
-    }, 60000)
+    // }, 60000)
 
   }
 
@@ -95,13 +101,40 @@ export class AuthService {
 
   }
 
+  isTokenExpiringSoon(threshold: number = 5): boolean {
+
+    // Decodificamos el token y cogemos su expiración
+    const decodedToken: { exp: number } = this.decodeToken()
+
+    // Sacamos la fecha de ahora y la fecha de expiración
+    const expirationDate = new Date(decodedToken.exp * 1000)
+    const now = new Date()
+
+    // Calculamos la diferencia con el límite de tiempo (threshold)
+    const timeDifference = expirationDate.getTime() - now.getTime()
+    const thresholdInMilliseconds = threshold * 60 * 1000
+    
+    return timeDifference < thresholdInMilliseconds
+
+  }
+
   decodeToken(): any {
 
-    const token = localStorage.getItem('token')
+    const token = this.storageService.getSession('token')
 
-    if(token) {
+    try {
 
-      return jwtDecode(token)
+      if(token) {
+
+        return jwtDecode(token)
+
+      }
+
+    } catch (error) {
+
+      console.error('Invalid token format', error)
+      
+      this.notificationsService.addNotification('Invalid token format', 'error')
 
     }
 

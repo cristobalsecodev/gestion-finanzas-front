@@ -9,7 +9,7 @@ import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currenc
 import { ConversionDivisaService } from 'src/app/shared/services/CurrencyConversion/conversion-divisa.service';
 import { Currency, CurrencyConversion, ExchangeRate } from 'src/app/shared/services/CurrencyConversion/ConversionDivisa.interface';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
-import { LocalStorageService } from 'src/app/shared/services/LocalStorage/local-storage.service';
+import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 import { noValue } from 'src/app/shared/constants/variables.constants';
 
 @Component({
@@ -46,7 +46,7 @@ export class MisInversionesComponent implements OnInit {
   constructor(
     private conversionDivisaService: ConversionDivisaService,
     private notificacionesService: NotificacionesService,
-    private localStorageService: LocalStorageService
+    private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +75,7 @@ export class MisInversionesComponent implements OnInit {
     }
 
     // Lógica para comprobar si el usuario ya tiene una divisa seleccionada
-    const currency = this.localStorageService.getItem('currency')
+    const currency = this.storageService.getLocal('currency')
 
     if(currency) {
 
@@ -106,7 +106,7 @@ export class MisInversionesComponent implements OnInit {
 
     // this.divisaService.currencyChange(currency)
 
-    this.localStorageService.setItem('currency', JSON.stringify(currency))
+    this.storageService.setLocal('currency', JSON.stringify(currency))
 
   }
   

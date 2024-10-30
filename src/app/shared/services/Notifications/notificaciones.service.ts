@@ -13,9 +13,9 @@ export interface Notification {
 })
 export class NotificacionesService {
 
-  private notificacionSubject = new BehaviorSubject<Notification[]>([])
+  private notifitacionSubject = new BehaviorSubject<Notification[]>([])
 
-  notification$ = this.notificacionSubject.asObservable()
+  notification$ = this.notifitacionSubject.asObservable()
 
   private counterId = 0
 
@@ -29,8 +29,8 @@ export class NotificacionesService {
     }
 
     // Añadimos la notificación
-    const currentNotifications = this.notificacionSubject.value
-    this.notificacionSubject.next([...currentNotifications, nuevaNotificacion])
+    const currentNotifications = this.notifitacionSubject.value
+    this.notifitacionSubject.next([...currentNotifications, nuevaNotificacion])
 
     // Elimina la notificación tras X segundos
     setTimeout(() => {
@@ -43,11 +43,12 @@ export class NotificacionesService {
 
   removeNotification(id: number) {
 
-    const currentNotifications = this.notificacionSubject.value.filter(
+    // Eliminamos la notificación a mano
+    const currentNotifications = this.notifitacionSubject.value.filter(
       (notification) => notification.id !== id
     )
 
-    this.notificacionSubject.next(currentNotifications)
+    this.notifitacionSubject.next(currentNotifications)
 
   }
 }

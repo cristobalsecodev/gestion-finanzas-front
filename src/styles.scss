@@ -3,14 +3,17 @@
 
 // Tema personalizado
 $custom-theme: mat.define-theme((
+
   color: (
+
     use-system-variables: true
+
   ),
+
 ));
 
-// Color principal HEX: #81d5cc
-
 html {
+
   // PALETA EN HEX
   --sys-background: #e3e9f0;
   --sys-on-background: #181c20;
@@ -70,9 +73,11 @@ html {
   --sys-error-fixed-dim: #ffb4ab;
   --sys-on-error-fixed: #3b0907;
   --sys-on-error-fixed-variant: #73342d
+
 }
 
 .dark {
+
   // PALETA EN HEX
   --sys-background: #222b31;
   --sys-on-background: #e0e3e8;
@@ -132,23 +137,30 @@ html {
   --sys-error-fixed-dim: #ffb4ab;
   --sys-on-error-fixed: #3b0907;
   --sys-on-error-fixed-variant: #73342d
+
 }
 
 html {
+
   @include mat.all-component-themes($custom-theme);
+
 }
 
+// Reglas de tailwindcss
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 // Aplica el color de fondo a las filas de registros de las tablas
 td {
+
   background-color: var(--sys-on-primary) !important;
+
 }
 
 // Aplica un borde a la izquierda de cada columna excepto la primera
 th:not(:first-child)::before {
+
   content: "";
   position: absolute;
   left: 0;                                      /* Posiciona el borde a la izquierda */
@@ -157,13 +169,16 @@ th:not(:first-child)::before {
   width: 1px;                                   /* Ancho del borde */
   background-color: var(--sys-on-background);   /* Color del borde */
   height: calc(100% - 20px);                    /* Altura ajustada para evitar las esquinas */
+                   
 }
 
 // Título primario
 h1 {
+
   font-size: 1.875rem;
   line-height: 2.25rem;
   font-weight: 700;
+
 }
 
 // Trunca un texto largo para añadir ... al final

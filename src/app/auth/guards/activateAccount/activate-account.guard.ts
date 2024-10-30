@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
-import { Router } from 'express';
+import { CanActivateFn, Router } from '@angular/router';
 import { loginRoute, resumeRoute } from 'src/app/shared/constants/variables.constants';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';

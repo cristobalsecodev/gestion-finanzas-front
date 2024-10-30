@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { StockForDay, StockForDayFilter } from './DatosMercadoValores.interface';
+import { StockForDay, StockForDayFilter } from './MarketValuesData.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({

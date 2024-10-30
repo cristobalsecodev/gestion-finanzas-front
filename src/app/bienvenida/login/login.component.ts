@@ -80,7 +80,7 @@ export class LoginComponent {
       this.authService.login(
         this.form.get('email')?.value, 
         this.form.get('password')?.value
-      )
+      ).subscribe()
 
     }
   }

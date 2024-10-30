@@ -4,13 +4,13 @@ import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class LocalStorageService {
+export class StorageService {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  setItem(key: string, value: string): void {
+  setLocal(key: string, value: string): void {
 
     if (isPlatformBrowser(this.platformId)) {
 
@@ -19,7 +19,7 @@ export class LocalStorageService {
     }
   }
 
-  getItem(key: string): string | null {
+  getLocal(key: string): string | null {
 
     if (isPlatformBrowser(this.platformId)) {
 
@@ -31,7 +31,7 @@ export class LocalStorageService {
 
   }
 
-  removeItem(key: string): void {
+  removeLocal(key: string): void {
 
     if (isPlatformBrowser(this.platformId)) {
 
@@ -47,6 +47,38 @@ export class LocalStorageService {
       localStorage.clear();
 
     }
+  }
+
+  setSession(key: string, value: string): void {
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      sessionStorage.setItem(key, value);
+
+    }
+
+  }
+
+  getSession(key: string) {
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      return sessionStorage.getItem(key);
+
+    }
+
+    return null;
+
+  }
+
+  removeSession(key: string): void {
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      sessionStorage.removeItem(key);
+      
+    }
+
   }
 
   classListToggle(className: string, toggle: boolean): void {

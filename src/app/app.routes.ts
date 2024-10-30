@@ -10,6 +10,7 @@ import { activateAccountRoute, createAccountRoute, incomeExpensesRoute, investme
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
 import { ActivateAccountComponent } from './bienvenida/activate-account/activate-account.component';
 import { activateAccountGuard } from './auth/guards/activateAccount/activate-account.guard';
+import { actuallyLoggedGuard } from './auth/guards/actuallyLogged/actually-logged.guard';
 
 export const routes: Routes = [
   {
@@ -28,10 +29,12 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: loginRoute, component: LoginComponent
+    path: loginRoute, component: LoginComponent,
+    canActivate: [actuallyLoggedGuard]
   },
   {
-    path: createAccountRoute, component: CreateAccountComponent
+    path: createAccountRoute, component: CreateAccountComponent,
+    canActivate: [actuallyLoggedGuard]
   },
   {
     path: activateAccountRoute, component: ActivateAccountComponent,
