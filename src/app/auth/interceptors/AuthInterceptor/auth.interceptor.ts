@@ -4,15 +4,12 @@ import { AuthService } from '../../service/auth.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 import { signUpRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
 import { Router } from '@angular/router';
-import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   
   const authService = inject(AuthService)
 
   const storageService = inject(StorageService)
-
-  const notificationService = inject(NotificacionesService)
 
   const router = inject(Router)
 

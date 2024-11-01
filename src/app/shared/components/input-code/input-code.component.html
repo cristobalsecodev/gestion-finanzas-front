@@ -1,0 +1,76 @@
+  <!-- Formulario de código de 6 dígitos -->
+  <form class="flex space-x-2 justify-center" aria-label="Activation code form">
+
+    <label for="digit-1" class="sr-only">Digit 1</label>
+    <input 
+    id="digit-1" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1" 
+    class="w-12 h-12 text-center !ml-0" 
+    aria-label="Digit 1"
+    (input)="moveToNext($event, 'digit-2', null)"
+    (keydown)="moveToNext($event, 'digit-2', null)" />
+
+    <label for="digit-2" class="sr-only">Digit 2</label>
+    <input 
+    id="digit-2" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1" 
+    class="w-12 h-12 text-center" 
+    aria-label="Digit 2"
+    (input)="moveToNext($event, 'digit-3', 'digit-1')"
+    (keydown)="moveToNext($event, 'digit-3', 'digit-1')" />
+
+    <label for="digit-3" class="sr-only">Digit 3</label>
+    <input 
+    id="digit-3" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1" 
+    class="w-12 h-12 text-center"
+    aria-label="Digit 3"
+    (input)="moveToNext($event, 'digit-4', 'digit-2')"
+    (keydown)="moveToNext($event, 'digit-4', 'digit-2')" />
+
+    <label for="digit-4" class="sr-only">Digit 4</label>
+    <input 
+    id="digit-4" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1" 
+    class="w-12 h-12 text-center" 
+    aria-label="Digit 4"
+    (input)="moveToNext($event, 'digit-5', 'digit-3')"
+    (keydown)="moveToNext($event, 'digit-5', 'digit-3')" />
+
+    <label for="digit-5" class="sr-only">Digit 5</label>
+    <input 
+    id="digit-5" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1"
+    class="w-12 h-12 text-center" 
+    aria-label="Digit 5"
+    (input)="moveToNext($event, 'digit-6', 'digit-4')"
+    (keydown)="moveToNext($event, 'digit-6', 'digit-4')" />
+
+    <label for="digit-6" class="sr-only">Digit 6</label>
+    <input 
+    id="digit-6" 
+    type="text" 
+    inputmode="numeric" 
+    pattern="[0-9]*" 
+    maxlength="1" 
+    class="w-12 h-12 text-center" 
+    aria-label="Digit 6"
+    (input)="moveToNext($event, null, 'digit-5')"
+    (keydown)="moveToNext($event, null, 'digit-5')" />
+
+  </form>

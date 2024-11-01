@@ -68,6 +68,7 @@
           <button
             mat-icon-button
             matSuffix
+            type="button"
             (click)="hidePassword.set(!hidePassword())">
 
             <mat-icon> {{hidePassword() ? 'visibility_off' : 'visibility'}} </mat-icon>
@@ -100,16 +101,16 @@
 
     <!-- Sección login por redes sociales -->
 
-    <section class="flex space-x-4 mt-7 place-content-center">
+    <section matTooltip="Disabled right now" class="flex space-x-4 mt-7 place-content-center">
 
-      <button mat-button>
+      <button mat-button disabled>
 
         <mat-icon svgIcon="google"></mat-icon>
         <span> Google </span>
 
       </button>
 
-      <button mat-button>
+      <button mat-button disabled>
 
         <mat-icon svgIcon="facebook"></mat-icon>
         <span> Facebook </span>

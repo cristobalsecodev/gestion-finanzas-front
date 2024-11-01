@@ -2,10 +2,13 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { inject } from '@angular/core';
 import { resumeRoute } from 'src/app/shared/constants/variables.constants';
+import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 
 export const actuallyLoggedGuard: CanActivateFn = (route, state) => {
 
   const authService = inject(AuthService)
+
+  const storageService = inject(StorageService)
 
   const router = inject(Router)
 
@@ -16,6 +19,8 @@ export const actuallyLoggedGuard: CanActivateFn = (route, state) => {
     return false;
 
   }
+
+  storageService.removeSession('token')
 
   return true;
 

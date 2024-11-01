@@ -13,7 +13,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
         const errorMessage = error.error.message || error.statusText
 
-        notificationService.addNotification(errorMessage, 'error')
+        notificationService.addNotification(statusError(error.status), 'error')
 
         console.error(errorMessage)
 
@@ -23,3 +23,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     )
 
 };
+
+function statusError(status: number): string {
+
+  switch(status) {
+    case 0:
+
+      return 'Unable to connect with the server'
+    
+    default:
+      return 'Something really wrong happened'
+  }
+
+}

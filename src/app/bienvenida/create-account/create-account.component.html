@@ -9,22 +9,26 @@
 
     </h1>
 
-  
-    <div class="md:flex">
+    <!-- Formulario en pantalla grande -->
+    <div class="hidden md:flex">
   
       <!-- Sección información -->
       <section class="md:w-1/2 m-3 text-center md:text-left">
+
         <h2 class="text-xl font-bold text-primary-500 mb-4">
           Manage your finances with ease!
         </h2>
+
         <p class="mb-2">
           Sign up and keep track of your income, expenses, and investments all in one place. With our app, you can:
         </p>
+
         <ul class="list-disc list-inside space-y-2">
           <li>Monitor your income and expenses.</li>
           <li>Organize your investments and analyze their performance.</li>
           <li>Gain a complete view of your financial situation.</li>
         </ul>
+
         <p class="mt-4">
           Start building a stronger financial future today. We’ll help you reach your goals!
         </p>
@@ -81,13 +85,19 @@
               <ng-template matStepLabel>Fill out your name and surnames</ng-template>
 
               <mat-form-field appearance="fill">
+
                 <mat-label> Enter your name </mat-label>
+
                 <input matInput formControlName="name" placeholder="John" />
+
               </mat-form-field>
               
               <mat-form-field appearance="fill">
+
                 <mat-label> Enter your surnames </mat-label>
+                
                 <input matInput formControlName="surnames" placeholder="Doe" />
+
               </mat-form-field>
 
               <button mat-button matStepperPrevious>Back</button>
@@ -120,6 +130,7 @@
                 <button
                   mat-icon-button
                   matSuffix
+                  type="button"
                   (click)="hidePassword.set(!hidePassword())">
                   <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
@@ -139,6 +150,7 @@
                 <button
                   mat-icon-button
                   matSuffix
+                  type="button"
                   (click)="hidePassword.set(!hidePassword())">
                   <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
@@ -168,9 +180,11 @@
                 mat-flat-button
                 (click)="onSubmit()"
                 [disabled]="formEmail.invalid || formPassword.invalid">
-                <mat-icon> person_add </mat-icon>
-                <span> Create account </span>
-              </button>
+
+                  <mat-icon> person_add </mat-icon>
+                  <span> Create account </span>
+
+                </button>
 
               </div>
 
@@ -230,6 +244,158 @@
       </section>
   
     </div>
+
+    <!-- Contenedor del formulario para pantalla pequeña -->
+
+    <section class="flex flex-col md:hidden">
+
+      <!-- Sección formulario completo -->
+      <section class="space-y-6">
+
+        <!-- Email -->
+        <form [formGroup]="formEmail">
+
+          <legend class="sr-only">Email</legend>
+
+          <mat-form-field>
+
+            <mat-label>Email</mat-label>
+
+            <input matInput placeholder="example@gmail.com" formControlName="email" required>
+
+            @if(formEmail.get('email')?.hasError('required')) {
+
+              <mat-error> Email is required. </mat-error>
+  
+            }
+
+            @if(formEmail.get('email')?.hasError('pattern')) {
+
+              <mat-error> Email is invalid. </mat-error>
+  
+            }
+       
+          </mat-form-field>
+
+        </form>
+
+        <!-- Nombre y apellidos -->
+        <form [formGroup]="formName">
+
+          <legend class="sr-only">Name and Surnames</legend>
+
+          <mat-form-field appearance="fill">
+
+            <mat-label> Enter your name </mat-label>
+
+            <input matInput formControlName="name" placeholder="John" />
+
+          </mat-form-field>
+          
+          <mat-form-field appearance="fill">
+
+            <mat-label> Enter your surnames </mat-label>
+
+            <input matInput formControlName="surnames" placeholder="Doe" />
+
+          </mat-form-field>
+
+        </form>
+
+        <!-- Contraseña -->
+        <form [formGroup]="formPassword">
+
+          <legend class="sr-only">Password</legend>
+
+          <mat-form-field appearance="fill">
+
+            <mat-label> Enter your password </mat-label>
+
+            <input 
+              matInput 
+              formControlName="password" 
+              [type]="hidePassword() ? 'password' : 'text'" 
+              placeholder="supersecurepassword" />
+
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hidePassword.set(!hidePassword())">
+              <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+
+            @if(formName.get('password')?.hasError('required')) {
+
+              <mat-error> Password is required. </mat-error>
+  
+            }
+
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+
+            <mat-label> Confirm your password </mat-label>
+
+            <input 
+              matInput 
+              formControlName="passwordConfirm" 
+              [type]="hidePassword() ? 'password' : 'text'" 
+              placeholder="supersecurepassword"/>
+
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hidePassword.set(!hidePassword())">
+              <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+
+            @if(formName.get('passwordConfirm')?.hasError('mismatch')) {
+
+              <mat-error> Passwords don’t match. </mat-error>
+  
+            }
+
+          </mat-form-field>
+
+        </form>
+
+      </section>
+
+      <!-- Botonera -->
+      <section class="flex justify-center mt-6">
+
+        <div class="flex flex-col items-center space-y-2">
+
+          <button
+          mat-flat-button
+          (click)="onSubmit()"
+          [disabled]="formEmail.invalid || formPassword.invalid"
+          class="w-full max-w-xs">
+
+            <mat-icon> person_add </mat-icon>
+            <span> Create account </span>
+
+          </button>
+          
+          <button 
+          mat-button 
+          (click)="navigateToLoginAccount()"
+          class="w-full max-w-xs">
+
+            <mat-icon> login </mat-icon>
+            <span> Log in </span>
+  
+          </button>
+  
+          <p class="mt-4 text-center">
+            You already have an account? Log in!
+          </p>
+          
+        </div>
+
+      </section>
+
+    </section>
   
   </mat-card>
 

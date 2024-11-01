@@ -26,6 +26,8 @@ export const activateAccountGuard: CanActivateFn = (route, state) => {
 
   } else {
 
+    notificationService.addNotification('You are not logged!', 'warning')
+
     router.navigate([loginRoute])
 
     return false;

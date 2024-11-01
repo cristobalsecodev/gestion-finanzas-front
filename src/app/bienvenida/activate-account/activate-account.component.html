@@ -1,1 +1,35 @@
-<p>activate-account works!</p>
+<div class="flex flex-col h-screen">
+  <!-- Cabecera -->
+  <header class="text-center mt-10 md:mt-40 mb-7">
+    <h1>Activate your account</h1>
+    
+  </header>
+
+  <p class="text-center mb-24">
+    Enter the 6-digit code sent to your email below
+  </p>
+
+  <!-- Componente de código de activación -->
+  <main class="flex items-center justify-center">
+    <app-input-code (activationCode)="activateAccount($event)"></app-input-code>
+  </main>
+
+  <div 
+  matTooltip="Wait a few seconds" 
+  class="mt-5 self-center w-auto px-4 py-2" 
+  [matTooltipDisabled]="!wait()">
+
+    <button 
+    mat-button 
+    
+    (click)="resendActivationCode()" 
+    [disabled]="wait()">
+  
+      <mat-icon>refresh</mat-icon>
+      <span>Send again</span>
+      
+    </button>
+
+  </div>
+
+</div>

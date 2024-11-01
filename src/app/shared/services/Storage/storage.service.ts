@@ -91,6 +91,18 @@ export class StorageService {
 
   }
 
+  documentElementById(id: string | null): any {
+
+    if (isPlatformBrowser(this.platformId) && id) {
+
+      return document.getElementById(id)
+
+    }
+
+    return null
+
+  }
+
   matchMedia(match: string): boolean {
 
     if (isPlatformBrowser(this.platformId)) {

@@ -1,0 +1,17 @@
+input {
+
+  border: 1px solid var(--sys-surface-variant); 
+  border-radius: 0.625rem;
+  background-color: var(--sys-surface-variant);
+  font-size: 20px;
+  font-weight: 600;
+
+}
+
+input:focus {
+
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--sys-on-background);
+
+}

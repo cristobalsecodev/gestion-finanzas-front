@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
-import { incomeExpensesRoute, investmentsRoute, resumeRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute, signUpRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { StorageService } from './shared/services/Storage/storage.service';
@@ -43,7 +43,7 @@ import { StorageService } from './shared/services/Storage/storage.service';
 export class AppComponent implements OnInit {
 
   // Modo oscuro
-  darkMode = signal(false)
+  darkMode = signal<boolean>(true)
 
   // Almacena la URL
   currentUrl = signal<string>('')
@@ -55,6 +55,9 @@ export class AppComponent implements OnInit {
   readonly investmentsRoute = investmentsRoute
   readonly incomeExpensesRoute = incomeExpensesRoute
   readonly resumeRoute = resumeRoute
+  readonly activateAccountRoute = activateAccountRoute
+  readonly signUpRoute = signUpRoute
+  readonly loginRoute = loginRoute
 
   constructor(
     iconRegistry: MatIconRegistry,
@@ -66,6 +69,8 @@ export class AppComponent implements OnInit {
     private storageService: StorageService
   ) {
 
+    this.userHasThemeModeSelected()
+
     // Añadimos los SVGs
     FLAGS.forEach(flag => {
 
@@ -73,19 +78,15 @@ export class AppComponent implements OnInit {
         flag.currencyCode,
         this.domSanitizer.bypassSecurityTrustHtml(flag.svg)
       )
-      
+
     })
 
     // Añade la clase necesaria para el funcionamiento de los material symbols (mat-icons)
     iconRegistry.setDefaultFontSetClass('material-symbols-outlined')
 
-    this.isUserAuthenticated() ?? this.router.navigate([this.resumeRoute])
-
   }
   
   ngOnInit(): void {
-
-    this.userHasThemeModeSelected()
 
     // Escuchar cambios en la URL
     this.router.events
@@ -99,12 +100,6 @@ export class AppComponent implements OnInit {
           this.viewportScroller.scrollToPosition([0, 0])
 
     })
-
-  }
-
-  isUserAuthenticated(): boolean {
-
-    return this.authService.isAuthenticated()
 
   }
 
@@ -135,12 +130,11 @@ export class AppComponent implements OnInit {
 
   })
 
-
   logout(): void {
 
     this.authService.logout()
 
-    this.router.navigate([''])
+    this.router.navigate([loginRoute])
     
   }
 

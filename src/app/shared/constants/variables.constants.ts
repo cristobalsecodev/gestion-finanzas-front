@@ -8,3 +8,6 @@ export const resumeRoute = 'my-resume'
 export const loginRoute = 'login'
 export const signUpRoute = 'sign-up'
 export const activateAccountRoute = 'activate-account'
+
+// Mensajes de error genéricos
+export const errorStatus0 = 'Unable to connect with the server'
