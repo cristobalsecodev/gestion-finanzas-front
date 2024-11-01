@@ -15,7 +15,7 @@ export const authGuard: CanActivateFn = (
 
   if(authService.isAuthenticated()) {
 
-    if(authService.isAccountActivated()) {
+    if(!authService.isAccountActivated()) {
 
       notificationService.addNotification('You have to activate you account!', 'warning')
 
@@ -29,10 +29,10 @@ export const authGuard: CanActivateFn = (
 
   } else {
 
-    router.navigate([loginRoute])
-
     notificationService.addNotification('You are not logged!', 'warning')
-
+    
+    router.navigate([loginRoute])
+    
     return false;
 
   }

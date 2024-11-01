@@ -14,9 +14,9 @@ export const activateAccountGuard: CanActivateFn = (route, state) => {
 
     if(authService.isAccountActivated()) {
 
-      router.navigate([resumeRoute])
-
       notificationService.addNotification('So... double-checking, just to be on the safe side?', 'info')
+      
+      router.navigate([resumeRoute])
 
       return false;
 

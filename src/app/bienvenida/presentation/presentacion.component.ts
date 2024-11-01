@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
-import { createAccountRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
+import { RouterLink } from '@angular/router';
+import { signUpRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-presentacion',
@@ -20,7 +20,7 @@ import { createAccountRoute, loginRoute } from 'src/app/shared/constants/variabl
 export class PresentacionComponent {
 
   readonly loginRoute = loginRoute
-  readonly createAccountRoute = createAccountRoute
+  readonly signUpRoute = signUpRoute
 
   constructor() {}
 

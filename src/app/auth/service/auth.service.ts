@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
-import { createAccountRoute, loginRoute } from '../../shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, loginRoute, resumeRoute } from '../../shared/constants/variables.constants';
 import { TokenResponse } from '../interfaces/TokenResponse.interface';
 import { jwtDecode } from "jwt-decode";
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
@@ -31,26 +31,40 @@ export class AuthService {
 
           this.storageService.setSession('token', response.token)
 
+          if(this.isAccountActivated()) {
+
+            this.router.navigate([resumeRoute])
+
+          } else {
+
+            this.router.navigate([activateAccountRoute])
+
+          }
+
         })
       )
   }
 
   signUp(user: CreateUser): Observable<TokenResponse> {
 
-    return this.http.post<TokenResponse>(`${this.apiUrl}/${createAccountRoute}`, user)
+    return this.http.post<TokenResponse>(`${this.apiUrl}/${signUpRoute}`, user)
       .pipe(
         tap(response => {
 
           this.storageService.setSession('token', response.token)
+
+          this.router.navigate([activateAccountRoute])
 
         })
       )
 
   }
 
-  refreshToken(): Observable<TokenResponse> {
+  refreshToken(token: string): Observable<TokenResponse> {
 
-    return this.http.get<TokenResponse>(`${this.apiUrl}/refresh-token`)
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
+
+    return this.http.get<TokenResponse>(`${this.apiUrl}/refresh-token`, { headers })
 
   }
 
@@ -85,13 +99,13 @@ export class AuthService {
 
   }
 
-  isAuthenticated(): boolean {
+  // isAuthenticated(): boolean {
 
-    const decodedToken = this.decodeToken()
+  //   const decodedToken = this.decodeToken()
     
-    return decodedToken ? true : false
+  //   return decodedToken ? true : false
 
-  }
+  // }
 
   isAccountActivated(): Observable<boolean> {
 
@@ -101,20 +115,42 @@ export class AuthService {
 
   }
 
+  isAuthenticated(): boolean {
+
+    // Calculamos la diferencia
+    const timeDifference = this.calculateTokenTimeExp()
+    
+    return timeDifference > 0
+    
+  }
+
   isTokenExpiringSoon(threshold: number = 5): boolean {
+
+    // Calculamos la diferencia con el límite de tiempo (threshold)
+    const timeDifference = this.calculateTokenTimeExp()
+    const thresholdInMilliseconds = threshold * 60 * 1000
+    
+    return timeDifference < thresholdInMilliseconds
+
+  }
+
+  private calculateTokenTimeExp(): number {
 
     // Decodificamos el token y cogemos su expiración
     const decodedToken: { exp: number } = this.decodeToken()
 
-    // Sacamos la fecha de ahora y la fecha de expiración
-    const expirationDate = new Date(decodedToken.exp * 1000)
-    const now = new Date()
+    if(decodedToken) {
 
-    // Calculamos la diferencia con el límite de tiempo (threshold)
-    const timeDifference = expirationDate.getTime() - now.getTime()
-    const thresholdInMilliseconds = threshold * 60 * 1000
-    
-    return timeDifference < thresholdInMilliseconds
+      // Sacamos la fecha de ahora y la fecha de expiración
+      const expirationDate = new Date(decodedToken.exp * 1000)
+      const now = new Date()
+  
+      // Calculamos la diferencia
+      return expirationDate.getTime() - now.getTime()
+
+    }
+
+    return -1
 
   }
 
@@ -135,6 +171,8 @@ export class AuthService {
       console.error('Invalid token format', error)
       
       this.notificationsService.addNotification('Invalid token format', 'error')
+
+      this.router.navigate([loginRoute])
 
     }
 

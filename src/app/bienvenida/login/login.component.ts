@@ -12,7 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { SOCIAL } from 'src/app/shared/constants/svg.constants';
-import { createAccountRoute } from 'src/app/shared/constants/variables.constants';
+import { signUpRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-login',
@@ -87,7 +87,7 @@ export class LoginComponent {
 
   navigateToCreateAccount(): void {
 
-    this.router.navigate([createAccountRoute])
+    this.router.navigate([signUpRoute])
 
   }
 }

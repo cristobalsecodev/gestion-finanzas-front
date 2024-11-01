@@ -100,19 +100,7 @@ export class CreateAccountComponent {
         password: this.formPassword.get('password')?.value
       }
 
-      this.authService.signUp(user).subscribe({
-        next: () => {
-
-          this.router.navigate([activateAccountRoute])
-
-        },
-        error: (error) => {
-
-          const errorInfo: InfoResponse = error.error
-          this.notificationsService.addNotification(errorInfo.message, 'error')
-          
-        }
-      });
+      this.authService.signUp(user).subscribe()
 
     }
   }
