@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
 import { activateAccountRoute, signUpRoute, loginRoute, resumeRoute } from '../../shared/constants/variables.constants';
@@ -16,13 +16,35 @@ export class AuthService {
 
   private authUrl = 'http://localhost:8080/auth'
 
+  // Behaviour subject que comprueba cada X minutos el estado del token
+  private tokenValiditySubject: BehaviorSubject<boolean>
+  tokenValidity$: Observable<boolean>
+
+  private intervalId: any
+
   constructor(
     private http: HttpClient,
     private storageService: StorageService,
     private notificationsService: NotificacionesService,
     private router: Router
-  ) {}
+  ) {
 
+    // Comprobamos si al cargar la página el token existe
+    let isTokenValidInitially = this.isAuthenticated()
+
+    this.tokenValiditySubject = new BehaviorSubject<boolean>(isTokenValidInitially)
+    this.tokenValidity$ = this.tokenValiditySubject.asObservable()
+
+    // En caso de que exista, comienza al intervalo
+    if(isTokenValidInitially) {
+
+      this.startTokenCheck(30000)
+
+    }
+
+  }
+
+  // Login del usuario
   login(email: string, password: string): Observable<TokenResponse> {
 
     return this.http.post<TokenResponse>(`${this.authUrl}/${loginRoute}`, { email, password })
@@ -32,6 +54,13 @@ export class AuthService {
           this.storageService.setSession('token', response.token)
 
           if(this.isAccountActivated()) {
+
+            // Empezamos a comprobar el checkeo si no existe el intervalo
+            if(!this.intervalId) {
+
+              this.startTokenCheck(30000)
+
+            }
 
             this.router.navigate([resumeRoute])
 
@@ -45,6 +74,7 @@ export class AuthService {
       )
   }
 
+  // Creación del usuario
   signUp(user: CreateUser): Observable<TokenResponse> {
 
     return this.http.post<TokenResponse>(`${this.authUrl}/${signUpRoute}`, user)
@@ -60,6 +90,7 @@ export class AuthService {
 
   }
 
+  // Refresca el token
   refreshToken(token: string): Observable<TokenResponse> {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
@@ -68,45 +99,55 @@ export class AuthService {
 
   }
 
+  // Cierre de sesión
   logout(): void {
+
+    this.stopTokenCheck()
 
     this.storageService.removeSession('token')
 
   }
 
-  tokenExpirationChecker(): void {
+  // Empieza el checkeo del token cada X minutos
+  startTokenCheck(intervalDurationMs: number): void {
 
-    // setInterval(() => {
+    // Verificación inicial del token
+    this.checkTokenValidity()
 
-    //   const expirationTime = parseInt(this.storageService.get('expirationTime') || '0', 10);
-    //   const currentTime = new Date().getTime();
-    //   const timeLeft = expirationTime - currentTime;
+    // Configuramos el intervalo
+    if(!this.intervalId) {
 
-    //   if(timeLeft <= 5 * 60 * 1000 && timeLeft > 0) {
+      this.intervalId = setInterval(() => this.checkTokenValidity(), intervalDurationMs)
 
-    //     this.notificationsService.addNotification('Your sesion will expire in 5 minutes', 'warning')
-        
-    //   }
-
-    //   if(timeLeft <= 0) {
-
-    //     this.logout()
-    //     this.router.navigate([loginRoute])
-
-    //   }
-
-    // }, 60000)
+    }
 
   }
 
-  // isAuthenticated(): boolean {
+  // Para el checkeo del token
+  stopTokenCheck(): void {
 
-  //   const decodedToken = this.decodeToken()
+    if(this.intervalId) {
+
+      clearInterval(this.intervalId)
+
+      this.intervalId = null
+
+    }
+
+  }
+
+  // Actualiza si el token sigue siendo válido
+  private checkTokenValidity(): void {
+
+    const timeRemaining = this.calculateTokenTimeExp()
+
+    const isValid = timeRemaining > 0
     
-  //   return decodedToken ? true : false
+    this.tokenValiditySubject.next(isValid)
 
-  // }
+  }
 
+  // Comprueba si la cuenta está activada
   isAccountActivated(): Observable<boolean> {
 
     const decodedToken = this.decodeToken()
@@ -115,6 +156,7 @@ export class AuthService {
 
   }
 
+  // Comprueba si el token es válido
   isAuthenticated(): boolean {
 
     // Calculamos la diferencia
@@ -124,6 +166,7 @@ export class AuthService {
     
   }
 
+  // Comprueba si el token va a expirar pronto
   isTokenExpiringSoon(threshold: number = 5): boolean {
 
     // Calculamos la diferencia con el límite de tiempo (threshold)
@@ -134,15 +177,16 @@ export class AuthService {
 
   }
 
+  // Calcula el tiempo de expiración del token
   private calculateTokenTimeExp(): number {
 
-    // Decodificamos el token y cogemos su expiración
-    const decodedToken: { exp: number } = this.decodeToken()
+    // Cogemos la expiración del token
+    const expirationTime = this.extractExpirationTimeToken()
 
-    if(decodedToken) {
+    if(expirationTime) {
 
       // Sacamos la fecha de ahora y la fecha de expiración
-      const expirationDate = new Date(decodedToken.exp * 1000)
+      const expirationDate = new Date(expirationTime * 1000)
       const now = new Date()
   
       // Calculamos la diferencia
@@ -154,6 +198,21 @@ export class AuthService {
 
   }
 
+  private extractExpirationTimeToken(): number | null {
+
+    const decodedToken: { exp: number } = this.decodeToken()
+
+    if(decodedToken) {
+
+      return decodedToken.exp
+
+    }
+
+    return null
+
+  }
+
+  // Decodifica el token
   decodeToken(): any {
 
     const token = this.storageService.getSession('token')

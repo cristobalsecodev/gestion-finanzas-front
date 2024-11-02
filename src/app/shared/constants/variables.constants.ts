@@ -1,3 +1,6 @@
+// Nombre de la página
+export const webName = 'Financia Sphere'
+
 // Valor por defecto en caso de fallo
 export const noValue = 'N/A'
 

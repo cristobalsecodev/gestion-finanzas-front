@@ -5,11 +5,7 @@
     </button>
 
     <!-- Navegación -->
-    @if(currentUrl() !== '/' 
-    && !currentUrl().includes(loginRoute) 
-    && !currentUrl().includes(signUpRoute) 
-    && !currentUrl().includes(activateAccountRoute)
-    ) {
+    @if(isTokenValid) {
 
       <section class="hidden sm:ml-30 sm:block space-x-20">
 
@@ -55,11 +51,7 @@
     </button>
 
     <!-- Icono cuenta -->
-    @if(currentUrl() !== '/' 
-    && !currentUrl().includes(loginRoute) 
-    && !currentUrl().includes(signUpRoute) 
-    && !currentUrl().includes(activateAccountRoute)
-    ) {
+    @if(isTokenValid) {
 
       <button mat-icon-button [matMenuTriggerFor]="accountMenu">
 
@@ -78,11 +70,7 @@
 
     }
 
-    @if(currentUrl() !== '/' 
-    && !currentUrl().includes(loginRoute) 
-    && !currentUrl().includes(signUpRoute) 
-    && !currentUrl().includes(activateAccountRoute)
-    ) {
+    @if(isTokenValid) {
 
       <!-- Menú lateral -->
        @if(sidenavOpened) {

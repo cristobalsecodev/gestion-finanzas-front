@@ -59,6 +59,9 @@ export class AppComponent implements OnInit {
   readonly signUpRoute = signUpRoute
   readonly loginRoute = loginRoute
 
+  // Comprueba si el token es válido
+  isTokenValid: boolean = false
+
   constructor(
     iconRegistry: MatIconRegistry,
     private router: Router,
@@ -100,6 +103,12 @@ export class AppComponent implements OnInit {
           this.viewportScroller.scrollToPosition([0, 0])
 
     })
+
+    this.authService.tokenValidity$.subscribe(isValid => {
+      console.log('comprueba token, es válido?: ' + isValid)
+      this.isTokenValid = isValid;
+
+    });
 
   }
 
