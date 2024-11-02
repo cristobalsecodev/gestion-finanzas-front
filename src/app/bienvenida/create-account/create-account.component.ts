@@ -9,12 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { activateAccountRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
-import { InfoResponse } from 'src/app/shared/interfaces/InfoResponse.interface';
+import { loginRoute } from 'src/app/shared/constants/variables.constants';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
-import { TokenResponse } from 'src/app/auth/interfaces/TokenResponse.interface';
 
 @Component({
   selector: 'app-create-account',

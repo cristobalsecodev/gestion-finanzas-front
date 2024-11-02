@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8080/auth'
+  private authUrl = 'http://localhost:8080/auth'
 
   constructor(
     private http: HttpClient,
@@ -25,7 +25,7 @@ export class AuthService {
 
   login(email: string, password: string): Observable<TokenResponse> {
 
-    return this.http.post<TokenResponse>(`${this.apiUrl}/${loginRoute}`, { email, password })
+    return this.http.post<TokenResponse>(`${this.authUrl}/${loginRoute}`, { email, password })
       .pipe(
         tap(response => {
 
@@ -47,7 +47,7 @@ export class AuthService {
 
   signUp(user: CreateUser): Observable<TokenResponse> {
 
-    return this.http.post<TokenResponse>(`${this.apiUrl}/${signUpRoute}`, user)
+    return this.http.post<TokenResponse>(`${this.authUrl}/${signUpRoute}`, user)
       .pipe(
         tap(response => {
 
@@ -64,7 +64,7 @@ export class AuthService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
 
-    return this.http.get<TokenResponse>(`${this.apiUrl}/refresh-token`, { headers })
+    return this.http.get<TokenResponse>(`${this.authUrl}/refresh-token`, { headers })
 
   }
 

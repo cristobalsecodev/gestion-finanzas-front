@@ -2,6 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { NotificacionesService } from '../services/Notifications/notificaciones.service';
 import { inject } from '@angular/core';
+import { DetailError } from '../interfaces/DetailError.interface';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   
@@ -11,28 +12,13 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     .pipe(
       catchError((error) => {
 
-        const errorMessage = error.error.message || error.statusText
+        let detailedError: DetailError = error.error
 
-        notificationService.addNotification(statusError(error.status), 'error')
+        notificationService.addNotification(detailedError.detail, 'error')
 
-        console.error(errorMessage)
-
-        return throwError(() => error)
+        return throwError(() => detailedError)
 
       })
     )
 
 };
-
-function statusError(status: number): string {
-
-  switch(status) {
-    case 0:
-
-      return 'Unable to connect with the server'
-    
-    default:
-      return 'Something really wrong happened'
-  }
-
-}

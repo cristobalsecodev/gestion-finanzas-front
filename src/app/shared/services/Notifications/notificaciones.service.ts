@@ -37,7 +37,7 @@ export class NotificacionesService {
 
       this.removeNotification(nuevaNotificacion.id)
 
-    }, 3500)
+    }, 5000)
 
   }
 
