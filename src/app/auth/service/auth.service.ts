@@ -83,6 +83,8 @@ export class AuthService {
 
           this.storageService.setSession('token', response.token)
 
+          this.notificationsService.addNotification('Account created', 'success')
+
           this.router.navigate([activateAccountRoute])
 
         })
@@ -105,6 +107,20 @@ export class AuthService {
     this.stopTokenCheck()
 
     this.storageService.removeSession('token')
+
+  }
+
+  // Recuperación de contraseña
+  forgotPassword(): Observable<any> {
+
+    return this.http.get<any>(`${this.authUrl}/forgot-password`)
+      .pipe(
+        tap(response => {
+
+          
+
+        })
+      )
 
   }
 

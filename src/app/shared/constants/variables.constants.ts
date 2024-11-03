@@ -11,6 +11,7 @@ export const resumeRoute = 'my-resume'
 export const loginRoute = 'login'
 export const signUpRoute = 'sign-up'
 export const activateAccountRoute = 'activate-account'
+export const newPasswordRoute = 'new-password'
 
 // Mensajes de error genéricos
 export const errorStatus0 = 'Unable to connect with the server'

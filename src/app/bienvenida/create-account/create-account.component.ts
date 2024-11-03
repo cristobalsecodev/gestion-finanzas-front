@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,14 +13,16 @@ import { loginRoute } from 'src/app/shared/constants/variables.constants';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { passwordMatchValidator } from 'src/app/shared/functions/validators/Validators';
 
 @Component({
   selector: 'app-create-account',
   standalone: true,
   imports: [
+    // Angular core
+    ReactiveFormsModule,
     // Angular material
     MatFormFieldModule,
-    ReactiveFormsModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -41,7 +43,7 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
 })
 export class CreateAccountComponent {
 
-  hidePassword = signal(true);
+  hidePassword = signal(true)
 
   formEmail!: FormGroup
   formName!: FormGroup
@@ -74,16 +76,7 @@ export class CreateAccountComponent {
       password: new FormControl('', [Validators.required]),
       passwordConfirm: new FormControl('', [Validators.required])
 
-    }, this.passwordMatchValidator)
-
-  }
-
-  passwordMatchValidator(control: AbstractControl) {
-
-    const password = control.get('password')?.value
-    const passwordConfirm = control.get('passwordConfirm')?.value
-
-    return password === passwordConfirm ? null : { mismatch: true }
+    }, passwordMatchValidator)
 
   }
 

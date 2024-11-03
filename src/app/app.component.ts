@@ -105,7 +105,7 @@ export class AppComponent implements OnInit {
     })
 
     this.authService.tokenValidity$.subscribe(isValid => {
-      console.log('comprueba token, es válido?: ' + isValid)
+
       this.isTokenValid = isValid;
 
     });

@@ -6,11 +6,12 @@ import { MisIngresosGastosComponent } from './finanzasPersonales/mis-ingresos-ga
 import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
 import { authGuard } from './auth/guards/auth/auth.guard';
-import { activateAccountRoute, signUpRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute, newPasswordRoute } from './shared/constants/variables.constants';
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
 import { ActivateAccountComponent } from './bienvenida/activate-account/activate-account.component';
 import { activateAccountGuard } from './auth/guards/activateAccount/activate-account.guard';
 import { actuallyLoggedGuard } from './auth/guards/actuallyLogged/actually-logged.guard';
+import { NewPasswordComponent } from './shared/components/new-password/new-password.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,11 @@ export const routes: Routes = [
     path: resumeRoute, 
     component: MiResumenComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: newPasswordRoute, 
+    component: NewPasswordComponent,
+    canActivate: [actuallyLoggedGuard]
   },
   {
     path: loginRoute, component: LoginComponent,

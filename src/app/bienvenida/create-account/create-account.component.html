@@ -261,7 +261,7 @@
 
             <mat-label>Email</mat-label>
 
-            <input matInput placeholder="example@gmail.com" formControlName="email" required>
+            <input matInput placeholder="example@domain.com" formControlName="email" required>
 
             @if(formEmail.get('email')?.hasError('required')) {
 
@@ -315,7 +315,7 @@
               matInput 
               formControlName="password" 
               [type]="hidePassword() ? 'password' : 'text'" 
-              placeholder="supersecurepassword" />
+              placeholder="epic password" />
 
             <button
               mat-icon-button
@@ -324,7 +324,7 @@
               <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
 
-            @if(formName.get('password')?.hasError('required')) {
+            @if(formPassword.get('password')?.hasError('required')) {
 
               <mat-error> Password is required. </mat-error>
   
@@ -340,7 +340,7 @@
               matInput 
               formControlName="passwordConfirm" 
               [type]="hidePassword() ? 'password' : 'text'" 
-              placeholder="supersecurepassword"/>
+              placeholder="epic password"/>
 
             <button
               mat-icon-button
@@ -349,7 +349,7 @@
               <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
 
-            @if(formName.get('passwordConfirm')?.hasError('mismatch')) {
+            @if(formPassword.get('passwordConfirm')?.hasError('mismatch')) {
 
               <mat-error> Passwords don’t match. </mat-error>
   

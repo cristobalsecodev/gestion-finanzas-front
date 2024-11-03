@@ -11,13 +11,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from 'src/app/auth/service/auth.service';
+import { NewPasswordComponent } from 'src/app/shared/components/new-password/new-password.component';
 import { SOCIAL } from 'src/app/shared/constants/svg.constants';
 import { signUpRoute } from 'src/app/shared/constants/variables.constants';
+import { UserService } from 'src/app/shared/services/Users/user.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
+    NewPasswordComponent,
     // Angular core
     RouterLink,
     // Angular material
@@ -40,6 +43,8 @@ import { signUpRoute } from 'src/app/shared/constants/variables.constants';
 })
 export class LoginComponent {
 
+  eliminarSignal = signal(false)
+
   hidePassword = signal(true);
 
   form!: FormGroup
@@ -48,7 +53,8 @@ export class LoginComponent {
     private router: Router,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {
 
     this.form = new FormGroup({
@@ -83,6 +89,12 @@ export class LoginComponent {
       ).subscribe()
 
     }
+  }
+
+  forgotPassword(): void {
+
+    this.authService.forgotPassword().subscribe()
+
   }
 
   navigateToCreateAccount(): void {

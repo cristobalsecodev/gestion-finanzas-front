@@ -1,124 +1,139 @@
-<div class="h-screen md:grid place-items-center">
 
-  <!-- Login -->
-  <mat-card class="p-9 md:max-w-[400px] max-w-3xl w-full !rounded-none md:!rounded-lg">
+@if(!eliminarSignal()) {
 
-    <!-- Sección cabecera -->
-    <section class="flex space-x-4 place-content-center">
+  <div class="h-screen md:grid place-items-center">
 
-      <h1 class="w-1/2 mb-8">Login here</h1>
-
-      <button 
-        id="button-lg" 
-        mat-button 
-        class="w-1/2 show-lg" 
-        (click)="navigateToCreateAccount()">
-          <mat-icon> person_add </mat-icon>
-          <span> Create account </span>
-      </button>
-
-      <span class="flex-auto show-md"></span>
-
-      <button 
-        mat-icon-button
-        matTooltip="Create account"
-        class="w-1/6 show-md" 
-        (click)="navigateToCreateAccount()">
-          <mat-icon> person_add </mat-icon>
-      </button>
-
-    </section>
-
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-      <!-- Sección formulario -->
-      <section>
-
-        <!-- Email -->
-        <mat-form-field appearance="fill">
-            
-          <mat-label> Enter your email </mat-label>
-          <input matInput placeholder="example@gmail.com" formControlName="email" required>
-
-          @if(form.get('email')?.hasError('pattern')) {
-
-            <mat-error> Email is invalid. </mat-error>
-
-          }
-
-          @if(form.get('email')?.hasError('required')) {
-
-            <mat-error> Email is required. </mat-error>
-
-          }
-
-        </mat-form-field>
-    
-        <!-- Contraseña -->
-        <mat-form-field appearance="fill">
-              
-          <mat-label> Enter your password </mat-label>
-        
-          <input 
-            matInput 
-            formControlName="password" 
-            [type]="hidePassword() ? 'password' : 'text'" 
-            placeholder="supersecurepassword" />
-        
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="hidePassword.set(!hidePassword())">
-
-            <mat-icon> {{hidePassword() ? 'visibility_off' : 'visibility'}} </mat-icon>
-            
-          </button>
-
-          @if(form.get('password')?.hasError('required')) {
-
-            <mat-error> Password is required. </mat-error>
-
-          }
-        
-        </mat-form-field>
-        
-      </section>
-
-      <!-- Sección botonera -->
-      <section>
-
-        <button mat-flat-button type="submit" class="w-full">
-
-          <mat-icon> login </mat-icon>
-          <span> Log in </span>
-
+    <!-- Login -->
+    <mat-card class="p-9 md:max-w-[400px] max-w-3xl w-full !rounded-none md:!rounded-lg">
+  
+      <!-- Sección cabecera -->
+      <section class="flex space-x-4 place-content-center">
+  
+        <h1 class="w-1/2 mb-8">Login here</h1>
+  
+        <button 
+          id="button-lg" 
+          mat-button 
+          class="w-1/2 show-lg" 
+          (click)="navigateToCreateAccount()">
+            <mat-icon> person_add </mat-icon>
+            <span> Create account </span>
         </button>
-
+  
+        <span class="flex-auto show-md"></span>
+  
+        <button 
+          mat-icon-button
+          matTooltip="Create account"
+          class="w-1/6 show-md" 
+          (click)="navigateToCreateAccount()">
+            <mat-icon> person_add </mat-icon>
+        </button>
+  
       </section>
-
-    </form>
-
-    <!-- Sección login por redes sociales -->
-
-    <section matTooltip="Disabled right now" class="flex space-x-4 mt-7 place-content-center">
-
-      <button mat-button disabled>
-
-        <mat-icon svgIcon="google"></mat-icon>
-        <span> Google </span>
-
+  
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  
+        <!-- Sección formulario -->
+        <section>
+  
+          <!-- Email -->
+          <mat-form-field appearance="fill">
+              
+            <mat-label> Enter your email </mat-label>
+            <input matInput placeholder="example@domain.com" formControlName="email" required>
+  
+            @if(form.get('email')?.hasError('pattern')) {
+  
+              <mat-error> Email is invalid. </mat-error>
+  
+            }
+  
+            @if(form.get('email')?.hasError('required')) {
+  
+              <mat-error> Email is required. </mat-error>
+  
+            }
+  
+          </mat-form-field>
+      
+          <!-- Contraseña -->
+          <mat-form-field appearance="fill">
+                
+            <mat-label> Enter your password </mat-label>
+          
+            <input 
+              matInput 
+              formControlName="password" 
+              [type]="hidePassword() ? 'password' : 'text'" 
+              placeholder="epic password" />
+          
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hidePassword.set(!hidePassword())">
+  
+              <mat-icon> {{hidePassword() ? 'visibility_off' : 'visibility'}} </mat-icon>
+              
+            </button>
+  
+            @if(form.get('password')?.hasError('required')) {
+  
+              <mat-error> Password is required. </mat-error>
+  
+            }
+          
+          </mat-form-field>
+          
+        </section>
+  
+        <!-- Sección botonera -->
+        <section>
+  
+          <button mat-flat-button type="submit" class="w-full">
+  
+            <mat-icon> login </mat-icon>
+            <span> Log in </span>
+  
+          </button>
+  
+        </section>
+  
+      </form>
+      
+      <!-- Botón contraseña olvidada -->
+      <button mat-button class="mt-2" (click)="eliminarSignal.set(true)">
+        <mat-icon> lock_reset </mat-icon>
+        I forgot my password
       </button>
+  
+      <!-- Sección login por redes sociales -->
+      <section matTooltip="Disabled right now" class="flex space-x-4 mt-2 place-content-center">
+  
+        <button mat-button disabled>
+  
+          <mat-icon svgIcon="google"></mat-icon>
+          <span> Google </span>
+  
+        </button>
+  
+        <button mat-button disabled>
+  
+          <mat-icon svgIcon="facebook"></mat-icon>
+          <span> Facebook </span>
+  
+        </button>
+  
+      </section>
+  
+    </mat-card>
+  
+  </div>
 
-      <button mat-button disabled>
+} @else {
 
-        <mat-icon svgIcon="facebook"></mat-icon>
-        <span> Facebook </span>
+  <app-new-password></app-new-password>
 
-      </button>
+}
 
-    </section>
-
-  </mat-card>
-
-</div>
