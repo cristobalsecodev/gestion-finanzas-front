@@ -1,10 +1,12 @@
 
-@if(!eliminarSignal()) {
+
 
   <div class="h-screen md:grid place-items-center">
 
     <!-- Login -->
     <mat-card class="p-9 md:max-w-[400px] max-w-3xl w-full !rounded-none md:!rounded-lg">
+
+      @if(!changeForm()) {
   
       <!-- Sección cabecera -->
       <section class="flex space-x-4 place-content-center">
@@ -15,7 +17,7 @@
           id="button-lg" 
           mat-button 
           class="w-1/2 show-lg" 
-          (click)="navigateToCreateAccount()">
+          [routerLink]="[signUpRoute]">
             <mat-icon> person_add </mat-icon>
             <span> Create account </span>
         </button>
@@ -26,7 +28,7 @@
           mat-icon-button
           matTooltip="Create account"
           class="w-1/6 show-md" 
-          (click)="navigateToCreateAccount()">
+          [routerLink]="[signUpRoute]">
             <mat-icon> person_add </mat-icon>
         </button>
   
@@ -88,26 +90,26 @@
           
         </section>
   
-        <!-- Sección botonera -->
-        <section>
-  
-          <button mat-flat-button type="submit" class="w-full">
-  
-            <mat-icon> login </mat-icon>
-            <span> Log in </span>
-  
-          </button>
-  
-        </section>
-  
+        <!-- Sección botón de login -->
+
+        <app-dynamic-flat-button 
+        type="submit"
+        buttonText="Log in"
+        matIcon="login"
+        [textSizeRem]="textSizeRem"
+        [shapePx]="10"
+        [heightPx]="70"
+        buttonClass="w-full">            
+        </app-dynamic-flat-button>
+
       </form>
       
       <!-- Botón contraseña olvidada -->
-      <button mat-button class="mt-2" (click)="eliminarSignal.set(true)">
+      <button mat-button class="mt-2" (click)="changeForm.set(!changeForm())">
         <mat-icon> lock_reset </mat-icon>
         I forgot my password
       </button>
-  
+
       <!-- Sección login por redes sociales -->
       <section matTooltip="Disabled right now" class="flex space-x-4 mt-2 place-content-center">
   
@@ -126,14 +128,95 @@
         </button>
   
       </section>
+
+    } @else {
+
+      @if(resetPasswordSteps()) {
+
+        <h1 class="mb-8">Next steps</h1>
+
+        <section>
+          <p>Remember </p>
+          <p class="mb-4 font-semibold">To reset your password, please follow these steps:</p>
+          <ol>
+            <li>1. Check your email for a message from FinanciaSphere.</li>
+            <li>2. Click on the password recovery link in the email.</li>
+            <li>3. Enter a new password and confirm it.</li>
+            <li>4. Return to the login page.</li>
+          </ol>
+          <p class="mt-4 text-red-600">Note: You have 15 minutes before this request expires.</p>
+        </section>
+        
+        <section class="flex space-x-4 mt-4 place-content-end">
+          
+          <button mat-button type="button" (click)="changeForm.set(!changeForm()); serviceCalled.set(!serviceCalled())">
+  
+            <mat-icon>undo</mat-icon>
+            <span>Return to login</span>
+
+          </button>
+
+        </section>
+
+      } @else {
+
+        <h1 class="mb-8">Reset your password</h1>
+
+        <!-- Formulario para resetear la contraseña -->
+        <form [formGroup]="resetPaswordForm" (ngSubmit)="wantResetPassword()">
+
+          <mat-form-field appearance="fill">
+              
+            <mat-label> Enter your email </mat-label>
+            <input matInput placeholder="example@domain.com" formControlName="email" required>
+    
+            @if(resetPaswordForm.get('email')?.hasError('pattern')) {
+    
+              <mat-error> Email is invalid. </mat-error>
+    
+            }
+    
+            @if(resetPaswordForm.get('email')?.hasError('required')) {
+    
+              <mat-error> Email is required. </mat-error>
+    
+            }
+
+          </mat-form-field>
+
+          <!-- Botonera -->
+          <section class="flex space-x-4 mt-2 place-content-end">
+    
+            <button mat-button type="button" (click)="changeForm.set(!changeForm())">
+
+              <mat-icon>undo</mat-icon>
+              <span>Return to login</span>
+              
+            </button>
+
+            <button mat-flat-button type="submit">
+
+              <mat-icon>key</mat-icon>
+              <span> Reset </span>
+
+            </button>
+      
+          </section>
+
+
+
+        </form>
+
+      }
+
+
+
+    }
   
     </mat-card>
   
   </div>
 
-} @else {
 
-  <app-new-password></app-new-password>
 
-}
 

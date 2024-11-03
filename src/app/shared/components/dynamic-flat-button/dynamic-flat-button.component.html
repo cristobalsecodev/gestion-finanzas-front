@@ -1,0 +1,11 @@
+<button mat-flat-button [ngClass]="buttonClass" (click)="clicked()">
+  
+  @if(matIcon !== '') {
+
+    <mat-icon> {{ matIcon }} </mat-icon>
+
+  }
+
+  <span> {{ buttonText }} </span>
+
+</button>

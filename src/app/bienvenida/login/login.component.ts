@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -10,22 +10,24 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
+import { WantResetPassword } from 'src/app/auth/interfaces/WantResetPassword.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
-import { NewPasswordComponent } from 'src/app/shared/components/new-password/new-password.component';
+import { DynamicFlatButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-flat-button.component';
 import { SOCIAL } from 'src/app/shared/constants/svg.constants';
-import { signUpRoute } from 'src/app/shared/constants/variables.constants';
-import { UserService } from 'src/app/shared/services/Users/user.service';
+import { newPasswordRoute, signUpRoute } from 'src/app/shared/constants/variables.constants';
+import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    NewPasswordComponent,
+    // Components
+    DynamicFlatButtonComponent,
     // Angular core
     RouterLink,
+    ReactiveFormsModule,
     // Angular material
     MatFormFieldModule,
-    ReactiveFormsModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -33,28 +35,42 @@ import { UserService } from 'src/app/shared/services/Users/user.service';
     MatStepperModule,
     MatTooltipModule
   ],
-  host: { 
-    '[style.--mdc-filled-button-label-text-size]': '1.450 + "rem"',
-    '[style.--mdc-filled-button-container-shape]': '10 + "px"',
-    '[style.--mdc-filled-button-container-height]': '70 + "px"'
-  },
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 
-  eliminarSignal = signal(false)
+  // Signal que cambia entre la el formulario de login y el reseteo de contraseña
+  changeForm = signal(false)
 
-  hidePassword = signal(true);
+  // Signal que confirma que el servicio ha ido bien
+  serviceCalled = signal(false)
 
+  // Oculta o muestra el tipado de la contraseña
+  hidePassword = signal(true)
+
+  // Muestra el texto de pasos a seguir al resetear la contraseña
+  resetPasswordSteps = computed( () => this.changeForm() && this.serviceCalled())
+
+  // Confirma que la vida es dura
+
+  // Formulario de login
   form!: FormGroup
 
+  // Formulario de reseteo de contraseña
+  resetPaswordForm!: FormGroup
+
+  // Tamaño del texto del botón dinámico
+  textSizeRem: number = 1.5
+
+  // Rutas
+  signUpRoute = signUpRoute
+
   constructor(
-    private router: Router,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     private authService: AuthService,
-    private userService: UserService
+    private storageService: StorageService
   ) {
 
     this.form = new FormGroup({
@@ -68,6 +84,15 @@ export class LoginComponent {
 
     })
 
+    this.resetPaswordForm = new FormGroup({
+
+      email: new FormControl('', [
+        Validators.required, 
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]),
+
+    })
+
     // Añadimos los SVGs
     SOCIAL.forEach(social => {
 
@@ -77,6 +102,7 @@ export class LoginComponent {
       )
       
     })
+
   }
 
   onSubmit(): void {
@@ -91,15 +117,25 @@ export class LoginComponent {
     }
   }
 
-  forgotPassword(): void {
+  wantResetPassword(): void {
 
-    this.authService.forgotPassword().subscribe()
+    if(this.resetPaswordForm.valid) {
+      
+      let wantResetInfo: WantResetPassword = {
+  
+        email: this.resetPaswordForm.get('email')?.value,
+        url: `${this.storageService.getBaseUrl()}/${newPasswordRoute}`
+  
+      }
+
+      this.authService.wantResetPassword(wantResetInfo).subscribe(() => {
+
+        this.serviceCalled.set(!this.serviceCalled())
+
+      })
+
+    }
 
   }
 
-  navigateToCreateAccount(): void {
-
-    this.router.navigate([signUpRoute])
-
-  }
 }

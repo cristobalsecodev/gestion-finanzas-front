@@ -8,6 +8,8 @@ import { TokenResponse } from '../interfaces/TokenResponse.interface';
 import { jwtDecode } from "jwt-decode";
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { Router } from '@angular/router';
+import { WantResetPassword } from '../interfaces/WantResetPassword.interface';
+import { ResetPassword } from '../interfaces/ResetPassword.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -108,19 +110,41 @@ export class AuthService {
 
     this.storageService.removeSession('token')
 
+    this.checkTokenValidity()
+
   }
 
-  // Recuperación de contraseña
-  forgotPassword(): Observable<any> {
+  // El usuario quiere resetear la contraseña
+  wantResetPassword(wantResetPassword: WantResetPassword): Observable<string> {
 
-    return this.http.get<any>(`${this.authUrl}/forgot-password`)
+    return this.http.post<string>(`${this.authUrl}/want-reset-password`, wantResetPassword, {responseType: 'text' as 'json'})
       .pipe(
         tap(response => {
 
-          
+          this.notificationsService.addNotification(response, 'success')
 
         })
       )
+
+  }
+
+  // Restaurar contraseña
+  resetPassword(resetPassword: ResetPassword): Observable<any> {
+
+    return this.http.post<any>(`${this.authUrl}/reset-password`, resetPassword)
+      .pipe(
+        tap(response => {
+
+          this.notificationsService.addNotification(response, 'success')
+
+        })
+      )
+
+  }
+
+  checkOneTimeUrl(urlToken: string): Observable<string> {
+
+    return this.http.post<string>(`${this.authUrl}/check-one-time-url`, { token: urlToken }, {responseType: 'text' as 'json'})
 
   }
 

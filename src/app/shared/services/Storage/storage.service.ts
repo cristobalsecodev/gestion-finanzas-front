@@ -115,4 +115,28 @@ export class StorageService {
 
   }
 
+  getBaseUrl(): string {
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      return `${window.location.protocol}//${window.location.host}`
+
+    }
+
+    return ''
+
+  }
+
+  getFullUrl(): string {
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      return window.location.href
+
+    }
+
+    return ''
+
+  }
+
 }
