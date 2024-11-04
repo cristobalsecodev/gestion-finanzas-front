@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { InputCodeComponent } from 'src/app/shared/components/input-code/input-code.component';
+import { EmailService } from 'src/app/shared/services/Email/email.service';
 import { UserService } from 'src/app/shared/services/Users/user.service';
 
 @Component({
@@ -24,7 +25,8 @@ export class ActivateAccountComponent {
   wait = signal<boolean>(false)
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private emailService: EmailService
   ) {}
 
   activateAccount(activationCode: string): void {
@@ -42,9 +44,9 @@ export class ActivateAccountComponent {
 
       this.wait.set(false)
 
-    }, 5000)
+    }, 7000)
 
-    // Servicio de envío ed email
+    this.emailService.sendActivationEmail().subscribe()
 
   }
 

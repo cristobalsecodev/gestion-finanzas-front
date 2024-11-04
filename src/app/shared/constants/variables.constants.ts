@@ -4,7 +4,7 @@ export const webName = 'Financia Sphere'
 // Valor por defecto en caso de fallo
 export const noValue = 'N/A'
 
-// Rutas
+// Rutas de navegación
 export const incomeExpensesRoute = 'my-income-expenses'
 export const investmentsRoute = 'my-investments'
 export const resumeRoute = 'my-resume'
@@ -13,5 +13,5 @@ export const signUpRoute = 'sign-up'
 export const activateAccountRoute = 'activate-account'
 export const newPasswordRoute = 'new-password'
 
-// Mensajes de error genéricos
-export const errorStatus0 = 'Unable to connect with the server'
+// Rutas de servicio
+export const authRoute = 'auth'

@@ -8,12 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
-import { loginRoute } from 'src/app/shared/constants/variables.constants';
+import {RouterLink } from '@angular/router';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
-import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { passwordMatchValidator } from 'src/app/shared/functions/validators/Validators';
+import { loginRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-create-account',
@@ -21,6 +20,7 @@ import { passwordMatchValidator } from 'src/app/shared/functions/validators/Vali
   imports: [
     // Angular core
     ReactiveFormsModule,
+    RouterLink,
     // Angular material
     MatFormFieldModule,
     MatCardModule,
@@ -49,10 +49,11 @@ export class CreateAccountComponent {
   formName!: FormGroup
   formPassword!: FormGroup
 
+  // Rutas
+  loginRoute = loginRoute
+
   constructor(
-    private router: Router,
-    private authService: AuthService,
-    private notificationsService: NotificacionesService
+    private authService: AuthService
   ) {
 
     this.formEmail = new FormGroup({
@@ -94,12 +95,6 @@ export class CreateAccountComponent {
       this.authService.signUp(user).subscribe()
 
     }
-  }
-
-  navigateToLoginAccount(): void {
-
-    this.router.navigate([loginRoute])
-
   }
 
   formError(type: string): string {

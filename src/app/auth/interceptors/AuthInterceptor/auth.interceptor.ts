@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
-import { signUpRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
+import { loginRoute, authRoute } from 'src/app/shared/constants/variables.constants';
 import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -16,7 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = storageService.getSession('token')
 
   // Verificamos si la URL es una de estas, las cuales hay que excluir
-  const excludedRoutes = [loginRoute, signUpRoute]
+  const excludedRoutes = [authRoute]
   
   if(excludedRoutes.some(route => req.url.includes(route))) {
 

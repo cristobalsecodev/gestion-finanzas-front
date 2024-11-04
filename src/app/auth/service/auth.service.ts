@@ -115,13 +115,13 @@ export class AuthService {
   }
 
   // El usuario quiere resetear la contraseña
-  wantResetPassword(wantResetPassword: WantResetPassword): Observable<string> {
+  wantResetPassword(wantResetPassword: WantResetPassword): Observable<any> {
 
-    return this.http.post<string>(`${this.authUrl}/want-reset-password`, wantResetPassword, {responseType: 'text' as 'json'})
+    return this.http.post<any>(`${this.authUrl}/want-reset-password`, wantResetPassword)
       .pipe(
         tap(response => {
 
-          this.notificationsService.addNotification(response, 'success')
+          this.notificationsService.addNotification(response.message, 'success')
 
         })
       )
@@ -135,16 +135,16 @@ export class AuthService {
       .pipe(
         tap(response => {
 
-          this.notificationsService.addNotification(response, 'success')
+          this.notificationsService.addNotification(response.message, 'success')
 
         })
       )
 
   }
 
-  checkOneTimeUrl(urlToken: string): Observable<string> {
+  checkOneTimeUrl(urlToken: string): Observable<any> {
 
-    return this.http.post<string>(`${this.authUrl}/check-one-time-url`, { token: urlToken }, {responseType: 'text' as 'json'})
+    return this.http.post<any>(`${this.authUrl}/check-one-time-url`, { token: urlToken })
 
   }
 

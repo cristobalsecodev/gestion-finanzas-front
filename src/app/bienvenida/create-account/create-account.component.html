@@ -33,7 +33,7 @@
           Start building a stronger financial future today. We’ll help you reach your goals!
         </p>
 
-        <button mat-raised-button class="w-full mt-6" (click)="navigateToLoginAccount()">
+        <button mat-raised-button class="w-full mt-6" [routerLink]="['/' + loginRoute]">
 
           <mat-icon> login </mat-icon>
           <span> Log in </span>
@@ -379,7 +379,7 @@
           
           <button 
           mat-button 
-          (click)="navigateToLoginAccount()"
+          [routerLink]="['/' + loginRoute]"
           class="w-full max-w-xs">
 
             <mat-icon> login </mat-icon>

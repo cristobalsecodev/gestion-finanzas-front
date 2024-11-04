@@ -12,7 +12,6 @@ import { ActivateAccountComponent } from './bienvenida/activate-account/activate
 import { activateAccountGuard } from './auth/guards/activateAccount/activate-account.guard';
 import { actuallyLoggedGuard } from './auth/guards/actuallyLogged/actually-logged.guard';
 import { NewPasswordComponent } from './shared/components/new-password/new-password.component';
-import { validTokenGuard } from './shared/guards/validUrlToken/valid-token.guard';
 
 export const routes: Routes = [
   {
@@ -32,8 +31,7 @@ export const routes: Routes = [
   },
   {
     path: `${newPasswordRoute}/:urlToken`, 
-    component: NewPasswordComponent,
-    canActivate: [validTokenGuard]
+    component: NewPasswordComponent
   },
   {
     path: loginRoute, component: LoginComponent,
