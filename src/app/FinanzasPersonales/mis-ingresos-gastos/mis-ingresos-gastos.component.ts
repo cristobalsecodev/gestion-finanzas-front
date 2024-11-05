@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { MisIngresosGastosFormularioComponent } from './mis-ingresos-gastos-formulario/mis-ingresos-gastos-formulario.component';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { IngresoGasto } from './IngresoGasto.interface';
+import { IncomeOrExpense } from './IncomeOrExpense';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
@@ -36,7 +36,7 @@ export class MisIngresosGastosComponent {
 
   displayedColumns: string[] = ['date', 'category', 'amount', 'notes', 'actions']
 
-  dataSource: IngresoGasto[] = [
+  dataSource: IncomeOrExpense[] = [
     {
       fecha: new Date(),
       cantidad: 100,

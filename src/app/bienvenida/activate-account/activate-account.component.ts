@@ -31,7 +31,7 @@ export class ActivateAccountComponent {
 
   activateAccount(activationCode: string): void {
 
-    // Servicio de activación de ceunta
+    // Servicio de activación de cuenta
     this.userService.activateAccount(activationCode).subscribe()
 
   }
@@ -46,6 +46,7 @@ export class ActivateAccountComponent {
 
     }, 7000)
 
+    // Reenviar el código de activación
     this.emailService.sendActivationEmail().subscribe()
 
   }
