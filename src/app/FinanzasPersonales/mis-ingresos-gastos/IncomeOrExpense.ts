@@ -1,7 +1,7 @@
 export interface IncomeOrExpense {
 
   id?: number
-  date: Date // Fecha
+  date: Date // Fecha de efecto
   category: string // Categoría
   subCategory?: string // Subcategoría
   amount: number // Cantidad
@@ -19,7 +19,5 @@ export interface RecurrenceDetails {
   frequency: number // Frecuencia de repetición (e.g., cada 2 días, 1 semana, etc.)
   endDate?: Date // Fecha de fin (opcional, si la recurrencia es limitada)
   occurrences?: number // Número de veces que ocurre la operación
-  daysOfWeek?: string[]  // Días específicos de la semana (para recurrencias semanales)
-  dayOfMonth?: number  // Día específico del mes (para recurrencias mensuales)
 
 }

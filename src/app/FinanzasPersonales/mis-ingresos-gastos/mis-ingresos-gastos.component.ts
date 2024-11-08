@@ -38,14 +38,17 @@ export class MisIngresosGastosComponent {
 
   dataSource: IncomeOrExpense[] = [
     {
-      fecha: new Date(),
-      cantidad: 100,
-      divisa: 'EUR',
-      categoria: 'Comida',
-      subCategoria: 'Cena',
-      numeroRecurrencia: 2,
-      tipoRecurrencia: 'M',
-      notas: 'This dialog showcases the title, close, content and actions elements. dsd adsadadsadsad adasd asdsa'
+      date: new Date(),
+      amount: 1000,
+      category: 'Comida',
+      subCategory: 'Cena',
+      currency: 'CHF',
+      type: 'income',
+      notes: 'Lorem ipsum djqwkdnqwjkdnqkjdhnqsiod qkdj qwdjq wdjqwdoiq wdojqw doqjwdqowd qjwd qowjdqwdoqjdqowdj',
+      recurrenceDetails: {
+        recurrenceType: 'monthly',
+        frequency: 1
+      }
     }
   ]
 
