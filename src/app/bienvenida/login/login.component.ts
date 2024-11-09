@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { WantResetPassword } from 'src/app/auth/interfaces/WantResetPassword.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { DynamicFlatButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-flat-button.component';

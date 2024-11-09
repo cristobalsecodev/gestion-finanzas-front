@@ -58,13 +58,20 @@ export class MisIngresosGastosComponent {
 
   constructor() {}
 
-  openDialog(type: string): void {
+  openDialog(actionType: string): void {
 
 
 
     this.dialog.open(MisIngresosGastosFormularioComponent, {
 
-      data: type
+      data: {
+        actionType: actionType
+      },
+      minWidth: '300px', // Mínimo de 300px para dispositivos pequeños
+      maxWidth: '90vw',  // El ancho máximo será el 90% del viewport
+      minHeight: '400px', // Mínimo de 400px de altura
+      maxHeight: '80vh',  // El máximo de altura será el 80% del viewport
+      autoFocus: true,  // Para que el foco vaya al primer campo
 
     }).afterClosed().subscribe((record => {
 

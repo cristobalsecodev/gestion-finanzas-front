@@ -14,7 +14,7 @@ $custom-theme: mat.define-theme((
 
 html {
 
-  // PALETA EN HEX
+  /* PALETA EN HEX */
   --sys-background: #e3e9f0;
   --sys-on-background: #181c20;
   --sys-surface: #cde0f0;
@@ -74,11 +74,15 @@ html {
   --sys-on-error-fixed: #3b0907;
   --sys-on-error-fixed-variant: #73342d
 
+  /* Custom (WIP) */
+  --sys-green: #209925;
+  --sys-red: #992020;
+
 }
 
 .dark {
 
-  // PALETA EN HEX
+  /* PALETA EN HEX */
   --sys-background: #222b31;
   --sys-on-background: #e0e3e8;
   --sys-surface: #101417;
@@ -136,7 +140,11 @@ html {
   --sys-error-fixed: #ffdad5;
   --sys-error-fixed-dim: #ffb4ab;
   --sys-on-error-fixed: #3b0907;
-  --sys-on-error-fixed-variant: #73342d
+  --sys-on-error-fixed-variant: #73342d;
+
+  /* Custom (WIP) */
+  --sys-green: #209925;
+  --sys-red: #992020;
 
 }
 

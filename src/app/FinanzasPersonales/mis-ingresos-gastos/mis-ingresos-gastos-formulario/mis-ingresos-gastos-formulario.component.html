@@ -1,9 +1,231 @@
-<h2 mat-dialog-title>{{ type }} ingreso / gasto</h2>
-<mat-dialog-content>This dialog showcases the title, close, content and actions elements.</mat-dialog-content>
+<h1 mat-dialog-title>
+
+  <div class="flex items-center justify-center space-x-2">
+
+    <mat-icon>finance_chip</mat-icon>
+    <span>{{ data.actionType }} {{ selectedType() ? selectedType() : 'income or expense' }}</span>
+    
+  </div>
+
+</h1>
+
+<!-- Línea de separación -->
+<div class="mx-auto w-5/6 border-t mt-2"></div>
+
+<mat-dialog-content>
+  
+  <!-- Elección de tipo -->
+   <div class="flex items-center space-x-4 mb-4">
+
+    <!-- Etiqueta de selección -->
+    <label class="text-xs md:text-sm font-medium w-2/5">Choose a type (*):</label>
+
+    <mat-chip-listbox class="flex overflow-x-auto space-x-2 w-3/5" 
+    (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
+  
+      @for (type of types; track $index) {
+  
+        <mat-chip-option [value]="type">
+          {{ type }}
+        </mat-chip-option>
+  
+      }
+  
+    </mat-chip-listbox>
+
+   </div>
+
+   <form [formGroup]="incomeOrExpenseForm" class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+    <!-- Fecha -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Date</mat-label>
+      <input matInput formControlName="date" required>
+
+      <mat-icon matSuffix
+      matTooltip="Select the date for the {{ selectedType() ? selectedType() : 'income or expense' }}">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+  
+    <!-- Categoría -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Category</mat-label>
+      <input matInput placeholder="Select a category" formControlName="category" required>
+
+      <mat-icon matSuffix
+      matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+  
+    <!-- Subcategoría -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Subcategory</mat-label>
+      <input matInput placeholder="Select a subcategory" formControlName="subCategory">
+
+      <mat-icon matSuffix
+      matTooltip="(Optional) Select a more specific category for the {{ selectedType() ? selectedType() : 'income or expense' }}">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+  
+    <!-- Cantidad -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Amount</mat-label>
+      <input matInput placeholder="1,000.00" formControlName="amount" required>
+
+      <mat-icon matSuffix
+      matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+  
+    <!-- Divisa -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Currency</mat-label>
+      <input matInput formControlName="currency" required>
+
+      <mat-icon matSuffix
+      matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+  
+    <!-- Notas -->
+    <mat-form-field class="w-full">
+
+      <mat-label>Notes</mat-label>
+      <input matInput placeholder="Description" formControlName="notes">
+
+      <mat-icon matSuffix
+      matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
+        info
+      </mat-icon>
+
+    </mat-form-field>
+    
+  </form>
+
+  <mat-slide-toggle
+  class="my-4"
+  (change)="isRecurrence.set(!isRecurrence())"
+  [disabled]="data.actionType === actionTypes.EDIT">
+    In case your {{ selectedType() ? selectedType() : 'income or expense' }} entry has a recurrence
+  </mat-slide-toggle>
+
+  <!-- Recurrencia -->
+  <div matTooltip="Recurrence must be selected"
+  [matTooltipDisabled]="isRecurrence()">
+
+    <mat-expansion-panel 
+    [disabled]="!isRecurrence()" 
+    class="my-4"
+    [expanded]="isRecurrence()">
+
+      <mat-expansion-panel-header>
+
+        <mat-panel-title> Recurrence </mat-panel-title>
+
+        <mat-panel-description class="flex place-content-end">
+
+          <mat-icon>calendar_today</mat-icon>
+
+        </mat-panel-description>
+
+      </mat-expansion-panel-header>
+
+      <form [formGroup]="recurrenceForm" class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- Tipo de recurrencia -->
+        <mat-form-field class="w-full">
+
+          <mat-label>Recurrence type</mat-label>
+          <input matInput placeholder="daily" formControlName="recurrenceType" required>
+
+          <mat-icon matSuffix
+          matTooltip="Enter the type of recurrence (e.g., daily, weekly, monthly or yearly)">
+            info
+          </mat-icon>
+          
+        </mat-form-field>
+
+        <!-- Frecuencia -->
+        <mat-form-field class="w-full">
+
+          <mat-label>Frequency</mat-label>
+          <input matInput placeholder="1" formControlName="frequency" required>
+
+          <mat-icon matSuffix
+          matTooltip="Specify how often the recurrence occurs (e.g., every 1 day, 2 weeks)">
+            info
+          </mat-icon>
+
+        </mat-form-field>
+
+        <!-- Fecha de fin -->
+        <mat-form-field class="w-full">
+
+          <mat-label>End date</mat-label>
+          <input matInput formControlName="endDate">
+
+          <mat-icon matSuffix
+          matTooltip="(Optional) Set the end date for the recurrence">
+            info
+          </mat-icon>
+          
+        </mat-form-field>
+
+        <!-- Ocurrencias -->
+        <mat-form-field class="w-full">
+
+          <mat-label>Ocurrences</mat-label>
+          <input matInput placeholder="5" formControlName="occurrences">
+
+          <mat-icon matSuffix
+          matTooltip="(Optional) Enter the number of times the recurrence should happen">
+            info
+          </mat-icon>
+          
+        </mat-form-field>
+
+      </form>
+  
+    </mat-expansion-panel>
+
+  </div>
+
+</mat-dialog-content>
+
 <mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-flat-button (click)="submitForm()">
-    <mat-icon>add</mat-icon>
-    {{ type }}
-  </button>
+
+  <button mat-button mat-dialog-close class="mr-2">Cancelar</button>
+
+  <div 
+  matTooltip="There are mandatory fields not filled"
+  [matTooltipDisabled]="selectedType() && incomeOrExpenseForm.valid && ((isRecurrence() && recurrenceForm.valid) || !isRecurrence())">
+
+    <button 
+    mat-flat-button 
+    type="submit"
+    (click)="submitForm()"
+    [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid)">
+
+      <mat-icon>add</mat-icon>
+      {{ data.actionType }}
+
+    </button>
+
+  </div>
+
 </mat-dialog-actions>
