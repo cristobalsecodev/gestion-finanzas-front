@@ -11,7 +11,7 @@
           {{ subject }}
         </p>
         
-        @if(!isTokenValid) {
+        @if(!authService.isTokenValid()) {
 
           <div class="mt-10 flex items-center justify-center gap-x-6">
 
@@ -28,7 +28,6 @@
           </div>
 
         }
-        
 
       </div>
 

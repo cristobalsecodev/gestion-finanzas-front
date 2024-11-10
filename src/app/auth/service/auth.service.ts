@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
@@ -18,9 +18,10 @@ export class AuthService {
 
   private authUrl = 'http://localhost:8080/auth'
 
-  // Behaviour subject que comprueba cada X minutos el estado del token
-  private tokenValiditySubject: BehaviorSubject<boolean>
-  tokenValidity$: Observable<boolean>
+  // Comprueba cada X minutos el estado del token
+  // private tokenValiditySubject: BehaviorSubject<boolean>
+  // tokenValidity$: Observable<boolean>
+  isTokenValid = signal<boolean>(false)
 
   private intervalId: any
 
@@ -32,15 +33,17 @@ export class AuthService {
   ) {
 
     // Comprobamos si al cargar la página el token existe
-    let isTokenValidInitially = this.isAuthenticated()
+    // let isTokenValidInitially = this.isAuthenticated()
 
-    this.tokenValiditySubject = new BehaviorSubject<boolean>(isTokenValidInitially)
-    this.tokenValidity$ = this.tokenValiditySubject.asObservable()
+    // this.tokenValiditySubject = new BehaviorSubject<boolean>(isTokenValidInitially)
+    // this.tokenValidity$ = this.tokenValiditySubject.asObservable()
+
+    this.isTokenValid.set(this.isAuthenticated())
 
     // En caso de que exista, comienza al intervalo
-    if(isTokenValidInitially) {
+    if(this.isTokenValid()) {
 
-      this.startTokenCheck(30000)
+      this.startTokenCheck()
 
     }
 
@@ -60,7 +63,7 @@ export class AuthService {
             // Empezamos a comprobar el checkeo si no existe el intervalo
             if(!this.intervalId) {
 
-              this.startTokenCheck(30000)
+              this.startTokenCheck()
 
             }
 
@@ -149,7 +152,7 @@ export class AuthService {
   }
 
   // Empieza el checkeo del token cada X minutos
-  startTokenCheck(intervalDurationMs: number): void {
+  startTokenCheck(): void {
 
     // Verificación inicial del token
     this.checkTokenValidity()
@@ -157,7 +160,7 @@ export class AuthService {
     // Configuramos el intervalo
     if(!this.intervalId) {
 
-      this.intervalId = setInterval(() => this.checkTokenValidity(), intervalDurationMs)
+      this.intervalId = setInterval(() => this.checkTokenValidity(), 60000)
 
     }
 
@@ -182,8 +185,10 @@ export class AuthService {
     const timeRemaining = this.calculateTokenTimeExp()
 
     const isValid = timeRemaining > 0
+
+    this.isTokenValid.set(isValid)
     
-    this.tokenValiditySubject.next(isValid)
+    // this.tokenValiditySubject.next(isValid)
 
   }
 

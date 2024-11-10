@@ -6,6 +6,7 @@ import { StorageService } from '../Storage/storage.service';
 import { Router } from '@angular/router';
 import { resumeRoute } from '../../constants/variables.constants';
 import { NotificacionesService } from '../Notifications/notificaciones.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class UserService {
     private http: HttpClient,
     private storageService: StorageService,
     private router: Router,
+    private authService: AuthService,
     private notificationService: NotificacionesService
   ) { }
 
@@ -29,10 +31,11 @@ export class UserService {
 
         this.storageService.setSession('token', response.token)
 
+        this.authService.startTokenCheck()
+
         this.notificationService.addNotification('Activated successfully', 'success')
 
         this.router.navigate([resumeRoute])
-
 
       })
     )

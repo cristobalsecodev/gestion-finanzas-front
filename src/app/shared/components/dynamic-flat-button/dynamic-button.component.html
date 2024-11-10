@@ -1,0 +1,58 @@
+@if(buttonType === 'flat') {
+
+  <button mat-flat-button [ngClass]="buttonClass" (click)="clicked()">
+  
+    @if(matIcon !== '') {
+  
+      <mat-icon> {{ matIcon }} </mat-icon>
+  
+    }
+  
+    <span> {{ buttonText }} </span>
+  
+  </button>  
+
+} @else if(buttonType === 'raised') {
+
+  <button mat-raised-button [ngClass]="buttonClass" (click)="clicked()">
+  
+    @if(matIcon !== '') {
+  
+      <mat-icon> {{ matIcon }} </mat-icon>
+  
+    }
+  
+    <span> {{ buttonText }} </span>
+  
+  </button>  
+
+} @else if(buttonType === 'basic') {
+
+  <button mat-button [ngClass]="buttonClass" (click)="clicked()">
+  
+    @if(matIcon !== '') {
+  
+      <mat-icon> {{ matIcon }} </mat-icon>
+  
+    }
+  
+    <span> {{ buttonText }} </span>
+  
+  </button>  
+
+} @else if(buttonType === 'stroked') {
+
+  <button mat-stroked-button [ngClass]="buttonClass" (click)="clicked()">
+  
+    @if(matIcon !== '') {
+  
+      <mat-icon> {{ matIcon }} </mat-icon>
+  
+    }
+  
+    <span> {{ buttonText }} </span>
+  
+  </button>  
+
+}
+

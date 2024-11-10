@@ -9,12 +9,12 @@ import { Currency } from '../CurrencyConversion/ConversionDivisa.interface';
 export class DivisaService {
 
   // Crear un BehaviorSubject para almacenar el cambio de divisa
-  private currencySubject = new BehaviorSubject<Currency>({currencyCode: CurrencyCodeENUM.USD, currencyName: CurrencyNameENUM.USD})
-  currency$ = this.currencySubject.asObservable()
+  // private currencySubject = new BehaviorSubject<Currency>({currencyCode: CurrencyCodeENUM.USD, currencyName: CurrencyNameENUM.USD})
+  // currency$ = this.currencySubject.asObservable()
   
-  // Método para cambiar la divisa
-  currencyChange(currency: Currency) {
-    this.currencySubject.next(currency)
-  }
+  // // Método para cambiar la divisa
+  // currencyChange(currency: Currency) {
+  //   this.currencySubject.next(currency)
+  // }
 
 }

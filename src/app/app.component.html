@@ -5,7 +5,7 @@
     </button>
 
     <!-- Navegación -->
-    @if(isTokenValid) {
+    @if(authService.isTokenValid()) {
 
       <section class="hidden sm:ml-30 sm:block space-x-20">
 
@@ -51,7 +51,7 @@
     </button>
 
     <!-- Icono cuenta -->
-    @if(isTokenValid) {
+    @if(authService.isTokenValid()) {
 
       <button mat-icon-button [matMenuTriggerFor]="accountMenu">
 
@@ -70,7 +70,7 @@
 
     }
 
-    @if(isTokenValid) {
+    @if(authService.isTokenValid()) {
 
       <!-- Menú lateral -->
        @if(sidenavOpened) {

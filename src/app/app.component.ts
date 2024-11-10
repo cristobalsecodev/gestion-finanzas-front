@@ -59,16 +59,13 @@ export class AppComponent implements OnInit {
   readonly signUpRoute = signUpRoute
   readonly loginRoute = loginRoute
 
-  // Comprueba si el token es válido
-  isTokenValid: boolean = false
-
   constructor(
     iconRegistry: MatIconRegistry,
     private router: Router,
     private viewportScroller: ViewportScroller,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
-    private authService: AuthService,
+    public authService: AuthService,
     private storageService: StorageService
   ) {
 
@@ -91,7 +88,7 @@ export class AppComponent implements OnInit {
   
   ngOnInit(): void {
 
-    // Escuchar cambios en la URL
+    // Escucha cambios en la URL
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => {
@@ -103,12 +100,6 @@ export class AppComponent implements OnInit {
           this.viewportScroller.scrollToPosition([0, 0])
 
     })
-
-    this.authService.tokenValidity$.subscribe(isValid => {
-
-      this.isTokenValid = isValid;
-
-    });
 
   }
 

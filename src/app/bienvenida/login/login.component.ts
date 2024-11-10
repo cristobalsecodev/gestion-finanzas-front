@@ -12,7 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { WantResetPassword } from 'src/app/auth/interfaces/WantResetPassword.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
-import { DynamicFlatButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-flat-button.component';
+import { DynamicButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-button.component';
 import { SOCIAL } from 'src/app/shared/constants/svg.constants';
 import { newPasswordRoute, signUpRoute } from 'src/app/shared/constants/variables.constants';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
@@ -22,7 +22,7 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
   standalone: true,
   imports: [
     // Components
-    DynamicFlatButtonComponent,
+    DynamicButtonComponent,
     // Angular core
     RouterLink,
     ReactiveFormsModule,

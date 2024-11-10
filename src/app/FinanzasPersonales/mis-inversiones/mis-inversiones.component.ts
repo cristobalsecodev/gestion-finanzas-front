@@ -44,14 +44,14 @@ export class MisInversionesComponent implements OnInit {
   }
 
   constructor(
-    private conversionDivisaService: ConversionDivisaService,
+    private currencyConversionService: ConversionDivisaService,
     private notificacionesService: NotificacionesService,
     private storageService: StorageService
   ) {}
 
   ngOnInit(): void {
     
-    this.conversionDivisaService.getCurrencyConversion(CurrencyCodeENUM.USD).subscribe({
+    this.currencyConversionService.getCurrencyConversion(CurrencyCodeENUM.USD).subscribe({
 
       next: (result: CurrencyConversion) => {
           

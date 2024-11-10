@@ -12,9 +12,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     .pipe(
       catchError((error) => {
 
-        let detailedError: DetailError = error.error
+        const detailedError: DetailError = error.error
 
-        notificationService.addNotification(detailedError.detail, 'error')
+        notificationService.addNotification(
+          detailedError.detail ? detailedError.detail : 'Unknown error', 
+          'error'
+        )
 
         return throwError(() => detailedError)
 

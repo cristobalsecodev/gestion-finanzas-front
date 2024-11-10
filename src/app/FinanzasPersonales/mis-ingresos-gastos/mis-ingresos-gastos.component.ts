@@ -65,15 +65,15 @@ export class MisIngresosGastosComponent {
     this.dialog.open(MisIngresosGastosFormularioComponent, {
 
       data: {
-        actionType: actionType
+        actionType: actionType,
+        incomeOrExpense: null
       },
-      minWidth: '300px', // Mínimo de 300px para dispositivos pequeños
-      maxWidth: '90vw',  // El ancho máximo será el 90% del viewport
-      minHeight: '400px', // Mínimo de 400px de altura
-      maxHeight: '80vh',  // El máximo de altura será el 80% del viewport
-      autoFocus: true,  // Para que el foco vaya al primer campo
+      minWidth: '50vh',
+      maxWidth: '90vw',
+      minHeight: '10vh',
+      maxHeight: '80vh',
 
-    }).afterClosed().subscribe((record => {
+    }).afterClosed().subscribe(((record: IncomeOrExpense) => {
 
 
 

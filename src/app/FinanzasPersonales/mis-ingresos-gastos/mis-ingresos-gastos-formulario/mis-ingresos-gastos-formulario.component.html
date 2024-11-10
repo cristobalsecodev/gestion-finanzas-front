@@ -1,41 +1,39 @@
-<h1 mat-dialog-title>
-
-  <div class="flex items-center justify-center space-x-2">
-
-    <mat-icon>finance_chip</mat-icon>
-    <span>{{ data.actionType }} {{ selectedType() ? selectedType() : 'income or expense' }}</span>
-    
-  </div>
-
-</h1>
-
-<!-- Línea de separación -->
-<div class="mx-auto w-5/6 border-t mt-2"></div>
 
 <mat-dialog-content>
+
+  <h1 mat-dialog-title class="flex items-center justify-center space-x-2 text-center">
+    <span class="font-semibold">{{ data.actionType }} {{ selectedType() ? selectedType() : 'Income or Expense' }}</span>
+  </h1>
+
+  <!-- Primera línea de separación -->
+  <div class="mx-auto w-5/6 border-t my-2"></div>
   
   <!-- Elección de tipo -->
-   <div class="flex items-center space-x-4 mb-4">
+  <div class="flex flex-col space-y-2 mb-4 w-full items-center">
 
-    <!-- Etiqueta de selección -->
-    <label class="text-xs md:text-sm font-medium w-2/5">Choose a type (*):</label>
+    <!-- Etiqueta de selección centrada y en la parte superior -->
+    <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
 
-    <mat-chip-listbox class="flex overflow-x-auto space-x-2 w-3/5" 
+    <mat-chip-listbox class="flex justify-center overflow-x-auto space-x-2"
+    [disabled]="data.actionType === actionTypes.EDIT" 
     (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
-  
+
       @for (type of types; track $index) {
-  
-        <mat-chip-option [value]="type">
+
+        <mat-chip-option [value]="type" class="px-4 py-2">
           {{ type }}
         </mat-chip-option>
-  
+
       }
-  
+
     </mat-chip-listbox>
 
-   </div>
+  </div>
 
-   <form [formGroup]="incomeOrExpenseForm" class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- Segunda línea de separación -->
+  <div class="mx-auto w-5/6 border-t mt-4"></div>
+
+  <form [formGroup]="incomeOrExpenseForm" class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
     <!-- Fecha -->
     <mat-form-field class="w-full">
@@ -47,6 +45,12 @@
       matTooltip="Select the date for the {{ selectedType() ? selectedType() : 'income or expense' }}">
         info
       </mat-icon>
+
+      @if(incomeOrExpenseForm.get('date')?.hasError('required')) {
+
+        <mat-error> Date is required. </mat-error>
+
+      }
 
     </mat-form-field>
   
@@ -60,6 +64,12 @@
       matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
         info
       </mat-icon>
+
+      @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
+
+        <mat-error> Category is required. </mat-error>
+
+      }
 
     </mat-form-field>
   
@@ -87,6 +97,12 @@
         info
       </mat-icon>
 
+      @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
+
+        <mat-error> Amount is required. </mat-error>
+
+      }
+
     </mat-form-field>
   
     <!-- Divisa -->
@@ -99,6 +115,12 @@
       matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
         info
       </mat-icon>
+
+      @if(incomeOrExpenseForm.get('currency')?.hasError('required')) {
+
+        <mat-error> Currency is required. </mat-error>
+
+      }
 
     </mat-form-field>
   
@@ -118,7 +140,7 @@
   </form>
 
   <mat-slide-toggle
-  class="my-4"
+  class="mb-6"
   (change)="isRecurrence.set(!isRecurrence())"
   [disabled]="data.actionType === actionTypes.EDIT">
     In case your {{ selectedType() ? selectedType() : 'income or expense' }} entry has a recurrence
@@ -130,7 +152,7 @@
 
     <mat-expansion-panel 
     [disabled]="!isRecurrence()" 
-    class="my-4"
+    class="my-6"
     [expanded]="isRecurrence()">
 
       <mat-expansion-panel-header>
@@ -145,7 +167,7 @@
 
       </mat-expansion-panel-header>
 
-      <form [formGroup]="recurrenceForm" class="my-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="recurrenceForm" class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
         <!-- Tipo de recurrencia -->
         <mat-form-field class="w-full">
@@ -157,6 +179,12 @@
           matTooltip="Enter the type of recurrence (e.g., daily, weekly, monthly or yearly)">
             info
           </mat-icon>
+
+          @if(recurrenceForm.get('recurrenceType')?.hasError('required')) {
+
+            <mat-error> Recurrence type is required. </mat-error>
+    
+          }
           
         </mat-form-field>
 
@@ -170,6 +198,12 @@
           matTooltip="Specify how often the recurrence occurs (e.g., every 1 day, 2 weeks)">
             info
           </mat-icon>
+
+          @if(recurrenceForm.get('frequency')?.hasError('required')) {
+
+            <mat-error> Frequency is required. </mat-error>
+    
+          }
 
         </mat-form-field>
 
@@ -229,3 +263,38 @@
   </div>
 
 </mat-dialog-actions>
+
+  <!-- <mat-dialog-content class="flex flex-col place-self-center justify-center p-6">
+
+    <h1 mat-dialog-title class="text-2xl font-semibold text-center mb-6">Select a Transaction Type</h1> -->
+
+    <!-- Botones de Ingreso y Gasto -->
+    <!-- <div class="flex flex-wrap justify-center gap-6"></div> -->
+
+    <!-- Botón de Ingreso -->
+    <!-- <app-dynamic-button
+      (click)="selectedType.set('income')"
+      type="button"
+      buttonText="Income"
+      matIcon="keyboard_arrow_up"
+      [textSizeRem]="textSizeRem"
+      [shapePx]="15"
+      [heightPx]="80"
+      buttonType="flat"
+      buttonClass="w-full m-2 sm:w-auto">
+    </app-dynamic-button> -->
+    
+    <!-- Botón de Gasto -->
+    <!-- <app-dynamic-button
+      (click)="selectedType.set('expense')"
+      type="button"
+      buttonText="Expense"
+      matIcon="keyboard_arrow_down"
+      [textSizeRem]="textSizeRem"
+      [shapePx]="15"
+      [heightPx]="80"
+      buttonType="flat"
+      buttonClass="w-full m-2 sm:w-auto">
+    </app-dynamic-button>
+
+  </mat-dialog-content> -->

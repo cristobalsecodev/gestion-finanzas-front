@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -18,7 +18,7 @@ import { signUpRoute, loginRoute, webName } from 'src/app/shared/constants/varia
   templateUrl: './presentacion.component.html',
   styleUrl: './presentacion.component.scss'
 })
-export class PresentacionComponent implements OnInit {
+export class PresentacionComponent {
 
   // Rutas
   readonly loginRoute = loginRoute
@@ -30,21 +30,8 @@ export class PresentacionComponent implements OnInit {
   // Texto de info
   readonly subject = 'Financia Sphere is your all-in-one solution for personal finance management. Seamlessly organize and track your income, expenses, assets, and investments, empowering you to make informed decisions and achieve your financial goals.'
 
-  // Comprueba si el token es válido
-  isTokenValid: boolean = false
-
   constructor(
-    private authService: AuthService
+    public authService: AuthService
   ) {}
-
-  ngOnInit(): void {
-    
-    this.authService.tokenValidity$.subscribe(isValid => {
-
-      this.isTokenValid = isValid;
-      
-    });
-
-  }
 
 }

@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 
 export interface Notification {
   mensaje: string;
@@ -7,15 +6,12 @@ export interface Notification {
   id: number;
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class NotificacionesService {
 
-  private notifitacionSubject = new BehaviorSubject<Notification[]>([])
-
-  notification$ = this.notifitacionSubject.asObservable()
+  notifications = signal<Notification[]>([])
 
   private counterId = 0
 
@@ -29,8 +25,7 @@ export class NotificacionesService {
     }
 
     // Añadimos la notificación
-    const currentNotifications = this.notifitacionSubject.value
-    this.notifitacionSubject.next([...currentNotifications, nuevaNotificacion])
+    this.notifications.update((current => [...current, nuevaNotificacion]))
 
     // Elimina la notificación tras X segundos
     setTimeout(() => {
@@ -44,11 +39,7 @@ export class NotificacionesService {
   removeNotification(id: number) {
 
     // Eliminamos la notificación a mano
-    const currentNotifications = this.notifitacionSubject.value.filter(
-      (notification) => notification.id !== id
-    )
-
-    this.notifitacionSubject.next(currentNotifications)
+    this.notifications.update((current => current.filter(n => n.id !== id)))
 
   }
 }
