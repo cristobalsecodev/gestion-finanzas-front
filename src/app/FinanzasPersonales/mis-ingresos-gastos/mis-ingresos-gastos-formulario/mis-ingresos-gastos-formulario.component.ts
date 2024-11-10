@@ -15,10 +15,8 @@ import { IncomeOrExpense, RecurrenceDetails } from '../IncomeOrExpense';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
-import { CurrencyConversion, ExchangeRate } from 'src/app/shared/services/APIs/CurrencyConversion/ConversionDivisa.interface';
 import { MatSelectModule } from '@angular/material/select';
-import { ConversionDivisaService } from 'src/app/shared/services/APIs/CurrencyConversion/conversion-divisa.service';
-import { StorageService } from 'src/app/shared/services/Storage/storage.service';
+import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
 
 @Component({
   selector: 'app-mis-ingresos-gastos-formulario',
@@ -79,15 +77,11 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
   readonly currencyCode = CurrencyCodeENUM
   readonly currencyName = CurrencyNameENUM
 
-  // Divisas disponibles
-  currencies: ExchangeRate[] = []
-
   // Máximo de longitud para las notas
   maxNotesLength: number = 150
 
   constructor(
-    private currencyConversionService: ConversionDivisaService,
-    private storageService: StorageService
+    public currencyConversionService: CurrencyConversionService
   ) {
 
     this.incomeOrExpenseForm = new FormGroup({
@@ -104,7 +98,7 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
         Validators.maxLength(18) 
       ]),
 
-      currency: new FormControl('', [Validators.required]),
+      currency: new FormControl(this.currencyConversionService.getUserCurrency().currencyCode, [Validators.required]),
 
       notes: new FormControl('', [Validators.maxLength(this.maxNotesLength)])
 
@@ -140,21 +134,11 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.currencyConversionService.getCurrencyConversion(CurrencyCodeENUM.USD).subscribe({
+    if(this.data.incomeOrExpense) {
 
-      next: (result: CurrencyConversion) => {
-          
-        this.currencies = result.exchangeRate
+      this.loadForm()
 
-        if(this.data.incomeOrExpense) {
-
-          this.loadForm()
-    
-        }
-
-      },
-
-    })
+    }
 
   }
 

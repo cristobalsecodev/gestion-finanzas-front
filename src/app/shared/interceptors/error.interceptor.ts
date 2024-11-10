@@ -15,7 +15,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         const detailedError: DetailError = error.error
 
         notificationService.addNotification(
-          detailedError && detailedError.detail ? detailedError.detail : 'Unknown error', 
+          detailedError && detailedError.detail ? detailedError.detail : 'An error occurred while connecting to the server. Please try again.', 
           'error'
         )
 

@@ -35,6 +35,53 @@
     <!-- Espacio intermedio de separación -->
     <span class="flex-auto"></span>
 
+    @if(authService.isTokenValid()) {
+
+      <!-- Selector cambio de divisa -->
+      <section>
+  
+        <button mat-stroked-button 
+          [matMenuTriggerFor]="currencyMenu" aria-label="Currency exchange menu" class=" ms-3 me-3">
+    
+          <mat-icon [svgIcon]="currencyConversionService.selectedCurrency().currencyCode"></mat-icon>
+
+          <span>{{ currencyConversionService.selectedCurrency().currencyCode }}</span>
+
+          <mat-icon class="ms-2"
+          matTooltip="Your main currency">
+            info
+          </mat-icon>
+    
+        </button>
+        
+      </section>
+  
+      <!-- Menú divisas -->
+      <mat-menu #currencyMenu="matMenu">
+  
+        @for(currency of currencyConversionService.currencies(); track currency) {
+  
+          <button mat-menu-item (click)="currencyConversionService.selectFavoriteCurrency(currency.currencyCode, currency.currencyName)">
+            <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
+            @if(currency.currencyCode === currencyConversionService.selectedCurrency().currencyCode) {
+              <mat-icon>check</mat-icon>
+            }
+            <span>{{ currency.currencyName }}</span>
+          </button>
+  
+        } @empty {
+  
+          <button mat-menu-item matTooltip="It is possible that the API has reached its maximum call limit">
+            <mat-icon>report</mat-icon>
+            <span>No currencies available</span>
+          </button>
+  
+        }
+  
+      </mat-menu>
+
+    }
+
     <!-- Icono modo visual -->
     <button mat-icon-button (click)="darkMode.set(!darkMode())">
 

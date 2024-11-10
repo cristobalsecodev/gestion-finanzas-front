@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
-import { Currency } from '../CurrencyConversion/ConversionDivisa.interface';
+import { Currency } from '../CurrencyConversion/CurrencyConversion.interface';
 
 @Injectable({
   providedIn: 'root'

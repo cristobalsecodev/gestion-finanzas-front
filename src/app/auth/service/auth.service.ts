@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
 import { activateAccountRoute, signUpRoute, loginRoute, resumeRoute } from '../../shared/constants/variables.constants';
@@ -10,6 +10,7 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
 import { Router } from '@angular/router';
 import { WantResetPassword } from '../interfaces/WantResetPassword.interface';
 import { ResetPassword } from '../interfaces/ResetPassword.interface';
+import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,7 @@ export class AuthService {
 
   private authUrl = 'http://localhost:8080/auth'
 
-  // Comprueba cada X minutos el estado del token
-  // private tokenValiditySubject: BehaviorSubject<boolean>
-  // tokenValidity$: Observable<boolean>
+  // Comprueba si el token es válido
   isTokenValid = signal<boolean>(false)
 
   private intervalId: any
@@ -29,14 +28,9 @@ export class AuthService {
     private http: HttpClient,
     private storageService: StorageService,
     private notificationsService: NotificacionesService,
-    private router: Router
+    private router: Router,
+    private currencyConversionService: CurrencyConversionService
   ) {
-
-    // Comprobamos si al cargar la página el token existe
-    // let isTokenValidInitially = this.isAuthenticated()
-
-    // this.tokenValiditySubject = new BehaviorSubject<boolean>(isTokenValidInitially)
-    // this.tokenValidity$ = this.tokenValiditySubject.asObservable()
 
     this.isTokenValid.set(this.isAuthenticated())
 
@@ -57,6 +51,9 @@ export class AuthService {
         tap(response => {
 
           this.storageService.setSession('token', response.token)
+
+          // Llamamos al servicio de divisas
+          this.currencyConversionService.manageCurrencyService()
 
           if(this.isAccountActivated()) {
 
@@ -87,6 +84,9 @@ export class AuthService {
         tap(response => {
 
           this.storageService.setSession('token', response.token)
+          
+          // Llamamos al servicio de divisas
+          this.currencyConversionService.manageCurrencyService()
 
           this.notificationsService.addNotification('Account created', 'success')
 
@@ -187,8 +187,6 @@ export class AuthService {
     const isValid = timeRemaining > 0
 
     this.isTokenValid.set(isValid)
-    
-    // this.tokenValiditySubject.next(isValid)
 
   }
 

@@ -17,6 +17,7 @@ import { activateAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { StorageService } from './shared/services/Storage/storage.service';
+import { CurrencyConversionService } from './shared/services/APIs/CurrencyConversion/currency-conversion.service';
 
 @Component({
   selector: 'app-root',
@@ -66,6 +67,7 @@ export class AppComponent implements OnInit {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
+    public currencyConversionService: CurrencyConversionService,
     private storageService: StorageService
   ) {
 
@@ -100,6 +102,12 @@ export class AppComponent implements OnInit {
           this.viewportScroller.scrollToPosition([0, 0])
 
     })
+
+    if(this.authService.isTokenValid()) {
+
+      this.currencyConversionService.manageCurrencyService()
+
+    }
 
   }
 
