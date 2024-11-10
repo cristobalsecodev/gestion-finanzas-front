@@ -12,14 +12,18 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
 import { IncomeOrExpense, RecurrenceDetails } from '../IncomeOrExpense';
-import { DynamicButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-button.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
+import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
+import { CurrencyConversion, ExchangeRate } from 'src/app/shared/services/APIs/CurrencyConversion/ConversionDivisa.interface';
+import { MatSelectModule } from '@angular/material/select';
+import { ConversionDivisaService } from 'src/app/shared/services/APIs/CurrencyConversion/conversion-divisa.service';
+import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 
 @Component({
   selector: 'app-mis-ingresos-gastos-formulario',
   standalone: true,
   imports: [
-    // Components
-    DynamicButtonComponent,
     // Angular core
     ReactiveFormsModule,
     MatInput,
@@ -34,7 +38,11 @@ import { DynamicButtonComponent } from 'src/app/shared/components/dynamic-flat-b
     MatChipsModule,
     MatTooltipModule,
     MatExpansionModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    // Pipes
+    SimboloDivisaPipe
   ],
   templateUrl: './mis-ingresos-gastos-formulario.component.html',
   styleUrl: './mis-ingresos-gastos-formulario.component.scss',
@@ -67,21 +75,38 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
   // Tamaño del texto del botón dinámico
   textSizeRem: number = 1.5
 
-  constructor() {
+  // Divisas ENUM
+  readonly currencyCode = CurrencyCodeENUM
+  readonly currencyName = CurrencyNameENUM
+
+  // Divisas disponibles
+  currencies: ExchangeRate[] = []
+
+  // Máximo de longitud para las notas
+  maxNotesLength: number = 150
+
+  constructor(
+    private currencyConversionService: ConversionDivisaService,
+    private storageService: StorageService
+  ) {
 
     this.incomeOrExpenseForm = new FormGroup({
 
       date: new FormControl('', [Validators.required]),
       
-      category: new FormControl('', [Validators.required]),
+      category: new FormControl('', [Validators.required, Validators.maxLength(50)]),
 
-      subCategory: new FormControl(''),
+      subCategory: new FormControl('', [Validators.maxLength(50)]),
 
-      amount: new FormControl('', [Validators.required]),
+      amount: new FormControl('', [
+        Validators.required, 
+        Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
+        Validators.maxLength(18) 
+      ]),
 
       currency: new FormControl('', [Validators.required]),
 
-      notes: new FormControl('')
+      notes: new FormControl('', [Validators.maxLength(this.maxNotesLength)])
 
     })
 
@@ -89,11 +114,15 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
       recurrenceType: new FormControl('', [Validators.required]),
       
-      frequency: new FormControl('', [Validators.required]),
+      frequency: new FormControl('', [
+        Validators.required, 
+        Validators.pattern('^[0-9]+$'),
+        Validators.maxLength(3)
+      ]),
 
       endDate: new FormControl(''),
 
-      occurrences: new FormControl(''),
+      occurrences: new FormControl('', [Validators.pattern('^[0-9]+$'), Validators.maxLength(3)]),
 
     })
 
@@ -111,11 +140,21 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if(this.data.incomeOrExpense) {
+    this.currencyConversionService.getCurrencyConversion(CurrencyCodeENUM.USD).subscribe({
 
-      this.loadForm()
+      next: (result: CurrencyConversion) => {
+          
+        this.currencies = result.exchangeRate
 
-    }
+        if(this.data.incomeOrExpense) {
+
+          this.loadForm()
+    
+        }
+
+      },
+
+    })
 
   }
 
