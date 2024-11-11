@@ -42,4 +42,5 @@ export class NotificacionesService {
     this.notifications.update((current => current.filter(n => n.id !== id)))
 
   }
+  
 }

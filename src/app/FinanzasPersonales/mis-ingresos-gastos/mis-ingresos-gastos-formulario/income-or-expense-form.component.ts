@@ -19,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
 
 @Component({
-  selector: 'app-mis-ingresos-gastos-formulario',
+  selector: 'app-income-or-expense-form',
   standalone: true,
   imports: [
     // Angular core
@@ -42,11 +42,11 @@ import { CurrencyConversionService } from 'src/app/shared/services/APIs/Currency
     // Pipes
     SimboloDivisaPipe
   ],
-  templateUrl: './mis-ingresos-gastos-formulario.component.html',
-  styleUrl: './mis-ingresos-gastos-formulario.component.scss',
+  templateUrl: './income-or-expense-form.component.html',
+  styleUrl: './income-or-expense-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MisIngresosGastosFormularioComponent implements OnInit {
+export class IncomeOrExpenseFormComponent implements OnInit {
 
   // Selección del tipo de registro
   selectedType = signal<'income' | 'expense' | null>(null)
@@ -56,7 +56,7 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
   // Variables de dialog
   readonly data: {actionType: string; incomeOrExpense: IncomeOrExpense | null} = inject(MAT_DIALOG_DATA)
-  readonly dialogRef = inject(MatDialogRef<MisIngresosGastosFormularioComponent>)
+  readonly dialogRef = inject(MatDialogRef<IncomeOrExpenseFormComponent>)
   
   // Tipos de acción
   readonly actionTypes = ActionType
@@ -163,7 +163,7 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
       this.recurrenceForm.get('frequency')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.frequency)
       this.recurrenceForm.get('recurrenceType')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.recurrenceType)
       this.recurrenceForm.get('endDate')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.endDate)
-      this.recurrenceForm.get('ocurrences')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.occurrences)
+      this.recurrenceForm.get('occurrences')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.occurrences)
 
     }
 
@@ -175,6 +175,7 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
         let saveIncomOrExpense: IncomeOrExpense = {
 
+          id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
           amount: this.incomeOrExpenseForm.get('amount')?.value,
           category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
@@ -204,11 +205,16 @@ export class MisIngresosGastosFormularioComponent implements OnInit {
 
   private buildRecurrenceDetails(): RecurrenceDetails {
 
+    const id = (this.data.incomeOrExpense && this.data.incomeOrExpense.recurrenceDetails) 
+      ? this.data.incomeOrExpense.recurrenceDetails.id
+      : undefined 
+
     return {
+      id: id,
       frequency: this.recurrenceForm.get('frequency')?.value,
       recurrenceType: this.recurrenceForm.get('recurrenceType')?.value,
       endDate: this.recurrenceForm.get('endDate')?.value,
-      occurrences: this.recurrenceForm.get('ocurrences')?.value
+      occurrences: this.recurrenceForm.get('occurrences')?.value
     };
 
   }

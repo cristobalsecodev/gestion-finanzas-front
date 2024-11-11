@@ -118,24 +118,6 @@
 
     </mat-form-field>
 
-    <!-- <mat-form-field class="w-full">
-
-      <mat-label>Currency</mat-label>
-      <input matInput formControlName="currency" required>
-
-      <mat-icon matSuffix
-      matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
-        info
-      </mat-icon>
-
-      @if(incomeOrExpenseForm.get('currency')?.hasError('required')) {
-
-        <mat-error> Currency is required. </mat-error>
-
-      }
-
-    </mat-form-field> -->
-
     <!-- Cantidad -->
     <mat-form-field class="w-full" floatLabel="always">
 
@@ -190,7 +172,7 @@
   class="mb-6"
   (change)="isRecurrence.set(!isRecurrence())"
   [disabled]="data.actionType === actionTypes.EDIT">
-    In case your {{ selectedType() ? selectedType() : 'income or expense' }} entry has a recurrence
+    In case your {{ selectedType() || 'income or expense' }} entry is recurring. (Note: The recurrence starts from the date selected above.)
   </mat-slide-toggle>
 
   <!-- Recurrencia -->

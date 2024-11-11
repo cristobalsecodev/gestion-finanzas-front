@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { MiResumenComponent } from './finanzasPersonales/mi-resumen/mi-resumen.component';
 import { MisInversionesComponent } from './finanzasPersonales/mis-inversiones/mis-inversiones.component';
-import { MisIngresosGastosComponent } from './finanzasPersonales/mis-ingresos-gastos/mis-ingresos-gastos.component';
+import { IncomeOrExpenseComponent } from './finanzasPersonales/mis-ingresos-gastos/income-or-expense.component';
 import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
 import { authGuard } from './auth/guards/auth/auth.guard';
@@ -16,7 +16,7 @@ import { NewPasswordComponent } from './shared/components/new-password/new-passw
 export const routes: Routes = [
   {
     path: incomeExpensesRoute, 
-    component: MisIngresosGastosComponent,
+    component: IncomeOrExpenseComponent,
     canActivate: [authGuard]
   },
   {

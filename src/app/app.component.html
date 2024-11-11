@@ -40,18 +40,15 @@
       <!-- Selector cambio de divisa -->
       <section>
   
-        <button mat-stroked-button 
-          [matMenuTriggerFor]="currencyMenu" aria-label="Currency exchange menu" class=" ms-3 me-3">
-    
-          <mat-icon [svgIcon]="currencyConversionService.selectedCurrency().currencyCode"></mat-icon>
+        <button mat-button 
+          [matMenuTriggerFor]="currencyMenu" 
+          aria-label="Currency exchange menu"
+          matTooltip="This is your main currency. Currently selected: {{ currencyConversionService.selectedCurrency().currencyName }}"
+          class="ms-3 me-3">
+   
+            <mat-icon [svgIcon]="currencyConversionService.selectedCurrency().currencyCode"></mat-icon>
+            <span>{{ currencyConversionService.selectedCurrency().currencyCode }}</span>
 
-          <span>{{ currencyConversionService.selectedCurrency().currencyCode }}</span>
-
-          <mat-icon class="ms-2"
-          matTooltip="Your main currency">
-            info
-          </mat-icon>
-    
         </button>
         
       </section>
