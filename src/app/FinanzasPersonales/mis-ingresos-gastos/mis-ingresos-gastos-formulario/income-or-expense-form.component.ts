@@ -87,7 +87,13 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     this.incomeOrExpenseForm = new FormGroup({
 
       date: new FormControl('', [Validators.required]),
-      
+
+      type: new FormControl(
+        {
+          value: '', 
+          disabled: this.data.actionType === this.actionTypes.EDIT ? true : false
+        }, [Validators.required]),
+
       category: new FormControl('', [Validators.required, Validators.maxLength(50)]),
 
       subCategory: new FormControl('', [Validators.maxLength(50)]),
@@ -150,6 +156,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     this.isRecurrence.set(!!this.data.incomeOrExpense?.recurrenceDetails)
 
     // Formulario de ingreso / gasto
+    this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type.charAt(0).toUpperCase() + this.data.incomeOrExpense?.type.slice(1)!)
     this.incomeOrExpenseForm.get('amount')?.setValue(this.data.incomeOrExpense?.amount)
     this.incomeOrExpenseForm.get('category')?.setValue(this.data.incomeOrExpense?.category)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
@@ -169,6 +176,30 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
+  checkMandatoryFields(): void {
+
+    // Marca el formulario de ingreso o gasto
+    this.markForms(this.incomeOrExpenseForm)
+
+    // Marca el formulario de recurrencia
+    this.markForms(this.recurrenceForm)
+
+  }
+
+  markForms(form: FormGroup): void {
+
+    Object.keys(form.controls).forEach(controlName => {
+
+      const control = form.get(controlName);
+
+      if (control && control.invalid && control.hasValidator(Validators.required)) {
+        control.markAsTouched();
+      }
+      
+    });
+
+  }
+
   submitForm(): void {
 
     if(this.shouldSaveIncomeOrExpense()) {
@@ -180,7 +211,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
           date: this.incomeOrExpenseForm.get('date')?.value,
-          type: this.selectedType()!,
+          type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
           subCategory: this.incomeOrExpenseForm.get('subCategory')?.value,
           ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    

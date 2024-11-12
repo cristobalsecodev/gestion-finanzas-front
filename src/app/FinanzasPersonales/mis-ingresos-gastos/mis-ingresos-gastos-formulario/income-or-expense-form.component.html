@@ -6,16 +6,18 @@
   </h1>
 
   <!-- Primera línea de separación -->
-  <div class="mx-auto w-5/6 border-t my-2"></div>
-  
+  <div class="mx-auto w-11/12 border-t my-2"></div>
+
+  <form [formGroup]="incomeOrExpenseForm">
+
   <!-- Elección de tipo -->
   <div class="flex flex-col space-y-2 mb-4 w-full items-center">
 
     <!-- Etiqueta de selección centrada y en la parte superior -->
     <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
 
-    <mat-chip-listbox class="flex justify-center overflow-x-auto space-x-2"
-    [disabled]="data.actionType === actionTypes.EDIT" 
+    <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
+    formControlName="type"
     (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
 
       @for (type of types; track $index) {
@@ -31,9 +33,9 @@
   </div>
 
   <!-- Segunda línea de separación -->
-  <div class="mx-auto w-5/6 border-t mt-4"></div>
+  <div class="mx-auto w-11/12 border-t mt-4"></div>
 
-  <form [formGroup]="incomeOrExpenseForm" class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
     <!-- Fecha -->
     <mat-form-field class="w-full">
@@ -166,7 +168,11 @@
 
     </mat-form-field>
     
+  </div>
+    
   </form>
+  
+
 
   <mat-slide-toggle
   class="mb-6"
@@ -273,7 +279,8 @@
 
           }
 
-    
+          <mat-hint>The end date takes priority over occurrences.</mat-hint>
+
         </mat-form-field>
 
         <!-- Ocurrencias -->
@@ -315,7 +322,8 @@
 
   <div 
   matTooltip="There are mandatory fields not filled"
-  [matTooltipDisabled]="selectedType() && incomeOrExpenseForm.valid && ((isRecurrence() && recurrenceForm.valid) || !isRecurrence())">
+  [matTooltipDisabled]="selectedType() && incomeOrExpenseForm.valid && ((isRecurrence() && recurrenceForm.valid) || !isRecurrence())"
+  (mouseover)="checkMandatoryFields()">
 
     <button 
     mat-flat-button 

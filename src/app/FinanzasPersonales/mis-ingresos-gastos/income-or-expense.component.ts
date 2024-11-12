@@ -14,6 +14,7 @@ import { IncomeOrExpense } from './IncomeOrExpense';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { IncomeOrExpenseService } from './service/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -26,6 +27,7 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
     MatButtonModule,
     MatDialogModule,
     MatTooltipModule,
+    MatMenuModule,
     // Pipes
     SimboloDivisaPipe,
     DatePipe,
@@ -63,15 +65,13 @@ export class IncomeOrExpenseComponent {
     private notificationsService: NotificacionesService
   ) {}
 
-  openDialog(actionType: string): void {
-
-
+  openDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
 
     this.dialog.open(IncomeOrExpenseFormComponent, {
 
       data: {
         actionType: actionType,
-        incomeOrExpense: null
+        incomeOrExpense: incomeOrExpense
       },
       minWidth: '50vh',
       maxWidth: '90vw',
