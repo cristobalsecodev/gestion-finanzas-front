@@ -21,3 +21,13 @@ export interface RecurrenceDetails {
   occurrences?: number // Número de veces que ocurre la operación
 
 }
+
+interface BaseCategory {
+  id?: number;
+  name: string;
+  type: string;
+}
+
+export interface Categories extends BaseCategory {}
+
+export interface SubCategories extends BaseCategory {}

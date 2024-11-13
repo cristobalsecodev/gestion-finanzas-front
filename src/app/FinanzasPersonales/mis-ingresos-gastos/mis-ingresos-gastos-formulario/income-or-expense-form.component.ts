@@ -11,12 +11,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
-import { IncomeOrExpense, RecurrenceDetails } from '../IncomeOrExpense';
+import { Categories, IncomeOrExpense, RecurrenceDetails, SubCategories } from '../interfaces.ts/IncomeOrExpense';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
+import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -39,6 +41,7 @@ import { CurrencyConversionService } from 'src/app/shared/services/APIs/Currency
     MatSlideToggleModule,
     MatDatepickerModule,
     MatSelectModule,
+    MatAutocompleteModule,
     // Pipes
     SimboloDivisaPipe
   ],
@@ -73,6 +76,12 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   // Tamaño del texto del botón dinámico
   textSizeRem: number = 1.5
 
+  // Categorías y subCategorías
+  categories: Categories[] = []
+  filteredCategories: Categories[] = []
+  subCategories: SubCategories[] = []
+  filteredSubCategories: SubCategories[] = []
+
   // Divisas ENUM
   readonly currencyCode = CurrencyCodeENUM
   readonly currencyName = CurrencyNameENUM
@@ -83,6 +92,24 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   constructor(
     public currencyConversionService: CurrencyConversionService
   ) {
+
+      // Define las listas de categorías y subcategorías
+      this.categories = [
+        { id: 1, name: 'Bosque', type: 'Naturaleza' },
+        { id: 2, name: 'Montaña', type: 'Naturaleza' },
+        { id: 3, name: 'Río', type: 'Agua' },
+        { id: 4, name: 'Lago', type: 'Agua' },
+        { id: 5, name: 'Desierto', type: 'Tierra' }
+      ];
+      
+      this.subCategories = [
+        { id: 6, name: 'Playa', type: 'Costero' },
+        { id: 7, name: 'Valle', type: 'Naturaleza' },
+        { id: 8, name: 'Marisma', type: 'Agua' },
+        { id: 9, name: 'Cañón', type: 'Tierra' },
+        { id: 10, name: 'Cueva', type: 'Subterráneo' }
+      ];
+
 
     this.incomeOrExpenseForm = new FormGroup({
 
@@ -96,7 +123,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
       category: new FormControl('', [Validators.required, Validators.maxLength(50)]),
 
-      subCategory: new FormControl('', [Validators.maxLength(50)]),
+      subCategory: new FormControl({value: '', disabled: true}, [Validators.maxLength(50)]),
 
       amount: new FormControl('', [
         Validators.required, 
@@ -140,6 +167,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.filteredCategories = this.categories
+    this.filteredSubCategories = this.filteredSubCategories
+
     if(this.data.incomeOrExpense) {
 
       this.loadForm()
@@ -173,6 +203,33 @@ export class IncomeOrExpenseFormComponent implements OnInit {
       this.recurrenceForm.get('occurrences')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.occurrences)
 
     }
+
+  }
+
+  onCategorySearch(): void {
+
+    // Reinicia la subCategoría
+    this.resetSubCategory()
+
+    const searchTerm = this.incomeOrExpenseForm.get('category')?.value
+
+    this.filteredCategories = filterAutocomplete(this.categories, searchTerm, ['name'])
+
+  }
+
+  onSubCategorySearch(): void {
+
+    const searchTerm = this.incomeOrExpenseForm.get('subCategory')?.value
+
+    this.filteredSubCategories = filterAutocomplete(this.subCategories, searchTerm, ['name'])
+
+  }
+
+  resetSubCategory(): void {
+
+    this.incomeOrExpenseForm.get('subCategory')?.disable()
+    this.incomeOrExpenseForm.get('subCategory')?.setValue('')
+    this.filteredSubCategories = this.subCategories
 
   }
 

@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {RouterLink } from '@angular/router';
 import { CreateUser } from 'src/app/shared/interfaces/User.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
-import { passwordMatchValidator } from 'src/app/shared/functions/validators/Validators';
+import { passwordMatchValidator } from 'src/app/shared/functions/Validators';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({

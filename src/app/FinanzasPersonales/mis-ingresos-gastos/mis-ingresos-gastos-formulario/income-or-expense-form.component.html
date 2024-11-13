@@ -10,165 +10,204 @@
 
   <form [formGroup]="incomeOrExpenseForm">
 
-  <!-- Elección de tipo -->
-  <div class="flex flex-col space-y-2 mb-4 w-full items-center">
+    <!-- Elección de tipo -->
+    <div class="flex flex-col space-y-2 mb-4 w-full items-center">
 
-    <!-- Etiqueta de selección centrada y en la parte superior -->
-    <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
+      <!-- Etiqueta de selección centrada y en la parte superior -->
+      <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
 
-    <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
-    formControlName="type"
-    (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
+      <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
+      formControlName="type"
+      (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
 
-      @for (type of types; track $index) {
+        @for (type of types; track $index) {
 
-        <mat-chip-option [value]="type" class="px-4 py-2">
-          {{ type }}
-        </mat-chip-option>
-
-      }
-
-    </mat-chip-listbox>
-
-  </div>
-
-  <!-- Segunda línea de separación -->
-  <div class="mx-auto w-11/12 border-t mt-4"></div>
-
-  <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-    <!-- Fecha -->
-    <mat-form-field class="w-full">
-
-      <mat-label>Date</mat-label>
-
-      <input matInput [matDatepicker]="dp" formControlName="date" required readonly>
-      <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
-      <mat-datepicker #dp></mat-datepicker>
-
-      <mat-icon matSuffix
-      matTooltip="Select the date for the {{ selectedType() ? selectedType() : 'income or expense' }}">
-        info
-      </mat-icon>
-
-      @if(incomeOrExpenseForm.get('date')?.hasError('required')) {
-
-        <mat-error> Date is required. </mat-error>
-
-      }
-
-    </mat-form-field>
-  
-    <!-- Categoría -->
-    <mat-form-field class="w-full">
-
-      <mat-label>Category</mat-label>
-      <input matInput placeholder="Select a category" formControlName="category" required>
-
-      <mat-icon matSuffix
-      matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
-        info
-      </mat-icon>
-
-      @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
-
-        <mat-error> Category is required. </mat-error>
-
-      }
-
-    </mat-form-field>
-  
-    <!-- Subcategoría -->
-    <mat-form-field class="w-full">
-
-      <mat-label>Subcategory</mat-label>
-      <input matInput placeholder="Select a subcategory" formControlName="subCategory">
-
-      <mat-icon matSuffix
-      matTooltip="(Optional) Select a more specific category for the {{ selectedType() ? selectedType() : 'income or expense' }}">
-        info
-      </mat-icon>
-
-    </mat-form-field>
-
-    <!-- Divisa -->
-
-    <mat-form-field class="w-full">
-
-      <mat-label>Currency</mat-label>
-
-      <mat-select formControlName="currency" required>
-
-        @for (currency of currencyConversionService.currencies(); track $index) {
-
-          <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
+          <mat-chip-option [value]="type" class="px-4 py-2">
+            {{ type }}
+          </mat-chip-option>
 
         }
 
-      </mat-select>
+      </mat-chip-listbox>
 
-      <mat-icon matSuffix
-      matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
-        info
-      </mat-icon>
+    </div>
 
-      @if(incomeOrExpenseForm.get('currency')?.hasError('required')) {
+    <!-- Segunda línea de separación -->
+    <div class="mx-auto w-11/12 border-t mt-4"></div>
 
-        <mat-error> Currency is required. </mat-error>
+    <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-      }
+      <!-- Fecha -->
+      <mat-form-field class="w-full">
 
-    </mat-form-field>
+        <mat-label>Date</mat-label>
 
-    <!-- Cantidad -->
-    <mat-form-field class="w-full" floatLabel="always">
+        <input matInput [matDatepicker]="dp" formControlName="date" required readonly>
+        <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
 
-      <mat-label>Amount</mat-label>
-      <input matInput placeholder="1000.00" formControlName="amount" required>
+        <mat-icon matSuffix
+        matTooltip="Select the date for the {{ selectedType() ? selectedType() : 'income or expense' }}">
+          info
+        </mat-icon>
 
-      <span matTextPrefix>{{ 0 | simboloDivisa: incomeOrExpenseForm.get('currency')?.value }}</span>
+        @if(incomeOrExpenseForm.get('date')?.hasError('required')) {
 
-      <mat-icon matSuffix
-      matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
-        info
-      </mat-icon>
+          <mat-error> Date is required. </mat-error>
 
-      @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
+        }
 
-        <mat-error> Amount is required. </mat-error>
-
-      }
-
-      @if(incomeOrExpenseForm.get('amount')?.hasError('pattern')) {
-
-        <mat-error> Invalid amount. Max 15 digits and 2 decimals. </mat-error>
-
-      }
-
-    </mat-form-field>
-  
-    <!-- Notas -->
-    <mat-form-field class="w-full">
-
-      <mat-label>Notes</mat-label>
-      <input matInput placeholder="Description" formControlName="notes">
-
-      <mat-icon matSuffix
-      matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
-        info
-      </mat-icon>
-
-      <mat-hint align="end">{{ incomeOrExpenseForm.get('notes')?.value.length }}/{{ maxNotesLength }}</mat-hint>
-
-      @if(incomeOrExpenseForm.get('notes')?.hasError('maxlength')) {
-
-        <mat-error> Max length reached. </mat-error>
-
-      }
-
-    </mat-form-field>
+      </mat-form-field>
     
-  </div>
+      <!-- Categoría -->
+      <mat-form-field class="w-full">
+
+        <mat-label>Category</mat-label>
+
+        <input
+        type="text"
+        matInput
+        formControlName="category"
+        [matAutocomplete]="autoCategory"
+        (keyup)="onCategorySearch()"
+        />
+        <mat-autocomplete #autoCategory="matAutocomplete"
+        (optionSelected)="incomeOrExpenseForm.get('subCategory')?.enable()">
+
+          @for (option of filteredCategories; track $index) {
+
+            <mat-option [value]="option.name">
+              {{ option.name }}
+            </mat-option>
+
+          }
+
+        </mat-autocomplete>
+
+        <mat-icon matSuffix
+        matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
+          info
+        </mat-icon>
+
+        @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
+
+          <mat-error> Category is required. </mat-error>
+
+        }
+
+      </mat-form-field>
+    
+      <!-- Subcategoría -->
+      <mat-form-field class="w-full"
+      matTooltip="First you have to select a category"
+      [matTooltipDisabled]="incomeOrExpenseForm.get('subCategory')?.enabled">
+
+        <mat-label>Subcategory</mat-label>
+
+        <input
+        type="text"
+        matInput
+        formControlName="subCategory"
+        [matAutocomplete]="autoSubCategory"
+        (keyup)="onSubCategorySearch()"
+        />
+        <mat-autocomplete #autoSubCategory="matAutocomplete">
+
+          @for (option of filteredSubCategories; track $index) {
+
+            <mat-option [value]="option.name">
+              {{ option.name }}
+            </mat-option>
+
+          }
+          
+        </mat-autocomplete>
+
+        <mat-icon matSuffix
+        matTooltip="(Optional) Select a more specific category for the {{ selectedType() ? selectedType() : 'income or expense' }}">
+          info
+        </mat-icon>
+
+      </mat-form-field>
+
+      <!-- Divisa -->
+
+      <mat-form-field class="w-full">
+
+        <mat-label>Currency</mat-label>
+
+        <mat-select formControlName="currency" required>
+
+          @for (currency of currencyConversionService.currencies(); track $index) {
+
+            <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
+
+          }
+
+        </mat-select>
+
+        <mat-icon matSuffix
+        matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
+          info
+        </mat-icon>
+
+        @if(incomeOrExpenseForm.get('currency')?.hasError('required')) {
+
+          <mat-error> Currency is required. </mat-error>
+
+        }
+
+      </mat-form-field>
+
+      <!-- Cantidad -->
+      <mat-form-field class="w-full" floatLabel="always">
+
+        <mat-label>Amount</mat-label>
+        <input matInput placeholder="1000.00" formControlName="amount" required>
+
+        <span matTextPrefix>{{ 0 | simboloDivisa: incomeOrExpenseForm.get('currency')?.value }}</span>
+
+        <mat-icon matSuffix
+        matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
+          info
+        </mat-icon>
+
+        @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
+
+          <mat-error> Amount is required. </mat-error>
+
+        }
+
+        @if(incomeOrExpenseForm.get('amount')?.hasError('pattern')) {
+
+          <mat-error> Invalid amount. Max 15 digits and 2 decimals. </mat-error>
+
+        }
+
+      </mat-form-field>
+    
+      <!-- Notas -->
+      <mat-form-field class="w-full">
+
+        <mat-label>Notes</mat-label>
+        <input matInput placeholder="Description" formControlName="notes">
+
+        <mat-icon matSuffix
+        matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
+          info
+        </mat-icon>
+
+        <mat-hint align="end">{{ incomeOrExpenseForm.get('notes')?.value.length }}/{{ maxNotesLength }}</mat-hint>
+
+        @if(incomeOrExpenseForm.get('notes')?.hasError('maxlength')) {
+
+          <mat-error> Max length reached. </mat-error>
+
+        }
+
+      </mat-form-field>
+      
+    </div>
     
   </form>
   

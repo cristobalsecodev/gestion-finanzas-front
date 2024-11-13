@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IncomeOrExpense } from '../IncomeOrExpense';
+import { IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
