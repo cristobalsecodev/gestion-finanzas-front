@@ -18,7 +18,7 @@
 
       <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
       formControlName="type"
-      (change)="selectedType.set($event.value ? $event.value.toLowerCase() : $event.value)">
+      (change)="onChangeChip($event)">
 
         @for (type of types; track $index) {
 
@@ -46,7 +46,7 @@
         <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
         <mat-datepicker #dp></mat-datepicker>
 
-        <mat-icon matSuffix
+        <mat-icon matIconSuffix
         matTooltip="Select the date for the {{ selectedType() ? selectedType() : 'income or expense' }}">
           info
         </mat-icon>
@@ -60,7 +60,9 @@
       </mat-form-field>
     
       <!-- Categoría -->
-      <mat-form-field class="w-full">
+      <mat-form-field class="w-full"
+      matTooltip="Please select a type first"
+      [matTooltipDisabled]="incomeOrExpenseForm.get('category')?.enabled">
 
         <mat-label>Category</mat-label>
 
@@ -72,7 +74,7 @@
         (keyup)="onCategorySearch()"
         />
         <mat-autocomplete #autoCategory="matAutocomplete"
-        (optionSelected)="incomeOrExpenseForm.get('subCategory')?.enable()">
+        (optionSelected)="filterSubCategories()">
 
           @for (option of filteredCategories; track $index) {
 
@@ -84,10 +86,23 @@
 
         </mat-autocomplete>
 
-        <mat-icon matSuffix
-        matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
-          info
-        </mat-icon>
+        @if(this.filteredCategories.length > 0) {
+
+          <mat-icon matIconSuffix
+          matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
+            info
+          </mat-icon>
+
+        } @else {
+
+          <mat-icon matIconSuffix class="cursor-pointer"
+          matTooltip="You don't have any categories. Click in this button to add one">
+            add
+          </mat-icon>
+
+        }
+
+
 
         @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
 
@@ -96,10 +111,12 @@
         }
 
       </mat-form-field>
-    
+
       <!-- Subcategoría -->
       <mat-form-field class="w-full"
-      matTooltip="First you have to select a category"
+      [matTooltip]="(this.filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value) 
+        ? 'The category doesn\'t have any subcategories'
+        : 'Please select a category first'"
       [matTooltipDisabled]="incomeOrExpenseForm.get('subCategory')?.enabled">
 
         <mat-label>Subcategory</mat-label>
@@ -123,7 +140,7 @@
           
         </mat-autocomplete>
 
-        <mat-icon matSuffix
+        <mat-icon matIconSuffix
         matTooltip="(Optional) Select a more specific category for the {{ selectedType() ? selectedType() : 'income or expense' }}">
           info
         </mat-icon>
@@ -146,7 +163,7 @@
 
         </mat-select>
 
-        <mat-icon matSuffix
+        <mat-icon matIconSuffix
         matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
           info
         </mat-icon>
@@ -167,7 +184,7 @@
 
         <span matTextPrefix>{{ 0 | simboloDivisa: incomeOrExpenseForm.get('currency')?.value }}</span>
 
-        <mat-icon matSuffix
+        <mat-icon matIconSuffix
         matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
           info
         </mat-icon>
@@ -192,7 +209,7 @@
         <mat-label>Notes</mat-label>
         <input matInput placeholder="Description" formControlName="notes">
 
-        <mat-icon matSuffix
+        <mat-icon matIconSuffix
         matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
           info
         </mat-icon>
@@ -249,7 +266,7 @@
           <mat-label>Recurrence type</mat-label>
           <input matInput placeholder="daily" formControlName="recurrenceType" required>
 
-          <mat-icon matSuffix
+          <mat-icon matIconSuffix
           matTooltip="Enter the type of recurrence (e.g., daily, weekly, monthly or yearly)">
             info
           </mat-icon>
@@ -268,7 +285,7 @@
           <mat-label>Frequency</mat-label>
           <input matInput placeholder="1" formControlName="frequency" required>
 
-          <mat-icon matSuffix
+          <mat-icon matIconSuffix
           matTooltip="Specify how often the recurrence occurs (e.g., every 1 day, 2 weeks)">
             info
           </mat-icon>
@@ -304,14 +321,14 @@
 
           @if(recurrenceForm.get('endDate')?.value) {
 
-              <mat-icon matSuffix class="cursor-pointer"
-              (click)="recurrenceForm.get('endDate')?.setValue(null)">
-                close
-              </mat-icon>
+            <mat-icon matIconSuffix class="cursor-pointer"
+            (click)="recurrenceForm.get('endDate')?.setValue(null)">
+              close
+            </mat-icon>
 
           } @else {
 
-            <mat-icon matSuffix
+            <mat-icon matIconSuffix
             matTooltip="(Optional) Set the end date for the recurrence">
               info
             </mat-icon>

@@ -22,12 +22,20 @@ export interface RecurrenceDetails {
 
 }
 
-interface BaseCategory {
+export interface BaseCategory {
   id?: number;
   name: string;
   type: string;
 }
 
-export interface Categories extends BaseCategory {}
+export interface Categories extends BaseCategory {
 
-export interface SubCategories extends BaseCategory {}
+  subcategories: BaseCategory[]
+
+}
+
+export interface SubCategories extends BaseCategory {
+
+  category: BaseCategory
+
+}

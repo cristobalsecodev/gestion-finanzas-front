@@ -7,7 +7,7 @@ export function normalizeString(str: string): string {
     .normalize('NFD') // Descomponer caracteres acentuados
     .replace(/[\u0300-\u036f]/g, '') // Eliminar los acentos
     .trim() // Eliminar espacios al inicio y final
-    .replace(/\s+/g, ' '); // Reemplazar espacios múltiples por uno solo
+    .replace(/\s+/g, ''); // Eliminar todos los espacios
 
   } else {
 

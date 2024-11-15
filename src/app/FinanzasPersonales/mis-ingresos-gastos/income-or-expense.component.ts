@@ -12,7 +12,7 @@ import { IncomeOrExpenseFormComponent } from './mis-ingresos-gastos-formulario/i
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { IncomeOrExpense } from './interfaces.ts/IncomeOrExpense';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { IncomeOrExpenseService } from './service/income-or-expense.service';
+import { IncomeOrExpenseService } from './services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { MatMenuModule } from '@angular/material/menu';
 
@@ -82,7 +82,7 @@ export class IncomeOrExpenseComponent {
 
       if(incomeOrExpense) {
 
-        this.incomeOrExpenseService.saveIncomOrExpense(incomeOrExpense).subscribe({
+        this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
   
           next: () => {
   

@@ -5,13 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
-import { Categories, IncomeOrExpense, RecurrenceDetails, SubCategories } from '../interfaces.ts/IncomeOrExpense';
+import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails, SubCategories } from '../interfaces.ts/IncomeOrExpense';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
@@ -19,6 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
 import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
+import { forkJoin } from 'rxjs';
+import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -79,8 +81,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   // Categorías y subCategorías
   categories: Categories[] = []
   filteredCategories: Categories[] = []
-  subCategories: SubCategories[] = []
-  filteredSubCategories: SubCategories[] = []
+
+  subCategories: BaseCategory[] = []
+  filteredSubCategories: BaseCategory[] = []
 
   // Divisas ENUM
   readonly currencyCode = CurrencyCodeENUM
@@ -90,26 +93,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   maxNotesLength: number = 150
 
   constructor(
-    public currencyConversionService: CurrencyConversionService
+    public currencyConversionService: CurrencyConversionService,
+    private categoriesAndSubCategoriesService: CategoriesAndSubCategoriesService
   ) {
-
-      // Define las listas de categorías y subcategorías
-      this.categories = [
-        { id: 1, name: 'Bosque', type: 'Naturaleza' },
-        { id: 2, name: 'Montaña', type: 'Naturaleza' },
-        { id: 3, name: 'Río', type: 'Agua' },
-        { id: 4, name: 'Lago', type: 'Agua' },
-        { id: 5, name: 'Desierto', type: 'Tierra' }
-      ];
-      
-      this.subCategories = [
-        { id: 6, name: 'Playa', type: 'Costero' },
-        { id: 7, name: 'Valle', type: 'Naturaleza' },
-        { id: 8, name: 'Marisma', type: 'Agua' },
-        { id: 9, name: 'Cañón', type: 'Tierra' },
-        { id: 10, name: 'Cueva', type: 'Subterráneo' }
-      ];
-
 
     this.incomeOrExpenseForm = new FormGroup({
 
@@ -121,7 +107,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           disabled: this.data.actionType === this.actionTypes.EDIT ? true : false
         }, [Validators.required]),
 
-      category: new FormControl('', [Validators.required, Validators.maxLength(50)]),
+      category: new FormControl({value: '', disabled: true}, [Validators.required, Validators.maxLength(50)]),
 
       subCategory: new FormControl({value: '', disabled: true}, [Validators.maxLength(50)]),
 
@@ -167,12 +153,64 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.filteredCategories = this.categories
-    this.filteredSubCategories = this.filteredSubCategories
+    this.callServices()
 
-    if(this.data.incomeOrExpense) {
+  }
 
-      this.loadForm()
+  callServices(): void {
+
+    forkJoin({
+      categories: this.categoriesAndSubCategoriesService.getCategories()
+    }).subscribe({
+
+      next: ({categories}) => {
+
+        this.categories = categories
+
+        if(this.data.incomeOrExpense) {
+
+          this.loadForm()
+    
+        }
+
+      },
+
+    })
+
+  }
+
+  filterCategories(): void {
+
+    // Reinicia la categoría
+    this.resetCategory()
+
+    const categoriesFiltered = this.categories.filter(category => category.type === this.selectedType())
+
+    this.filteredCategories = categoriesFiltered ?? []
+
+    // Habilita el form de categoría en caso de que existan con el mismo tipo
+    if (this.filteredCategories.length > 0) {
+
+      this.incomeOrExpenseForm.get('category')?.enable();
+
+    }
+
+  }
+
+  filterSubCategories(): void {
+
+    // Reinicia la subcategoría
+    this.resetSubCategory()
+
+    const subCategoriesFiltered = this.categories.find(category => category.name === this.incomeOrExpenseForm.get('category')?.value)?.subcategories
+
+    this.subCategories = subCategoriesFiltered ?? []
+    this.filteredSubCategories = subCategoriesFiltered ?? []
+
+    // Habilita el form de subcategoría en caso de que existan
+    if (this.filteredSubCategories.length > 0) {
+
+      this.incomeOrExpenseForm.get('subCategory')?.enable();
 
     }
 
@@ -183,15 +221,23 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     // Setea los signals
     this.selectedType.set(this.data.incomeOrExpense?.type!)
 
+
+
     this.isRecurrence.set(!!this.data.incomeOrExpense?.recurrenceDetails)
 
     // Formulario de ingreso / gasto
     this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type.charAt(0).toUpperCase() + this.data.incomeOrExpense?.type.slice(1)!)
     this.incomeOrExpenseForm.get('amount')?.setValue(this.data.incomeOrExpense?.amount)
-    this.incomeOrExpenseForm.get('category')?.setValue(this.data.incomeOrExpense?.category)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
     this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.date)
     this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes)
+
+    // Filtra categorías
+    this.filterCategories()
+    this.incomeOrExpenseForm.get('category')?.setValue(this.data.incomeOrExpense?.category)
+
+    // Filtra subcategorías
+    this.filterSubCategories()
     this.incomeOrExpenseForm.get('subCategory')?.setValue(this.data.incomeOrExpense?.subCategory)   
 
     if(this.isRecurrence()) {
@@ -208,9 +254,6 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   onCategorySearch(): void {
 
-    // Reinicia la subCategoría
-    this.resetSubCategory()
-
     const searchTerm = this.incomeOrExpenseForm.get('category')?.value
 
     this.filteredCategories = filterAutocomplete(this.categories, searchTerm, ['name'])
@@ -225,11 +268,36 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
+  resetCategory(): void {
+
+    // Reseta el form
+    this.incomeOrExpenseForm.get('category')?.disable()
+    this.incomeOrExpenseForm.get('category')?.reset()
+
+    // Vacía la lista filtrada
+    this.filteredCategories = []
+
+  }
+
   resetSubCategory(): void {
 
+    // Reseta el form
     this.incomeOrExpenseForm.get('subCategory')?.disable()
-    this.incomeOrExpenseForm.get('subCategory')?.setValue('')
-    this.filteredSubCategories = this.subCategories
+    this.incomeOrExpenseForm.get('subCategory')?.reset()
+
+    // Vacía las listas (dependen de la categoría)
+    this.filteredSubCategories = []
+    this.subCategories = []
+
+  }
+
+  onChangeChip(matChipChange: MatChipListboxChange): void {
+
+    // Setea el signal con la selección o deselección
+    this.selectedType.set(matChipChange.value ? matChipChange.value.toLowerCase() : matChipChange.value)
+
+    // Filtra las categorías por selección
+    this.filterCategories()
 
   }
 
@@ -261,7 +329,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     if(this.shouldSaveIncomeOrExpense()) {
 
-        let saveIncomOrExpense: IncomeOrExpense = {
+        let saveIncomeOrExpense: IncomeOrExpense = {
 
           id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
           amount: this.incomeOrExpenseForm.get('amount')?.value,
@@ -275,7 +343,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
         }
 
-        this.dialogRef.close(saveIncomOrExpense)
+        this.dialogRef.close(saveIncomeOrExpense)
 
     }
 
