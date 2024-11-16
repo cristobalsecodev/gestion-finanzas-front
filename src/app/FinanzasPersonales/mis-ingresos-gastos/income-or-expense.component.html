@@ -1,43 +1,85 @@
 <div class="md:flex">
 
+  <!-- Lista de ingresos y gastos -->
   <section class="md:w-2/5 m-3">
 
     <mat-card appearance="outlined" class="p-4">
 
+      <mat-expansion-panel class="!mb-4">
+  
+        <mat-expansion-panel-header>
+  
+          <mat-panel-title> Filters </mat-panel-title>
+  
+          <mat-panel-description class="flex place-content-end">
+  
+            <mat-icon>tune</mat-icon>
+  
+          </mat-panel-description>
+  
+        </mat-expansion-panel-header>
+
+        <form>
+
+          Filters here
+
+        </form>
+    
+      </mat-expansion-panel>
+
       @for (year of sortedYears; track $index) {
   
-        <h2 class="text-xl font-semibold mt-6 mb-4">{{ year }}</h2>
+        <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
   
         @for (item of groupedItems[year]; track $index) {
   
-          <mat-card class="flex p-4 mb-4 cursor-pointer hover:bg-[#253d4f]" appearance="outlined">
+          <mat-card class="flex p-4 mb-4 cursor-pointer" appearance="outlined">
+
             <div class="flex w-full items-center">
+
               <!-- Fecha -->
-              <div class="flex flex-col items-start w-1/5">
-                <div class="text-base font-semibold">{{ item.date | date: 'd' }}</div> <!-- Día -->
-                <div class="text-xs">{{ item.date | date: 'MMM' }}</div> <!-- Mes -->
+              <div class="flex flex-col items-center w-[7%]">
+                <div class="text-lg font-bold">{{ item.date | date: 'dd' }}</div> <!-- Día -->
+                <div class="text-base font-semibold">{{ item.date | date: 'MMM' }}</div> <!-- Mes -->
               </div>
       
               <!-- Categoría y subcategoría -->
-              <div class="flex flex-col items-start w-2/5 pl-4">
-                <div class="text-sm font-medium">{{ item.category }}</div> <!-- Categoría -->
-                <div class="text-xs">{{ item.subCategory || 'Subcategoría no disponible' }}</div> <!-- Subcategoría -->
+              <div class="flex flex-col w-[58%] pl-4">
+
+                <p class="text-sm font-medium break-words whitespace-normal">
+                  {{ item.category }}
+                </p>
+
+                <p class="text-xs break-words whitespace-normal">
+                  {{ item.subCategory }}
+                </p>
+                
               </div>
       
               <!-- Icono de recurrencia y cantidad -->
-              <div class="flex items-center w-2/5 justify-between min-w-[150px]">
+              <div class="flex flex-grow justify-end w-[35%]">
+
                 <!-- Recurrencia -->
                 @if (item.recurrenceDetails) {
   
-                  <div class="flex items-center text-xs">
-                    <mat-icon>currency_exchange</mat-icon>
-                  </div>
+                  <mat-icon class="text-base"
+                  matTooltip="This {{ item.type }} has a recurrency">
+                    currency_exchange
+                  </mat-icon>
   
                 }
       
                 <!-- Cantidad y divisa -->
-                <div class="text-sm font-medium">
-                  {{ item.amount }}
+                <div class="font-medium">
+                  
+                  <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: item.currency }}</span>
+
+                  <span [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}"
+                  matTooltip="{{ item.amount | formatThousandSeparators }}"
+                  [matTooltipDisabled]="!shouldShowAmountTooltip(item.amount)">
+                    {{ item.amount | formatAmount }}
+                  </span>
+                  
                 </div>
   
               </div>
@@ -45,8 +87,12 @@
           </mat-card>
   
         }
-  
       }
+      
+      <button mat-flat-button (click)="loadMore()">
+        <mat-icon>add</mat-icon>
+        Load more
+      </button>
 
     </mat-card>
 

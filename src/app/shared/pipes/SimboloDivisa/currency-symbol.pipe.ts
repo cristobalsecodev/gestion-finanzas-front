@@ -3,10 +3,10 @@ import { CurrencyCodeENUM } from '../../enums/Currency.enum';
 import { noValue } from '../../constants/variables.constants';
 
 @Pipe({
-  name: 'simboloDivisa',
+  name: 'currencySymbol',
   standalone: true
 })
-export class SimboloDivisaPipe implements PipeTransform {
+export class CurrencySymbolPipe implements PipeTransform {
 
   readonly currencyCode = CurrencyCodeENUM
 

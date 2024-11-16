@@ -13,7 +13,7 @@ import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
 import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces.ts/IncomeOrExpense';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
+import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -46,7 +46,7 @@ import { capitalizeString } from 'src/app/shared/functions/Utils';
     MatSelectModule,
     MatAutocompleteModule,
     // Pipes
-    SimboloDivisaPipe
+    CurrencySymbolPipe
   ],
   templateUrl: './income-or-expense-form.component.html',
   styleUrl: './income-or-expense-form.component.scss',

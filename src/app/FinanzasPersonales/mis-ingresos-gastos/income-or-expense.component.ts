@@ -7,20 +7,25 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
+import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { IncomeOrExpenseFormComponent } from './mis-ingresos-gastos-formulario/income-or-expense-form.component';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { IncomeOrExpense } from './interfaces.ts/IncomeOrExpense';
-import { DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
 import { IncomeOrExpenseService } from './services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
+import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
+import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-income-or-expense',
   standalone: true,
   imports: [
+    // Angular core
+    CommonModule,
     // Angular material
     MatTableModule,
     MatCardModule,
@@ -29,11 +34,14 @@ import { capitalizeString } from 'src/app/shared/functions/Utils';
     MatDialogModule,
     MatTooltipModule,
     MatMenuModule,
+    MatExpansionModule,
     // Pipes
-    SimboloDivisaPipe,
+    CurrencySymbolPipe,
     DatePipe,
     DecimalPipe,
-    KeyValuePipe
+    KeyValuePipe,
+    FormatAmountPipe,
+    FormatThousandSeparatorsPipe
   ],
   templateUrl: './income-or-expense.component.html',
   styleUrl: './income-or-expense.component.scss'
@@ -49,7 +57,7 @@ export class IncomeOrExpenseComponent {
       date: new Date('2024-02-15'),
       category: 'Alquiler',
       subCategory: 'Vivienda',
-      amount: 1200,
+      amount: -1499.99,
       currency: 'USD',
       type: 'expense',
       recurrenceDetails: {
@@ -60,19 +68,23 @@ export class IncomeOrExpenseComponent {
     {
       id: 2,
       date: new Date('2023-03-10'),
-      category: 'Salario',
-      subCategory: 'Trabajo',
-      amount: 2500,
-      currency: 'USD',
-      type: 'income'
+      category: 'SalarioSalarioSalarioSalarioSalarioSalarioSalario',
+      subCategory: 'SalarioSalarioSalarioSalarioSalarioSalarioSalario',
+      amount: 250000,
+      currency: 'CHF',
+      type: 'income',
+      recurrenceDetails: {
+        recurrenceType: 'daily',
+        frequency: 3
+      }
     },
     {
       id: 3,
       date: new Date('2024-05-20'),
       category: 'Comida',
       subCategory: 'Restaurante',
-      amount: 500,
-      currency: 'USD',
+      amount: -500,
+      currency: 'EUR',
       type: 'expense'
     },
     {
@@ -80,9 +92,22 @@ export class IncomeOrExpenseComponent {
       date: new Date('2023-07-30'),
       category: 'Transporte',
       subCategory: 'Gasolina',
-      amount: 150,
-      currency: 'USD',
-      type: 'expense'
+      amount: -150000000000000.40,
+      currency: 'CAD',
+      type: 'expense',
+      recurrenceDetails: {
+        recurrenceType: 'yearly',
+        frequency: 5
+      }
+    },
+    {
+      id: 5,
+      date: new Date('2022-12-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 1050,
+      currency: 'CNY',
+      type: 'income'
     }
   ]
 
@@ -125,6 +150,12 @@ export class IncomeOrExpenseComponent {
 
   }
 
+  loadMore(): void {
+
+
+
+  }
+
   openDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
 
     this.dialog.open(IncomeOrExpenseFormComponent, {
@@ -159,6 +190,12 @@ export class IncomeOrExpenseComponent {
 
 
     }))
+
+  }
+
+  shouldShowAmountTooltip(value: number): boolean {
+
+    return Math.abs(value) > 1000
 
   }
 

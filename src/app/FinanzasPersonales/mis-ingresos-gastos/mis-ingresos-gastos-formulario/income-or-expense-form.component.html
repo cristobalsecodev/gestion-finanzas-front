@@ -182,7 +182,7 @@
         <mat-label>Amount</mat-label>
         <input matInput placeholder="1000.00" formControlName="amount" required>
 
-        <span matTextPrefix>{{ 0 | simboloDivisa: incomeOrExpenseForm.get('currency')?.value }}</span>
+        <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value }}</span>
 
         <mat-icon matIconSuffix
         matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
