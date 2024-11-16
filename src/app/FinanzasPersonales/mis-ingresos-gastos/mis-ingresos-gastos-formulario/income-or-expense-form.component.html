@@ -23,7 +23,7 @@
         @for (type of types; track $index) {
 
           <mat-chip-option [value]="type" class="px-4 py-2">
-            {{ type }}
+            {{ capitalize(type) }}
           </mat-chip-option>
 
         }
@@ -86,7 +86,7 @@
 
         </mat-autocomplete>
 
-        @if(this.filteredCategories.length > 0) {
+        @if(categories.length > 0) {
 
           <mat-icon matIconSuffix
           matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
@@ -114,7 +114,7 @@
 
       <!-- Subcategoría -->
       <mat-form-field class="w-full"
-      [matTooltip]="(this.filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value) 
+      [matTooltip]="(filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value) 
         ? 'The category doesn\'t have any subcategories'
         : 'Please select a category first'"
       [matTooltipDisabled]="incomeOrExpenseForm.get('subCategory')?.enabled">
@@ -227,13 +227,14 @@
     </div>
     
   </form>
-  
-
 
   <mat-slide-toggle
   class="mb-6"
+  [checked]="isRecurrence()"
   (change)="isRecurrence.set(!isRecurrence())"
-  [disabled]="data.actionType === actionTypes.EDIT">
+  [disabled]="data.actionType === actionTypes.EDIT"
+  matTooltip="You cannot edit the recurrence"
+  [matTooltipDisabled]="data.actionType !== actionTypes.EDIT">
     In case your {{ selectedType() || 'income or expense' }} entry is recurring. (Note: The recurrence starts from the date selected above.)
   </mat-slide-toggle>
 
@@ -264,7 +265,16 @@
         <mat-form-field class="w-full">
 
           <mat-label>Recurrence type</mat-label>
-          <input matInput placeholder="daily" formControlName="recurrenceType" required>
+
+          <mat-select formControlName="recurrenceType" placeholder="Monthly" required>
+
+            @for (type of recurrenceTypes; track $index) {
+  
+              <mat-option [value]="type"> {{ capitalize(type) }} </mat-option>
+  
+            }
+  
+          </mat-select>
 
           <mat-icon matIconSuffix
           matTooltip="Enter the type of recurrence (e.g., daily, weekly, monthly or yearly)">

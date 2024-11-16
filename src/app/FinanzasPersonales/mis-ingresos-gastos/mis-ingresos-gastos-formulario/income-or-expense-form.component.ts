@@ -11,7 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
-import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails, SubCategories } from '../interfaces.ts/IncomeOrExpense';
+import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces.ts/IncomeOrExpense';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SimboloDivisaPipe } from 'src/app/shared/pipes/SimboloDivisa/simbolo-divisa.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
@@ -21,6 +21,7 @@ import { CurrencyConversionService } from 'src/app/shared/services/APIs/Currency
 import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
 import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
+import { capitalizeString } from 'src/app/shared/functions/Utils';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -67,7 +68,13 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   readonly actionTypes = ActionType
 
   // Tipos de registro
-  readonly types: string[] = ['Income', 'Expense']
+  readonly types: string[] = ['income', 'expense']
+
+  // Tipos de recurrencia
+  readonly recurrenceTypes: string[] = ['daily', 'weekly', 'monthly', 'yearly']
+
+  // Función para capitalizar strings
+  capitalize = capitalizeString
 
   // Formulario de ingreso / gasto
   incomeOrExpenseForm!: FormGroup
@@ -101,11 +108,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
       date: new FormControl('', [Validators.required]),
 
-      type: new FormControl(
-        {
-          value: '', 
-          disabled: this.data.actionType === this.actionTypes.EDIT ? true : false
-        }, [Validators.required]),
+      type: new FormControl('', [Validators.required]),
 
       category: new FormControl({value: '', disabled: true}, [Validators.required, Validators.maxLength(50)]),
 
@@ -220,13 +223,10 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     // Setea los signals
     this.selectedType.set(this.data.incomeOrExpense?.type!)
-
-
-
     this.isRecurrence.set(!!this.data.incomeOrExpense?.recurrenceDetails)
 
     // Formulario de ingreso / gasto
-    this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type.charAt(0).toUpperCase() + this.data.incomeOrExpense?.type.slice(1)!)
+    this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type)
     this.incomeOrExpenseForm.get('amount')?.setValue(this.data.incomeOrExpense?.amount)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
     this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.date)
@@ -298,6 +298,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     // Filtra las categorías por selección
     this.filterCategories()
+
+    // Resetea la subcategoría
+    this.resetSubCategory()
 
   }
 
