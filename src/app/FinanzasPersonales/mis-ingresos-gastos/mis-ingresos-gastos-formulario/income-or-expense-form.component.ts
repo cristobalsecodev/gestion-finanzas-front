@@ -230,7 +230,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     this.incomeOrExpenseForm.get('amount')?.setValue(this.data.incomeOrExpense?.amount)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
     this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.date)
-    this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes)
+    this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes ? this.data.incomeOrExpense?.notes : '')
 
     // Filtra categorías
     this.filterCategories()

@@ -11,7 +11,7 @@ import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-
 import { IncomeOrExpenseFormComponent } from './mis-ingresos-gastos-formulario/income-or-expense-form.component';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { IncomeOrExpense } from './interfaces.ts/IncomeOrExpense';
-import { CommonModule, DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { IncomeOrExpenseService } from './services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { MatMenuModule } from '@angular/material/menu';
@@ -19,6 +19,7 @@ import { capitalizeString } from 'src/app/shared/functions/Utils';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { MatExpansionModule } from '@angular/material/expansion';
+import  {MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -35,11 +36,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatTooltipModule,
     MatMenuModule,
     MatExpansionModule,
+    MatBottomSheetModule,
     // Pipes
     CurrencySymbolPipe,
     DatePipe,
-    DecimalPipe,
-    KeyValuePipe,
     FormatAmountPipe,
     FormatThousandSeparatorsPipe
   ],
@@ -47,8 +47,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
   styleUrl: './income-or-expense.component.scss'
 })
 export class IncomeOrExpenseComponent {
-
-  displayedColumns: string[] = ['date', 'category', 'amount', 'notes', 'actions']
 
   // TEST, ELIMINAR MOCKEOS
   items: IncomeOrExpense[] = [
@@ -58,7 +56,7 @@ export class IncomeOrExpenseComponent {
       category: 'Alquiler',
       subCategory: 'Vivienda',
       amount: -1499.99,
-      currency: 'USD',
+      currency: 'EUR',
       type: 'expense',
       recurrenceDetails: {
         recurrenceType: 'monthly',
@@ -68,10 +66,10 @@ export class IncomeOrExpenseComponent {
     {
       id: 2,
       date: new Date('2023-03-10'),
-      category: 'SalarioSalarioSalarioSalarioSalarioSalarioSalario',
-      subCategory: 'SalarioSalarioSalarioSalarioSalarioSalarioSalario',
+      category: 'SalarioSalarioSalarioSaladdddd',
+      subCategory: 'SalarioSalarioSalarioSaladdddd',
       amount: 250000,
-      currency: 'CHF',
+      currency: 'USD',
       type: 'income',
       recurrenceDetails: {
         recurrenceType: 'daily',
@@ -84,7 +82,7 @@ export class IncomeOrExpenseComponent {
       category: 'Comida',
       subCategory: 'Restaurante',
       amount: -500,
-      currency: 'EUR',
+      currency: 'AUD',
       type: 'expense'
     },
     {
@@ -106,8 +104,53 @@ export class IncomeOrExpenseComponent {
       category: 'Transporte',
       subCategory: 'Gasolina',
       amount: 1050,
+      currency: 'CHF',
+      type: 'income'
+    },
+    {
+      id: 6,
+      date: new Date('2022-10-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 19.99,
       currency: 'CNY',
       type: 'income'
+    },
+    {
+      id: 7,
+      date: new Date('2022-01-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 250,
+      currency: 'GBP',
+      type: 'income'
+    },
+    {
+      id: 8,
+      date: new Date('2021-08-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 159.99,
+      currency: 'INR',
+      type: 'expense'
+    },
+    {
+      id: 9,
+      date: new Date('2021-06-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 180,
+      currency: 'JPY',
+      type: 'income'
+    },
+    {
+      id: 10,
+      date: new Date('2021-04-05'),
+      category: 'Transporte',
+      subCategory: 'Gasolina',
+      amount: 25.50,
+      currency: 'NZD',
+      type: 'expense'
     }
   ]
 
