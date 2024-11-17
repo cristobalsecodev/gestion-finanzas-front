@@ -1,4 +1,10 @@
-.component-bg:hover {
+.component-bg-hover:hover {
+
+  background-color: var(--sys-hover-component);
+  
+}
+
+.component-bg {
 
   background-color: var(--sys-hover-component);
   
@@ -13,5 +19,11 @@
 .expense {
 
   color: var(--sys-red);
+
+}
+
+.delete {
+
+  color: var(--sys-error);
 
 }

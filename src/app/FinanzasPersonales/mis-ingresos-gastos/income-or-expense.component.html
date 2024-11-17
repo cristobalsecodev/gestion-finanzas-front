@@ -35,7 +35,7 @@
        </button>
 
       <!-- Lista de ingresos y gastos -->
-      <section class="h-full">
+      <section>
 
         @for (year of sortedYears; track $index) {
   
@@ -43,7 +43,9 @@
     
           @for (item of groupedItems[year]; track $index) {
     
-            <mat-card class="flex p-4 mb-4 cursor-pointer shadow-none component-bg">
+            <mat-card class="flex p-4 cursor-pointer shadow-none component-bg-hover"
+            [ngClass]="{'component-bg': selectedItemId === item.id, 'mb-4': selectedItemId !== item.id}"
+            (click)="toggleDetails(item.id!)">
   
               <div class="flex w-full items-center">
   
@@ -90,12 +92,58 @@
                     </span>
                     
                   </div>
-    
-                </div>
 
+                </div>
               </div>
             </mat-card>
-    
+
+            <!-- Componente de detalles -->
+            @if (selectedItemId === item.id) {
+
+              <article @fadeInOut
+              class="p-4 mb-4 rounded-b-lg mx-2">
+                <h3 class="text-lg font-semibold mb-2">
+                  Detalles
+                </h3>
+
+                <p class="text-sm">
+                  Category: {{ item.category }}
+                </p>
+
+                <p class="text-sm">
+                  Subcategory: {{ item.subCategory }}
+                </p>
+
+                <p class="text-sm" [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}">
+                  Amount: {{ item.amount | formatThousandSeparators }}
+                </p>
+
+                <p class="text-sm">
+                  Recurrence: {{ item.recurrenceDetails || 'N/A' }}
+                </p>
+
+                <div class="flex place-content-end">
+
+                  <button mat-button class="delete">
+                    
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+
+                  </button>
+  
+                  <button mat-button (click)="openDialog(actionType.EDIT, item)">
+
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+  
+                  </button>
+
+                </div>
+
+              </article>
+            
+            }
+
           }
         }
 

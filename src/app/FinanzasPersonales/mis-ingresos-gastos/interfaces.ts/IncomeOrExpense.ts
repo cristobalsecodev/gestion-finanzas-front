@@ -6,6 +6,7 @@ export interface IncomeOrExpense {
   subCategory?: string // Subcategoría
   amount: number // Cantidad
   currency: string // Divisa
+  exchangeRateToUsd?: number // Tipo de cambio en relación al USD
   type: 'income' | 'expense' // Tipo
   notes?: string // Pequeña descripción
   recurrenceDetails?: RecurrenceDetails // Detalles de recurrencia en caso de que exista

@@ -20,6 +20,7 @@ import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amoun
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { MatExpansionModule } from '@angular/material/expansion';
 import  {MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -44,7 +45,15 @@ import  {MatBottomSheetModule } from '@angular/material/bottom-sheet';
     FormatThousandSeparatorsPipe
   ],
   templateUrl: './income-or-expense.component.html',
-  styleUrl: './income-or-expense.component.scss'
+  styleUrl: './income-or-expense.component.scss',
+  animations: [
+    // Animación para el componente de detalles
+    trigger('fadeInOut', [
+      state('void', style({ opacity: 0, transform: 'translateY(-10px)' })),
+      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('void <=> *', animate('80ms ease-in-out')),
+    ])
+  ],
 })
 export class IncomeOrExpenseComponent {
 
@@ -57,6 +66,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Vivienda',
       amount: -1499.99,
       currency: 'EUR',
+      exchangeRateToUsd: 0.900,
       type: 'expense',
       recurrenceDetails: {
         recurrenceType: 'monthly',
@@ -70,6 +80,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'SalarioSalarioSalarioSaladdddd',
       amount: 250000,
       currency: 'USD',
+      exchangeRateToUsd: 0.900,
       type: 'income',
       recurrenceDetails: {
         recurrenceType: 'daily',
@@ -83,6 +94,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Restaurante',
       amount: -500,
       currency: 'AUD',
+      exchangeRateToUsd: 0.900,
       type: 'expense'
     },
     {
@@ -92,6 +104,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: -150000000000000.40,
       currency: 'CAD',
+      exchangeRateToUsd: 0.900,
       type: 'expense',
       recurrenceDetails: {
         recurrenceType: 'yearly',
@@ -105,6 +118,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 1050,
       currency: 'CHF',
+      exchangeRateToUsd: 0.900,
       type: 'income'
     },
     {
@@ -114,6 +128,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 19.99,
       currency: 'CNY',
+      exchangeRateToUsd: 0.900,
       type: 'income'
     },
     {
@@ -123,6 +138,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 250,
       currency: 'GBP',
+      exchangeRateToUsd: 0.900,
       type: 'income'
     },
     {
@@ -132,6 +148,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 159.99,
       currency: 'INR',
+      exchangeRateToUsd: 0.900,
       type: 'expense'
     },
     {
@@ -141,6 +158,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 180,
       currency: 'JPY',
+      exchangeRateToUsd: 0.900,
       type: 'income'
     },
     {
@@ -150,6 +168,7 @@ export class IncomeOrExpenseComponent {
       subCategory: 'Gasolina',
       amount: 25.50,
       currency: 'NZD',
+      exchangeRateToUsd: 0.900,
       type: 'expense'
     }
   ]
@@ -157,7 +176,12 @@ export class IncomeOrExpenseComponent {
   groupedItems: { [year: number]: IncomeOrExpense[] } = {}
   sortedYears: number[] = []
 
+  // ID registro seleccionado
+  selectedItemId: number | null = null
+
+  // Tipos de acciones
   readonly actionType = ActionType
+
 
   readonly dialog = inject(MatDialog)
 
@@ -233,6 +257,12 @@ export class IncomeOrExpenseComponent {
 
 
     }))
+
+  }
+
+  toggleDetails(itemId: number): void {
+
+    this.selectedItemId = this.selectedItemId === itemId ? null : itemId
 
   }
 
