@@ -49,7 +49,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   animations: [
     // Animación para el componente de detalles
     trigger('fadeInOut', [
-      state('void', style({ opacity: 0, transform: 'translateY(-10px)' })),
+      state('void', style({ opacity: 0, transform: 'translateY(-30px)' })),
       state('*', style({ opacity: 1, transform: 'translateY(0)' })),
       transition('void <=> *', animate('80ms ease-in-out')),
     ])
@@ -269,6 +269,41 @@ export class IncomeOrExpenseComponent {
   shouldShowAmountTooltip(value: number): boolean {
 
     return Math.abs(value) > 1000
+
+  }
+
+  getRecurrenceMessage(recurrenceType: 'daily' | 'weekly' | 'monthly' | 'yearly', frequency: number) {
+
+    if(frequency <= 0) {
+
+      this.notificationsService.addNotification('How do you managed to get a frequency lesser than 0?', 'warning')
+
+      throw new Error("Frequency muyst be a positive number")
+
+    }
+
+    const recurrenceMap: Record<string, { singular: string; plural: string }> = {
+
+      daily: { singular: 'day', plural: 'days' },
+      weekly: { singular: 'week', plural: 'weeks' },
+      monthly: { singular: 'month', plural: 'months' },
+      yearly: { singular: 'year', plural: 'years' }
+
+    }
+
+    const recurrence = recurrenceMap[recurrenceType]
+
+    if(!recurrence) {
+
+      this.notificationsService.addNotification('How do you managed to get an invalid recurrence type?', 'warning')
+
+      throw new Error('Invalid recurrence type')
+
+    }
+
+    const unit = frequency === 1 ? recurrence.singular : recurrence.plural
+
+    return `The recurrence occurs every ${frequency} ${unit}.`
 
   }
 

@@ -155,7 +155,7 @@
 
         <mat-select formControlName="currency" required>
 
-          @for (currency of currencyConversionService.currencies(); track $index) {
+          @for (currency of currencyExchangeService.currencies(); track $index) {
 
             <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
 

@@ -10,7 +10,7 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
 import { Router } from '@angular/router';
 import { WantResetPassword } from '../interfaces/WantResetPassword.interface';
 import { ResetPassword } from '../interfaces/ResetPassword.interface';
-import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
+import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,7 @@ export class AuthService {
     private storageService: StorageService,
     private notificationsService: NotificacionesService,
     private router: Router,
-    private currencyConversionService: CurrencyConversionService
+    private currencyExchangeService: CurrencyExchangeService
   ) {
 
     this.isTokenValid.set(this.isAuthenticated())
@@ -53,7 +53,7 @@ export class AuthService {
           this.storageService.setSession('token', response.token)
 
           // Llamamos al servicio de divisas
-          this.currencyConversionService.manageCurrencyService()
+          this.currencyExchangeService.manageCurrencyService()
 
           if(this.isAccountActivated()) {
 
@@ -86,7 +86,7 @@ export class AuthService {
           this.storageService.setSession('token', response.token)
           
           // Llamamos al servicio de divisas
-          this.currencyConversionService.manageCurrencyService()
+          this.currencyExchangeService.manageCurrencyService()
 
           this.notificationsService.addNotification('Account created', 'success')
 

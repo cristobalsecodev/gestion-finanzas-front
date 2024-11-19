@@ -43,11 +43,11 @@
         <button mat-button 
           [matMenuTriggerFor]="currencyMenu" 
           aria-label="Currency exchange menu"
-          matTooltip="This is your main currency. Currently selected: {{ currencyConversionService.selectedCurrency().currencyName }}"
+          matTooltip="This is your main currency. Currently selected: {{ currencyExchangeService.selectedCurrency().currencyName }}"
           class="ms-3 me-3">
    
-            <mat-icon [svgIcon]="currencyConversionService.selectedCurrency().currencyCode"></mat-icon>
-            <span>{{ currencyConversionService.selectedCurrency().currencyCode }}</span>
+            <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
+            <span>{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
 
         </button>
         
@@ -56,11 +56,11 @@
       <!-- Menú divisas -->
       <mat-menu #currencyMenu="matMenu">
   
-        @for(currency of currencyConversionService.currencies(); track currency) {
+        @for(currency of currencyExchangeService.currencies(); track currency) {
   
-          <button mat-menu-item (click)="currencyConversionService.selectFavoriteCurrency(currency.currencyCode, currency.currencyName)">
+          <button mat-menu-item (click)="currencyExchangeService.selectFavoriteCurrency(currency.currencyCode, currency.currencyName)">
             <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
-            @if(currency.currencyCode === currencyConversionService.selectedCurrency().currencyCode) {
+            @if(currency.currencyCode === currencyExchangeService.selectedCurrency().currencyCode) {
               <mat-icon>check</mat-icon>
             }
             <span>{{ currency.currencyName }}</span>

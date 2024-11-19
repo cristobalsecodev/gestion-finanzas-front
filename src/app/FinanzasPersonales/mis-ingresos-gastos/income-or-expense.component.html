@@ -100,45 +100,94 @@
             <!-- Componente de detalles -->
             @if (selectedItemId === item.id) {
 
-              <article @fadeInOut
-              class="p-4 mb-4 rounded-b-lg mx-2">
-                <h3 class="text-lg font-semibold mb-2">
-                  Detalles
-                </h3>
+              <article @fadeInOut class="p-4 mb-4 rounded-lg shadow-md mx-2">
+                
+                <!-- Cabecera -->
+                <header class="mb-4 flex justify-between items-center">
 
-                <p class="text-sm">
-                  Category: {{ item.category }}
-                </p>
+                  <h3 class="text-xl font-semibold">Detalles</h3>
 
-                <p class="text-sm">
-                  Subcategory: {{ item.subCategory }}
-                </p>
+                  <span 
+                    class="px-2 py-1 rounded text-xs font-medium"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': item.type === 'income',
+                      'bg-red-100 text-red-800': item.type === 'expense'
+                    }">
+                    {{ item.type === 'income' ? 'Income' : 'Expense' }}
+                  </span>
+                </header>
+              
+                <!-- Detalles generales -->
+                <div class="mb-4">
 
-                <p class="text-sm" [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}">
-                  Amount: {{ item.amount | formatThousandSeparators }}
-                </p>
+                  <p class="text-sm">
+                    <strong>Category:</strong> {{ item.category }}
+                  </p>
 
-                <p class="text-sm">
-                  Recurrence: {{ item.recurrenceDetails || 'N/A' }}
-                </p>
+                  <p class="text-sm">
+                    <strong>Subcategory:</strong> {{ item.subCategory }}
+                  </p>
 
-                <div class="flex place-content-end">
+                  <p 
+                    class="text-sm font-semibold" 
+                    [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}">
+                    <strong>Amount:</strong> 
+                    {{ 0 | currencySymbol: item.currency }} 
+                    {{ item.amount | formatThousandSeparators }}
+                  </p>
 
-                  <button mat-button class="delete">
-                    
+                  <p class="text-sm">
+                    <strong>Notes:</strong> {{ item.notes }}
+                  </p>
+
+                </div>
+              
+                <!-- Detalles de recurrencia -->
+                @if(item.recurrenceDetails) {
+
+                  <section class="mb-4">
+
+                    <h4 class="text-lg font-semibold mb-2">Recurrence</h4>
+
+                    <p class="text-sm">
+                      {{ getRecurrenceMessage(item.recurrenceDetails.recurrenceType, item.recurrenceDetails.frequency) }}
+                    </p>
+
+                    <p class="text-sm">
+                      <strong>Occurrences:</strong> {{ item.recurrenceDetails.occurrences }}
+                    </p>
+
+                    <p class="text-sm">
+                      <strong>End Date:</strong> {{ item.recurrenceDetails.endDate }}
+                    </p>
+
+                  </section>
+
+                }
+              
+                <!-- Actions -->
+                <footer class="flex justify-end space-x-2">
+
+                  <button 
+                    mat-button 
+                    class="delete flex items-center space-x-1">
+
                     <mat-icon>delete</mat-icon>
                     <span>Delete</span>
 
                   </button>
-  
-                  <button mat-button (click)="openDialog(actionType.EDIT, item)">
+              
+                  <button 
+                    mat-button 
+                    (click)="openDialog(actionType.EDIT, item)" 
+                    class="flex items-center space-x-1">
 
                     <mat-icon>edit</mat-icon>
                     <span>Edit</span>
-  
+
                   </button>
 
-                </div>
+                </footer>
 
               </article>
             

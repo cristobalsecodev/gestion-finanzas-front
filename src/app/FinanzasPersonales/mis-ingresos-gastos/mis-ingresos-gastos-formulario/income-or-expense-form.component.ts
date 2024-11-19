@@ -17,11 +17,11 @@ import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { CurrencyConversionService } from 'src/app/shared/services/APIs/CurrencyConversion/currency-conversion.service';
 import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
 import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
+import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -100,7 +100,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   maxNotesLength: number = 150
 
   constructor(
-    public currencyConversionService: CurrencyConversionService,
+    public currencyExchangeService: CurrencyExchangeService,
     private categoriesAndSubCategoriesService: CategoriesAndSubCategoriesService
   ) {
 
@@ -120,7 +120,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
         Validators.maxLength(18) 
       ]),
 
-      currency: new FormControl(this.currencyConversionService.getUserCurrency().currencyCode, [Validators.required]),
+      currency: new FormControl(this.currencyExchangeService.selectedCurrency().currencyCode, [Validators.required]),
 
       notes: new FormControl('', [Validators.maxLength(this.maxNotesLength)])
 
