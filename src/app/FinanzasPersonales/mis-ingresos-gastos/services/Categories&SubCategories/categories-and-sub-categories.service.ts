@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Categories, SubCategories } from '../../interfaces.ts/IncomeOrExpense';
+import { Categories, SubCategories } from '../../interfaces.ts/IncomeOrExpense.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({

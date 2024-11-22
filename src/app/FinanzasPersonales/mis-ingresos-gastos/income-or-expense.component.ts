@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { IncomeOrExpenseFormComponent } from './mis-ingresos-gastos-formulario/income-or-expense-form.component';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { IncomeOrExpense } from './interfaces.ts/IncomeOrExpense';
+import { IncomeOrExpense } from './interfaces.ts/IncomeOrExpense.interface';
 import { CommonModule, DatePipe } from '@angular/common';
 import { IncomeOrExpenseService } from './services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
+import { FilterIncomeOrExpense } from './interfaces.ts/FilterIncomeOrExpense.interface';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -101,6 +102,7 @@ export class IncomeOrExpenseComponent {
       // En caso de cambiar el tamaño de la página, resetea los valores
       this.currentPage = 0
       this.allRecords = []
+      this.groupedRecords = []
 
       this.storageService.setLocal('IEsize', this.pageSize().toString())
 
@@ -149,7 +151,23 @@ export class IncomeOrExpenseComponent {
 
   loadMore(): void {
 
-    this.incomeOrExpenseService.getFilteredIncomeOrExpenses('', this.currentPage, this.pageSize()).subscribe({
+    const buildFilter: FilterIncomeOrExpense = {
+
+      page: this.currentPage,
+      size: this.pageSize(),
+      categories: undefined,
+      endAmount: undefined,
+      endDate: undefined,
+      notes: undefined,
+      recurrences: undefined,
+      startAmount: undefined,
+      startDate: undefined,
+      subCategories: undefined,
+      type: undefined
+
+    }
+
+    this.incomeOrExpenseService.getFilteredIncomeOrExpenses(buildFilter).subscribe({
 
       next: (data: IncomeOrExpense[]) => {
 

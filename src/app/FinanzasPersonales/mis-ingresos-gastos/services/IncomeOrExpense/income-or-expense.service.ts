@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { IncomeOrExpense } from '../../interfaces.ts/IncomeOrExpense';
-import { Observable } from 'rxjs';
+import { IncomeOrExpense } from '../../interfaces.ts/IncomeOrExpense.interface';
+import { map, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { FilterIncomeOrExpense } from '../../interfaces.ts/FilterIncomeOrExpense.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,31 +26,12 @@ export class IncomeOrExpenseService {
 
   }
 
-  getFilteredIncomeOrExpenses(
-    filter: any,
-    page: number = 0,
-    size: number = 0,
-    sortBy: string = 'date',
-    sortDir: string = 'asc'
-  ): Observable<IncomeOrExpense[]> {
+  getFilteredIncomeOrExpenses(filter: FilterIncomeOrExpense): Observable<IncomeOrExpense[]> {
 
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString())
-      .set('sortBy', sortBy)
-      .set('sortDir', sortDir)
-
-    // for(const key in filter) {
-
-    //   if(filter[key] !== null && filter[key] !== undefined) {
-
-    //     params = params.set(key, filter[key])
-
-    //   }
-
-    // }
-
-    return this.http.get<IncomeOrExpense[]>(`${this.incomeOrExpenseUrl}/filter`, { params })
+    return this.http.post<any>(`${this.incomeOrExpenseUrl}/filter`, filter)
+      .pipe(
+        map(response => response._embedded.incomeOrExpenseList)
+      )
 
   }
 

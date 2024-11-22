@@ -11,7 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatInput } from '@angular/material/input';
-import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces.ts/IncomeOrExpense';
+import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces.ts/IncomeOrExpense.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
