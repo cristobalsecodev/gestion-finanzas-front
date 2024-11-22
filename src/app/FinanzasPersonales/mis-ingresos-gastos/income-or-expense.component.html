@@ -41,38 +41,38 @@
   
           <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
     
-          @for (item of groupedItems[year]; track $index) {
+          @for (record of groupedRecords[year]; track $index) {
     
             <mat-card class="flex p-4 cursor-pointer shadow-none component-bg-hover"
-            [ngClass]="{'component-bg': selectedItemId === item.id, 'mb-4': selectedItemId !== item.id}"
-            (click)="toggleDetails(item.id!)">
+            [ngClass]="{'component-bg': selectedRecordId === record.id, 'mb-4': selectedRecordId !== record.id}"
+            (click)="toggleDetails(record.id!)">
   
               <div class="flex w-full items-center">
   
                 <!-- Fecha -->
                 <div class="flex flex-col items-center w-[7%]">
-                  <div class="text-lg font-bold">{{ item.date | date: 'dd' }}</div> <!-- Día -->
-                  <div class="text-base font-semibold">{{ item.date | date: 'MMM' }}</div> <!-- Mes -->
+                  <div class="text-lg font-bold">{{ record.date | date: 'dd' }}</div> <!-- Día -->
+                  <div class="text-base font-semibold">{{ record.date | date: 'MMM' }}</div> <!-- Mes -->
                 </div>
         
                 <!-- Categoría y subcategoría -->
                 <div class="flex flex-col w-[58%] pl-4">
   
                   <p class="text-sm font-medium break-words text-balance">
-                    {{ item.category }}
+                    {{ record.category }}
                   </p>
   
                   <p class="text-xs break-words text-balance">
-                    {{ item.subCategory }}
+                    {{ record.subCategory }}
                   </p>
                   
                 </div>
         
                 <!-- Icono recurrencia -->
-                @if (item.recurrenceDetails) {
+                @if (record.recurrenceDetails) {
   
                   <mat-icon class="text-sm text-center absolute top-1 right-1"
-                  matTooltip="This {{ item.type }} has a recurrency">
+                  matTooltip="This {{ record.type }} has a recurrency">
                     currency_exchange
                   </mat-icon>
   
@@ -83,12 +83,12 @@
         
                   <div class="font-medium">
                     
-                    <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: item.currency }}</span>
+                    <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: record.currency }}</span>
   
-                    <span [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}"
-                    matTooltip="{{ item.amount | formatThousandSeparators }}"
-                    [matTooltipDisabled]="!shouldShowAmountTooltip(item.amount)">
-                      {{ item.amount | formatAmount }}
+                    <span [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}"
+                    matTooltip="{{ record.amount | formatThousandSeparators }}"
+                    [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)">
+                      {{ record.amount | formatAmount }}
                     </span>
                     
                   </div>
@@ -98,7 +98,7 @@
             </mat-card>
 
             <!-- Componente de detalles -->
-            @if (selectedItemId === item.id) {
+            @if (selectedRecordId === record.id) {
 
               <article @fadeInOut class="p-4 mb-4 rounded-lg shadow-md mx-2">
                 
@@ -110,10 +110,10 @@
                   <span 
                     class="px-2 py-1 rounded text-xs font-medium"
                     [ngClass]="{
-                      'bg-green-100 text-green-800': item.type === 'income',
-                      'bg-red-100 text-red-800': item.type === 'expense'
+                      'bg-green-100 text-green-800': record.type === 'income',
+                      'bg-red-100 text-red-800': record.type === 'expense'
                     }">
-                    {{ item.type === 'income' ? 'Income' : 'Expense' }}
+                    {{ record.type === 'income' ? 'Income' : 'Expense' }}
                   </span>
                 </header>
               
@@ -121,44 +121,44 @@
                 <div class="mb-4">
 
                   <p class="text-sm">
-                    <strong>Category:</strong> {{ item.category }}
+                    <strong>Category:</strong> {{ record.category }}
                   </p>
 
                   <p class="text-sm">
-                    <strong>Subcategory:</strong> {{ item.subCategory }}
+                    <strong>Subcategory:</strong> {{ record.subCategory }}
                   </p>
 
                   <p 
                     class="text-sm font-semibold" 
-                    [ngClass]="{'income': item.type === 'income', 'expense': item.type === 'expense'}">
+                    [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}">
                     <strong>Amount:</strong> 
-                    {{ 0 | currencySymbol: item.currency }} 
-                    {{ item.amount | formatThousandSeparators }}
+                    {{ 0 | currencySymbol: record.currency }} 
+                    {{ record.amount | formatThousandSeparators }}
                   </p>
 
                   <p class="text-sm">
-                    <strong>Notes:</strong> {{ item.notes }}
+                    <strong>Notes:</strong> {{ record.notes }}
                   </p>
 
                 </div>
               
                 <!-- Detalles de recurrencia -->
-                @if(item.recurrenceDetails) {
+                @if(record.recurrenceDetails) {
 
                   <section class="mb-4">
 
                     <h4 class="text-lg font-semibold mb-2">Recurrence</h4>
 
                     <p class="text-sm">
-                      {{ getRecurrenceMessage(item.recurrenceDetails.recurrenceType, item.recurrenceDetails.frequency) }}
+                      {{ getRecurrenceMessage(record.recurrenceDetails.recurrenceType, record.recurrenceDetails.frequency) }}
                     </p>
 
                     <p class="text-sm">
-                      <strong>Occurrences:</strong> {{ item.recurrenceDetails.occurrences }}
+                      <strong>Occurrences:</strong> {{ record.recurrenceDetails.occurrences }}
                     </p>
 
                     <p class="text-sm">
-                      <strong>End Date:</strong> {{ item.recurrenceDetails.endDate }}
+                      <strong>End Date:</strong> {{ record.recurrenceDetails.endDate }}
                     </p>
 
                   </section>
@@ -179,7 +179,7 @@
               
                   <button 
                     mat-button 
-                    (click)="openDialog(actionType.EDIT, item)" 
+                    (click)="openDialog(actionType.EDIT, record)" 
                     class="flex items-center space-x-1">
 
                     <mat-icon>edit</mat-icon>
@@ -194,16 +194,61 @@
             }
 
           }
+        } @empty {
+
+          
+          <!-- Primera línea de separación -->
+          <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
+
+          <div class="text-center">Empty list</div>
+          
+          <!-- Segunda línea de separación -->
+          <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
+
         }
 
       </section>
       
-      <!-- Botón cargar más -->
-      <button mat-flat-button (click)="loadMore()" class="w-fit self-center mt-4">
-        <mat-icon>add</mat-icon>
-        Load more
-      </button>
+      <!-- Botón cargar más que ocupa todo el ancho disponible -->
+      <button mat-flat-button 
+      (click)="loadMore()" 
+      class="w-fit self-center">
 
+        <mat-icon class="mr-2">add</mat-icon>
+        <span>Load more</span>
+
+      </button>
+      
+      <!-- Selector tamaño de página en la esquina superior derecha -->
+      <button mat-button 
+      [matMenuTriggerFor]="pageSizeMenu" 
+      matTooltip="Change how many records you want to load" 
+      class="w-fit self-end">
+
+        <span>Size: {{ pageSize() }}</span>
+
+      </button>
+    
+      <!-- Menú selector de tamaño -->
+      <mat-menu #pageSizeMenu="matMenu">
+
+        @for (size of [5, 10, 20, 30]; track $index) {
+
+          <button mat-menu-item (click)="pageSize.set(size)">
+            {{ size }}
+          </button>
+
+        } @empty {
+
+          <button mat-menu-item>
+            <mat-icon>report</mat-icon>
+            <span>No sizes available</span>
+          </button>
+
+        }
+
+      </mat-menu>
+      
     </mat-card>
 
   </section>

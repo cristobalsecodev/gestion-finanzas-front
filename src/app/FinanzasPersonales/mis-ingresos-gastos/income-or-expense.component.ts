@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,6 +21,10 @@ import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousan
 import { MatExpansionModule } from '@angular/material/expansion';
 import  {MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -28,6 +32,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   imports: [
     // Angular core
     CommonModule,
+    FormsModule,
     // Angular material
     MatTableModule,
     MatCardModule,
@@ -38,6 +43,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     MatMenuModule,
     MatExpansionModule,
     MatBottomSheetModule,
+    MatFormFieldModule,
+    MatSelectModule,
     // Pipes
     CurrencySymbolPipe,
     DatePipe,
@@ -57,161 +64,84 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class IncomeOrExpenseComponent {
 
-  // TEST, ELIMINAR MOCKEOS
-  items: IncomeOrExpense[] = [
-    {
-      id: 1,
-      date: new Date('2024-02-15'),
-      category: 'Alquiler',
-      subCategory: 'Vivienda',
-      amount: -1499.99,
-      currency: 'EUR',
-      exchangeRateToUsd: 0.900,
-      type: 'expense',
-      recurrenceDetails: {
-        recurrenceType: 'monthly',
-        frequency: 1
-      }
-    },
-    {
-      id: 2,
-      date: new Date('2023-03-10'),
-      category: 'SalarioSalarioSalarioSaladdddd',
-      subCategory: 'SalarioSalarioSalarioSaladdddd',
-      amount: 250000,
-      currency: 'USD',
-      exchangeRateToUsd: 0.900,
-      type: 'income',
-      recurrenceDetails: {
-        recurrenceType: 'daily',
-        frequency: 3
-      }
-    },
-    {
-      id: 3,
-      date: new Date('2024-05-20'),
-      category: 'Comida',
-      subCategory: 'Restaurante',
-      amount: -500,
-      currency: 'AUD',
-      exchangeRateToUsd: 0.900,
-      type: 'expense'
-    },
-    {
-      id: 4,
-      date: new Date('2023-07-30'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: -150000000000000.40,
-      currency: 'CAD',
-      exchangeRateToUsd: 0.900,
-      type: 'expense',
-      recurrenceDetails: {
-        recurrenceType: 'yearly',
-        frequency: 5
-      }
-    },
-    {
-      id: 5,
-      date: new Date('2022-12-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 1050,
-      currency: 'CHF',
-      exchangeRateToUsd: 0.900,
-      type: 'income'
-    },
-    {
-      id: 6,
-      date: new Date('2022-10-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 19.99,
-      currency: 'CNY',
-      exchangeRateToUsd: 0.900,
-      type: 'income'
-    },
-    {
-      id: 7,
-      date: new Date('2022-01-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 250,
-      currency: 'GBP',
-      exchangeRateToUsd: 0.900,
-      type: 'income'
-    },
-    {
-      id: 8,
-      date: new Date('2021-08-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 159.99,
-      currency: 'INR',
-      exchangeRateToUsd: 0.900,
-      type: 'expense'
-    },
-    {
-      id: 9,
-      date: new Date('2021-06-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 180,
-      currency: 'JPY',
-      exchangeRateToUsd: 0.900,
-      type: 'income'
-    },
-    {
-      id: 10,
-      date: new Date('2021-04-05'),
-      category: 'Transporte',
-      subCategory: 'Gasolina',
-      amount: 25.50,
-      currency: 'NZD',
-      exchangeRateToUsd: 0.900,
-      type: 'expense'
-    }
-  ]
-
-  groupedItems: { [year: number]: IncomeOrExpense[] } = {}
+  groupedRecords: { [year: number]: IncomeOrExpense[] } = {}
   sortedYears: number[] = []
 
   // ID registro seleccionado
-  selectedItemId: number | null = null
+  selectedRecordId: number | null = null
 
   // Tipos de acciones
   readonly actionType = ActionType
 
-
+  // Modal de ingresos / gastos
   readonly dialog = inject(MatDialog)
+
+  // Variables de paginación y lista
+  currentPage: number = 0
+  pageSize = signal<number>(10)
+  allRecords: IncomeOrExpense[] = []
 
   constructor(
     private incomeOrExpenseService: IncomeOrExpenseService,
-    private notificationsService: NotificacionesService
+    private notificationsService: NotificacionesService,
+    private storageService: StorageService
   ) {
 
-    // TEST, QUITARLO DE AQUÍ
-    this.groupByYear()
+    // Asigna el número registros en caso de que exista en el local
+    const localStorageSize = this.storageService.getLocal('IEsize')
+
+    if(Number(localStorageSize) && Number(localStorageSize) >= 5 && Number(localStorageSize) <= 30) {
+
+      this.pageSize.set(Number(localStorageSize))
+
+    }
+
+    effect(() => {
+
+      // En caso de cambiar el tamaño de la página, resetea los valores
+      this.currentPage = 0
+      this.allRecords = []
+
+      this.storageService.setLocal('IEsize', this.pageSize().toString())
+
+      this.loadMore()
+
+    })
 
   }
 
   groupByYear(): void {
-    this.items.forEach(item => {
 
-      const year = new Date(item.date).getFullYear()
+    this.allRecords.forEach(record => {
 
-      if (!this.groupedItems[year]) {
+      const year = new Date(record.date).getFullYear()
 
-        this.groupedItems[year] = []
+      if (!this.groupedRecords[year]) {
+
+        this.groupedRecords[year] = []
 
       }
 
-      this.groupedItems[year].push(item)
+      this.groupedRecords[year].push(record)
+
+    })
+
+    // Ordena los registros dentro de cada grupo por fecha (mes y día)
+    Object.keys(this.groupedRecords).forEach((year: any) => {
+
+      this.groupedRecords[year].sort((a, b) => {
+
+        const dateA = new Date(a.date)
+        const dateB = new Date(b.date)
+
+        return dateB.getTime() - dateA.getTime()
+
+      })
 
     })
 
     // Obtiene la clave (años) y los ordena en orden descendente
-    this.sortedYears = Object.keys(this.groupedItems)
+    this.sortedYears = Object.keys(this.groupedRecords)
       .map(year => parseInt(year))
       .sort((a, b) => b - a)
 
@@ -219,7 +149,22 @@ export class IncomeOrExpenseComponent {
 
   loadMore(): void {
 
+    this.incomeOrExpenseService.getFilteredIncomeOrExpenses('', this.currentPage, this.pageSize()).subscribe({
 
+      next: (data: IncomeOrExpense[]) => {
+
+        // Apila los datos con los nuevos
+        this.allRecords = [...this.allRecords, ...data]
+
+        // Ordena los registros
+        this.groupByYear()
+
+        // Incrementa la página para la próxima solicitud
+        this.currentPage++
+
+      }
+      
+    })
 
   }
 
@@ -260,9 +205,9 @@ export class IncomeOrExpenseComponent {
 
   }
 
-  toggleDetails(itemId: number): void {
+  toggleDetails(recordId: number): void {
 
-    this.selectedItemId = this.selectedItemId === itemId ? null : itemId
+    this.selectedRecordId = this.selectedRecordId === recordId ? null : recordId
 
   }
 
