@@ -260,7 +260,7 @@ export class IncomeOrExpenseComponent {
       if(incomeOrExpense) {
 
         this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
-  
+
           next: (id: number) => {
 
             this.notificationsService.addNotification(
@@ -273,12 +273,13 @@ export class IncomeOrExpenseComponent {
 
             this.manageRecordsAndSort([incomeOrExpense])
 
+            this.totalElements.set(this.totalElements() + 1)
+
           }
-  
+
         })
 
       }
-
 
     }))
 

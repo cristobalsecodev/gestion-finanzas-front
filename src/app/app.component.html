@@ -1,5 +1,5 @@
 <header>
-  <mat-toolbar class="min-h-14 max-h-14 border-solid border-b border-color">
+  <mat-toolbar class="border-solid border-b border-color">
     <button mat-icon-button [routerLink]="['']">
       <mat-icon>finance</mat-icon>
     </button>
@@ -140,8 +140,8 @@
   </mat-toolbar>
 </header>
 
-<main>
-  <mat-sidenav-container hasBackdrop="false">
+<main class="h-[95%]">
+  <mat-sidenav-container class="h-full" hasBackdrop="false">
     <mat-sidenav #drawer mode="over" position="end"  [(opened)]="sidenavOpened" class="modificar-esquinas">
       <mat-nav-list>
 

@@ -102,8 +102,6 @@
 
         }
 
-
-
         @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
 
           <mat-error> Category is required. </mat-error>
@@ -132,7 +130,7 @@
 
           @for (option of filteredSubCategories; track $index) {
 
-            <mat-option [value]="option.name">
+            <mat-option [value]="option">
               {{ option.name }}
             </mat-option>
 
