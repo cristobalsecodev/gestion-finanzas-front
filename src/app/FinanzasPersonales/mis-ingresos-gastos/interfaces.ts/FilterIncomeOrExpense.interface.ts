@@ -1,6 +1,6 @@
-import { PaginationData } from "src/app/shared/interfaces/PaginationData.interface";
+import { PaginationToSend } from "src/app/shared/interfaces/PaginationData.interface";
 
-export interface FilterIncomeOrExpense extends PaginationData {
+export interface FilterIncomeOrExpense extends PaginationToSend {
 
   notes: string | undefined
   categories: string[] | undefined

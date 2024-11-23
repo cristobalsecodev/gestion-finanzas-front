@@ -75,8 +75,10 @@ html {
   --sys-on-error-fixed-variant: #73342d;
 
   /* Custom (WIP) */
-  --sys-green: #3e6837;
-  --sys-red: #904a42;
+  --sys-action-green: #3e6837;
+  --sys-action-red: #904a42;
+  --sys-action-yellow: #715c0c;
+  --sys-action-blue: #236488;
   --sys-hover-component: #d2dbeb;
 
 }
@@ -144,8 +146,10 @@ html {
   --sys-on-error-fixed-variant: #73342d;
 
   /* Custom (WIP) */
-  --sys-green: #a3d397;
-  --sys-red: #ffb4aa;
+  --sys-action-green: #a3d397;
+  --sys-action-red: #ffb4aa;
+  --sys-action-yellow: #f6e992;
+  --sys-action-blue: #9dcff3;
   --sys-hover-component: #363d43;
 
 }

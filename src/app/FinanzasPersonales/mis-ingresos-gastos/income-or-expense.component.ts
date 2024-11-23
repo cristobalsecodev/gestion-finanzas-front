@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 import { FilterIncomeOrExpense } from './interfaces.ts/FilterIncomeOrExpense.interface';
 import { compareObjects } from 'src/app/shared/functions/CompareObjects';
+import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
+import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -79,8 +81,9 @@ export class IncomeOrExpenseComponent {
   readonly dialog = inject(MatDialog)
 
   // Variables de paginación y lista
-  currentPage: number = 0
+  currentPage = signal<number>(0)
   pageSize = signal<number>(10)
+  totalElements = signal<number>(0)
   allRecords: IncomeOrExpense[] = []
 
   constructor(
@@ -98,15 +101,7 @@ export class IncomeOrExpenseComponent {
 
     }
 
-    effect(() => {
-
-      this.storageService.setLocal('IEsize', this.pageSize().toString())
-
-      this.resetList()
-
-      this.loadMore()
-
-    })
+    this.loadMore()
 
   }
 
@@ -154,8 +149,9 @@ export class IncomeOrExpenseComponent {
 
     const buildFilter: FilterIncomeOrExpense = {
 
-      page: this.currentPage,
+      page: this.currentPage(),
       size: this.pageSize(),
+      sortDir: 'desc',
       categories: undefined,
       endAmount: undefined,
       endDate: undefined,
@@ -170,12 +166,18 @@ export class IncomeOrExpenseComponent {
 
     this.incomeOrExpenseService.getFilteredIncomeOrExpenses(buildFilter).subscribe({
 
-      next: (records: IncomeOrExpense[]) => {
+      next: (records: PaginationData) => {
 
-        this.manageRecordsAndSort(records)
+        if(records._embedded) {
+
+          this.manageRecordsAndSort(records._embedded.incomeOrExpenseList)
+
+        }
+
+        this.totalElements.set(records.page.totalElements)
 
         // Incrementa la página para la próxima solicitud
-        this.currentPage++
+        this.currentPage.set(this.currentPage() + 1)
 
       }
       
@@ -217,15 +219,30 @@ export class IncomeOrExpenseComponent {
 
   }
 
-  resetList(): void {
+  deleteRecord(id: number): void {
 
-    // Resetea los valores de la lista y paginación
-    this.currentPage = 0
-    this.allRecords = []
+    this.allRecords = this.allRecords.filter(record => record.id !== id)
+
+    // Ordena los registros
+    this.groupByYear()
 
   }
 
-  openDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
+  resetList(size: number): void {
+
+    // Resetea los valores de la lista y paginación
+    this.pageSize.set(size)
+
+    this.storageService.setLocal('IEsize', this.pageSize().toString())
+
+    this.currentPage.set(0)
+    this.allRecords = []
+
+    this.loadMore()
+
+  }
+
+  openIncomeOrExpenseDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
 
     this.dialog.open(IncomeOrExpenseFormComponent, {
 
@@ -255,6 +272,47 @@ export class IncomeOrExpenseComponent {
             incomeOrExpense.id = id
 
             this.manageRecordsAndSort([incomeOrExpense])
+
+          }
+  
+        })
+
+      }
+
+
+    }))
+
+  }
+
+  openDeleteDialog(incomeOrExpense: IncomeOrExpense): void {
+
+    const recurrenceMessage = incomeOrExpense.recurrenceDetails 
+      ? `. If this is the only ${incomeOrExpense.type} registered, the recurrence will be deleted too.` 
+      : ''
+
+    this.dialog.open(ActionDialogComponent, {
+
+      data: {
+        type: 'delete',
+        message: `Are you sure you want to delete this ${incomeOrExpense.type}?${recurrenceMessage}`,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Go back'
+      },
+      maxWidth: '30vw'
+
+    }).afterClosed().subscribe(((isConfirmed: boolean) => {
+
+      if(isConfirmed) {
+
+        this.incomeOrExpenseService.deleteIncomeOrExpense(incomeOrExpense.id!).subscribe({
+  
+          next: (message: string) => {
+
+            this.notificationsService.addNotification(message, 'success')
+
+            this.deleteRecord(incomeOrExpense.id!)
+
+            this.totalElements.set(this.totalElements() - 1)
 
           }
   

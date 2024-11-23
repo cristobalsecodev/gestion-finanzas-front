@@ -1,7 +1,15 @@
-export interface PaginationData {
+export interface PaginationToSend {
 
   page: number
   size: number
+  sortDir: 'desc' | 'asc'
+
+}
+
+export interface PaginationData {
+
+  page: PaginationDataResponse
+  _embedded: any
 
 }
 

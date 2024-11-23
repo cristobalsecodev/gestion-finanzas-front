@@ -29,7 +29,7 @@
       </mat-expansion-panel>
 
       <!-- Botón añadir ingreso / gasto -->
-       <button mat-button (click)="openDialog(actionType.CREATE)" class="w-fit self-center">
+       <button mat-button (click)="openIncomeOrExpenseDialog(actionType.CREATE)" class="w-fit self-center">
         <mat-icon>add</mat-icon>
         Add income / expense
        </button>
@@ -170,7 +170,8 @@
 
                   <button 
                     mat-button 
-                    class="delete flex items-center space-x-1">
+                    class="delete flex items-center space-x-1"
+                    (click)="openDeleteDialog(record)">
 
                     <mat-icon>delete</mat-icon>
                     <span>Delete</span>
@@ -179,7 +180,7 @@
               
                   <button 
                     mat-button 
-                    (click)="openDialog(actionType.EDIT, record)" 
+                    (click)="openIncomeOrExpenseDialog(actionType.EDIT, record)" 
                     class="flex items-center space-x-1">
 
                     <mat-icon>edit</mat-icon>
@@ -209,18 +210,27 @@
 
       </section>
       
-      <!-- Botón cargar más que ocupa todo el ancho disponible -->
+      <!-- Botón cargar más -->
       <button mat-flat-button 
       (click)="loadMore()"
-      [disabled]=""
+      [disabled]="allRecords.length >= totalElements()"
       class="w-fit self-center">
 
-        <mat-icon>add</mat-icon>
-        <span>Load more</span>
+        @if(allRecords.length >= totalElements()) {
+
+          <mat-icon>keyboard_arrow_up</mat-icon>
+
+        } @else {
+
+          <mat-icon>add</mat-icon>
+
+        }
+
+        <span>{{ allRecords.length >= totalElements() ? 'All the records are loaded' : 'Load more' }}</span>
 
       </button>
       
-      <!-- Selector tamaño de página en la esquina superior derecha -->
+      <!-- Selector tamaño de página -->
       <button mat-button 
       [matMenuTriggerFor]="pageSizeMenu" 
       matTooltip="Change how many records you want to load" 
@@ -235,7 +245,7 @@
 
         @for (size of [5, 10, 20, 30]; track $index) {
 
-          <button mat-menu-item (click)="pageSize.set(size)">
+          <button mat-menu-item (click)="resetList(size)">
             {{ size }}
           </button>
 

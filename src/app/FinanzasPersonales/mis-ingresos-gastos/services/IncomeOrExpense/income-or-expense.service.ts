@@ -3,6 +3,7 @@ import { IncomeOrExpense } from '../../interfaces.ts/IncomeOrExpense.interface';
 import { map, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FilterIncomeOrExpense } from '../../interfaces.ts/FilterIncomeOrExpense.interface';
+import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +27,18 @@ export class IncomeOrExpenseService {
 
   }
 
-  getFilteredIncomeOrExpenses(filter: FilterIncomeOrExpense): Observable<IncomeOrExpense[]> {
+  deleteIncomeOrExpense(id: number): Observable<string> {
 
-    return this.http.post<any>(`${this.incomeOrExpenseUrl}/filter`, filter)
+    return this.http.delete<any>(`${this.incomeOrExpenseUrl}/delete/${id}`)
       .pipe(
-        map(response => response._embedded.incomeOrExpenseList)
+        map(response => response.message)
       )
 
+  }
+
+  getFilteredIncomeOrExpenses(filter: FilterIncomeOrExpense): Observable<PaginationData> {
+
+    return this.http.post<any>(`${this.incomeOrExpenseUrl}/filter`, filter)
   }
 
 }
