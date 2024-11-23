@@ -211,10 +211,11 @@
       
       <!-- Botón cargar más que ocupa todo el ancho disponible -->
       <button mat-flat-button 
-      (click)="loadMore()" 
+      (click)="loadMore()"
+      [disabled]=""
       class="w-fit self-center">
 
-        <mat-icon class="mr-2">add</mat-icon>
+        <mat-icon>add</mat-icon>
         <span>Load more</span>
 
       </button>

@@ -22,6 +22,7 @@ import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -338,7 +339,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           amount: this.incomeOrExpenseForm.get('amount')?.value,
           category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
-          date: this.incomeOrExpenseForm.get('date')?.value,
+          exchangeRateToUsd: this.currencyExchangeService.currencies()
+            .find(currency => this.incomeOrExpenseForm.get('currency')?.value === currency.currencyCode)!.exchangeRateToUsd,
+          date: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
           subCategory: this.incomeOrExpenseForm.get('subCategory')?.value,
@@ -372,7 +375,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
       id: id,
       frequency: this.recurrenceForm.get('frequency')?.value,
       recurrenceType: this.recurrenceForm.get('recurrenceType')?.value,
-      endDate: this.recurrenceForm.get('endDate')?.value,
+      endDate: moment(this.recurrenceForm.get('endDate')?.value).format('YYYY-MM-DD'),
       occurrences: this.recurrenceForm.get('occurrences')?.value
     };
 

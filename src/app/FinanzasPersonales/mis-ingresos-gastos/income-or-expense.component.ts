@@ -26,6 +26,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 import { FilterIncomeOrExpense } from './interfaces.ts/FilterIncomeOrExpense.interface';
+import { compareObjects } from 'src/app/shared/functions/CompareObjects';
 
 @Component({
   selector: 'app-income-or-expense',
@@ -99,12 +100,9 @@ export class IncomeOrExpenseComponent {
 
     effect(() => {
 
-      // En caso de cambiar el tamaño de la página, resetea los valores
-      this.currentPage = 0
-      this.allRecords = []
-      this.groupedRecords = []
-
       this.storageService.setLocal('IEsize', this.pageSize().toString())
+
+      this.resetList()
 
       this.loadMore()
 
@@ -113,6 +111,9 @@ export class IncomeOrExpenseComponent {
   }
 
   groupByYear(): void {
+
+    // Resetea el grouped records cada vez que se haga el cálculo
+    this.groupedRecords = []
 
     this.allRecords.forEach(record => {
 
@@ -169,13 +170,9 @@ export class IncomeOrExpenseComponent {
 
     this.incomeOrExpenseService.getFilteredIncomeOrExpenses(buildFilter).subscribe({
 
-      next: (data: IncomeOrExpense[]) => {
+      next: (records: IncomeOrExpense[]) => {
 
-        // Apila los datos con los nuevos
-        this.allRecords = [...this.allRecords, ...data]
-
-        // Ordena los registros
-        this.groupByYear()
+        this.manageRecordsAndSort(records)
 
         // Incrementa la página para la próxima solicitud
         this.currentPage++
@@ -183,6 +180,48 @@ export class IncomeOrExpenseComponent {
       }
       
     })
+
+  }
+
+  manageRecordsAndSort(newRecords: IncomeOrExpense[]): void {
+
+    // Comprueba si el mismo registro ha sido modificado
+    this.allRecords = this.allRecords.map(existingRecord => {
+
+      // Encuentra un registro con la misma ID
+      const updatedRecord = newRecords.find(newRecord => newRecord.id === existingRecord.id)
+    
+      // Si se encuentra y es diferente, actualiza el registro existente
+      if (updatedRecord && !compareObjects(existingRecord, updatedRecord)) {
+
+        // Actualiza con los nuevos datos
+        return updatedRecord
+
+      }
+
+      // Mantiene el registro actual
+      return existingRecord
+
+    });
+
+    // Apila los datos con los nuevos evitando duplicados
+    this.allRecords = [
+      ...this.allRecords, 
+      ...newRecords.filter(newRecord => 
+        !this.allRecords.some(existingRecord => compareObjects(existingRecord, newRecord))
+      )
+    ]
+
+    // Ordena los registros
+    this.groupByYear()
+
+  }
+
+  resetList(): void {
+
+    // Resetea los valores de la lista y paginación
+    this.currentPage = 0
+    this.allRecords = []
 
   }
 
@@ -205,13 +244,18 @@ export class IncomeOrExpenseComponent {
 
         this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
   
-          next: () => {
-  
+          next: (id: number) => {
+
             this.notificationsService.addNotification(
               `${capitalizeString(incomeOrExpense.type)} saved`, 
               'success'
             )
-  
+
+            // Asigna el ID creado
+            incomeOrExpense.id = id
+
+            this.manageRecordsAndSort([incomeOrExpense])
+
           }
   
         })

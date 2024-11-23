@@ -4,3 +4,12 @@ export interface PaginationData {
   size: number
 
 }
+
+export interface PaginationDataResponse {
+
+  number: number
+  size: number
+  totalElements: number
+  totalPages: number
+
+}

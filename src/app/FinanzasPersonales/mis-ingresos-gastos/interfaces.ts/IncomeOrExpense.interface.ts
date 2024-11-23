@@ -1,12 +1,12 @@
 export interface IncomeOrExpense {
 
   id?: number
-  date: Date // Fecha de efecto
+  date: string // Fecha de efecto
   category: string // Categoría
   subCategory?: string // Subcategoría
   amount: number // Cantidad
   currency: string // Divisa
-  exchangeRateToUsd?: number // Tipo de cambio en relación al USD
+  exchangeRateToUsd: number // Tipo de cambio en relación al USD
   type: 'income' | 'expense' // Tipo
   notes?: string // Pequeña descripción
   recurrenceDetails?: RecurrenceDetails // Detalles de recurrencia en caso de que exista
@@ -18,7 +18,7 @@ export interface RecurrenceDetails {
   id?: number
   recurrenceType: 'daily' | 'weekly' | 'monthly' | 'yearly' // Tipo de recurrencia
   frequency: number // Frecuencia de repetición (e.g., cada 2 días, 1 semana, etc.)
-  endDate?: Date // Fecha de fin (opcional, si la recurrencia es limitada)
+  endDate?: string // Fecha de fin (opcional, si la recurrencia es limitada)
   occurrences?: number // Número de veces que ocurre la operación
 
 }

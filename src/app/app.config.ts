@@ -9,10 +9,10 @@ import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'YYYY-MM-DD', // Acepta entrada en formato ISO
+    dateInput: 'YYYY-MM-DD', // Valor almacenado y parseado
   },
   display: {
-    dateInput: 'MMMM DD, YYYY', // Muestra "November 10, 2024" al usuario
+    dateInput: 'MMMM DD, YYYY', // Formato visual
     monthYearLabel: 'MMM YYYY',
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'MMMM YYYY',
