@@ -9,3 +9,10 @@ export function passwordMatchValidator(control: AbstractControl) {
   return password === passwordConfirm ? null : { mismatch: true }
 
 }
+
+// Validador objeto seleccionado
+export function objectSelectedValidator(control: AbstractControl) {
+
+  return typeof control.value === 'object' || !control.value ? null : { objectSelected: true }
+
+}

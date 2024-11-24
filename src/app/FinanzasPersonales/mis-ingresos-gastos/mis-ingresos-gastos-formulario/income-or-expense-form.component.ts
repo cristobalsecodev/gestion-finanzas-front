@@ -10,7 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { MatInput } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces.ts/IncomeOrExpense.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
@@ -23,6 +23,8 @@ import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCat
 import { capitalizeString } from 'src/app/shared/functions/Utils';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import moment from 'moment';
+import { objectSelectedValidator } from 'src/app/shared/functions/Validators';
+import { TypeCheckPipe } from 'src/app/shared/pipes/TypeCheck/type-check.pipe';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -30,8 +32,8 @@ import moment from 'moment';
   imports: [
     // Angular core
     ReactiveFormsModule,
-    MatInput,
     // Angular material
+    MatInputModule,
     MatFormFieldModule,
     MatDialogTitle, 
     MatDialogContent, 
@@ -47,7 +49,8 @@ import moment from 'moment';
     MatSelectModule,
     MatAutocompleteModule,
     // Pipes
-    CurrencySymbolPipe
+    CurrencySymbolPipe,
+    TypeCheckPipe
   ],
   templateUrl: './income-or-expense-form.component.html',
   styleUrl: './income-or-expense-form.component.scss',
@@ -111,9 +114,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
       type: new FormControl('', [Validators.required]),
 
-      category: new FormControl({value: '', disabled: true}, [Validators.required, Validators.maxLength(50)]),
+      category: new FormControl({value: '', disabled: true}, [Validators.required, Validators.maxLength(50), objectSelectedValidator]),
 
-      subCategory: new FormControl({value: '', disabled: true}, [Validators.maxLength(50)]),
+      subCategory: new FormControl({value: '', disabled: true}, [Validators.maxLength(50), objectSelectedValidator]),
 
       amount: new FormControl('', [
         Validators.required, 
@@ -206,7 +209,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     // Reinicia la subcategoría
     this.resetSubCategory()
 
-    const subCategoriesFiltered = this.categories.find(category => category.name === this.incomeOrExpenseForm.get('category')?.value)?.subcategories
+    const subCategoriesFiltered = this.categories.find(category => category.name === this.incomeOrExpenseForm.get('category')?.value.name)?.subcategories
 
     this.subCategories = subCategoriesFiltered ?? []
     this.filteredSubCategories = subCategoriesFiltered ?? []
@@ -235,11 +238,11 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     // Filtra categorías
     this.filterCategories()
-    this.incomeOrExpenseForm.get('category')?.setValue(this.data.incomeOrExpense?.category)
+    this.incomeOrExpenseForm.get('category')?.setValue(this.categories.find(category => category.name === this.data.incomeOrExpense?.category))
 
     // Filtra subcategorías
     this.filterSubCategories()
-    this.incomeOrExpenseForm.get('subCategory')?.setValue(this.data.incomeOrExpense?.subCategory)   
+    this.incomeOrExpenseForm.get('subCategory')?.setValue(this.subCategories.find(subCategory => subCategory.name === this.data.incomeOrExpense?.subCategory))   
 
     if(this.isRecurrence()) {
 
@@ -256,6 +259,12 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   onCategorySearch(): void {
 
     const searchTerm = this.incomeOrExpenseForm.get('category')?.value
+
+    if(typeof this.incomeOrExpenseForm.get('category')?.value !== 'object' && this.incomeOrExpenseForm.get('subCategory')?.enabled) {
+
+      this.resetSubCategory()
+
+    }
 
     this.filteredCategories = filterAutocomplete(this.categories, searchTerm, ['name'])
 
@@ -328,6 +337,14 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     });
 
   }
+  
+  displayCategory(category: BaseCategory): string {
+    return category ? category.name : '';
+  }
+
+  displaySubCategory(subCategory: BaseCategory): string {
+    return subCategory ? subCategory.name : '';
+  }
 
   submitForm(): void {
 
@@ -337,14 +354,14 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
           id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
           amount: this.incomeOrExpenseForm.get('amount')?.value,
-          category: this.incomeOrExpenseForm.get('category')?.value,
+          category: this.incomeOrExpenseForm.get('category')?.value.name,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
           exchangeRateToUsd: this.currencyExchangeService.currencies()
             .find(currency => this.incomeOrExpenseForm.get('currency')?.value === currency.currencyCode)!.exchangeRateToUsd,
           date: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
-          subCategory: this.incomeOrExpenseForm.get('subCategory')?.value,
+          subCategory: this.incomeOrExpenseForm.get('subCategory')?.value.name,
           ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    
 
         }

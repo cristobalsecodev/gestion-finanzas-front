@@ -42,7 +42,12 @@
 
         <mat-label>Date</mat-label>
 
-        <input matInput [matDatepicker]="dp" formControlName="date" required readonly>
+        <input matInput 
+        [matDatepicker]="dp" 
+        formControlName="date" 
+        [max]="recurrenceForm.get('endDate')?.value"
+        required 
+        readonly>
         <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
         <mat-datepicker #dp></mat-datepicker>
 
@@ -74,11 +79,12 @@
         (keyup)="onCategorySearch()"
         />
         <mat-autocomplete #autoCategory="matAutocomplete"
+        [displayWith]="displayCategory"
         (optionSelected)="filterSubCategories()">
 
           @for (option of filteredCategories; track $index) {
 
-            <mat-option [value]="option.name">
+            <mat-option [value]="option">
               {{ option.name }}
             </mat-option>
 
@@ -108,11 +114,17 @@
 
         }
 
+        @if(incomeOrExpenseForm.get('category')?.hasError('objectSelected')) {
+
+          <mat-error> You must select a category. </mat-error>
+
+        }
+
       </mat-form-field>
 
       <!-- Subcategoría -->
       <mat-form-field class="w-full"
-      [matTooltip]="(filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value) 
+      [matTooltip]="(filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value | typeCheck:'object') 
         ? 'The category doesn\'t have any subcategories'
         : 'Please select a category first'"
       [matTooltipDisabled]="incomeOrExpenseForm.get('subCategory')?.enabled">
@@ -126,7 +138,8 @@
         [matAutocomplete]="autoSubCategory"
         (keyup)="onSubCategorySearch()"
         />
-        <mat-autocomplete #autoSubCategory="matAutocomplete">
+        <mat-autocomplete #autoSubCategory="matAutocomplete"
+        [displayWith]="displaySubCategory">
 
           @for (option of filteredSubCategories; track $index) {
 
@@ -143,10 +156,15 @@
           info
         </mat-icon>
 
+        @if(incomeOrExpenseForm.get('subCategory')?.hasError('objectSelected')) {
+
+          <mat-error> You must select a subcategory. </mat-error>
+
+        }
+
       </mat-form-field>
 
       <!-- Divisa -->
-
       <mat-form-field class="w-full">
 
         <mat-label>Currency</mat-label>
@@ -323,7 +341,11 @@
 
           <mat-label>End date</mat-label>
 
-          <input matInput [matDatepicker]="dp1" formControlName="endDate" readonly>
+          <input matInput 
+          [matDatepicker]="dp1" 
+          formControlName="endDate"
+          [min]="incomeOrExpenseForm.get('date')?.value"
+          readonly>
           <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
 

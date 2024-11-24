@@ -2,22 +2,26 @@ import { normalizeString } from "./Utils"
 
 export function filterAutocomplete<T>(
   options: T[],
-  searchTerm: string,
+  searchTerm: any,
   keys: string[] // Las propiedades en las que se desea buscar
 ): T[] {
 
-  const normalizedSearchTerm = normalizeString(searchTerm)
+  if(typeof searchTerm === 'string') {
 
-  if(normalizedSearchTerm) {
+    const normalizedSearchTerm = normalizeString(searchTerm)
 
-    return options.filter((option: any) => 
-      keys.some((key: string) => normalizeString(String(option[key])).includes(normalizedSearchTerm))
-    )
-
-  } else {
-
-    return options
+    if(normalizedSearchTerm) {
+  
+      return options.filter((option: any) => 
+        keys.some((key: string) => normalizeString(String(option[key])).includes(normalizedSearchTerm))
+      )
+  
+    }
 
   }
+
+  return options
+
+
 
 }
