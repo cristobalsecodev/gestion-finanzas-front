@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,8 +16,8 @@ import { FLAGS } from './shared/constants/svg.constants';
 import { activateAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute, signUpRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
-import { StorageService } from './shared/services/Storage/storage.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
+import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service';
 
 @Component({
   selector: 'app-root',
@@ -43,9 +43,6 @@ import { CurrencyExchangeService } from './shared/services/CurrencyExchange/curr
 })
 export class AppComponent implements OnInit {
 
-  // Modo oscuro
-  darkMode = signal<boolean>(true)
-
   // Almacena la URL
   currentUrl = signal<string>('')
 
@@ -68,10 +65,8 @@ export class AppComponent implements OnInit {
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
     public currencyExchangeService: CurrencyExchangeService,
-    private storageService: StorageService
+    public themeModeService: ThemeModeService
   ) {
-
-    this.userHasThemeModeSelected()
 
     // Añadimos los SVGs
     FLAGS.forEach(flag => {
@@ -110,33 +105,6 @@ export class AppComponent implements OnInit {
     }
 
   }
-
-  userHasThemeModeSelected(): void {
-
-    // Lógica para comprobar si el usuario ya tiene guardado un modo (oscuro o día)
-    const themeMode = this.storageService.getLocal('themeMode')
-
-    if(themeMode) {
-
-      themeMode === 'dark' ? this.darkMode.set(true) : this.darkMode.set(false)
-
-    } else {
-
-      this.darkMode.set(this.storageService.matchMedia('(prefers-color-scheme: dark)'))
-
-    }
-
-  }
-
-  setDarkMode = effect(() => {
-
-    this.storageService.classListToggle('dark', this.darkMode())
-
-    this.darkMode()
-    ? this.storageService.setLocal('themeMode', 'dark')
-    : this.storageService.setLocal('themeMode', 'light')
-
-  })
 
   logout(): void {
 

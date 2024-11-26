@@ -80,9 +80,14 @@
     }
 
     <!-- Icono modo visual -->
-    <button mat-icon-button (click)="darkMode.set(!darkMode())">
+    <button mat-icon-button 
+    (click)="themeModeService.setMode(
+      themeModeService.themeMode() === themeModeService.themeModes.DARK 
+        ? themeModeService.themeModes.LIGHT 
+        : themeModeService.themeModes.DARK
+    )">
 
-      @if(darkMode()) {
+      @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
 
         <mat-icon>dark_mode</mat-icon>
 

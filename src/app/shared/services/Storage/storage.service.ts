@@ -81,11 +81,11 @@ export class StorageService {
 
   }
 
-  classListToggle(className: string, toggle: boolean): void {
+  classList(className: string, action: 'add' | 'remove'): void {
 
     if (isPlatformBrowser(this.platformId)) {
 
-      document.documentElement.classList.toggle(className, toggle)
+      document.documentElement.classList[action](className)
 
     }
 
