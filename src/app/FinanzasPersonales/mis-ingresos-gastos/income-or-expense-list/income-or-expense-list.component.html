@@ -13,26 +13,33 @@
 
     </mat-expansion-panel-header>
 
-    <form [formGroup]="filterForm" (ngSubmit)="submitFilter()">
+    <form [formGroup]="filterForm" (ngSubmit)="resetList()">
 
       <div class="my-2 grid grid-cols-1 md:grid-cols-2 gap-2">
 
-        <!-- Tipo -->
-        <mat-form-field class="w-full">
+        <!-- Ingreso o gasto -->
+        <mat-chip-listbox #chipList
+        class="flex place-self-center space-x-2"
+        formControlName="type">
+  
+          @for (type of ['income', 'expense']; track $index) {
+  
+            <mat-chip-option [value]="type" class="px-4 py-2">
+              {{ capitalize(type) }}
+            </mat-chip-option>
+  
+          }
+  
+        </mat-chip-listbox>
 
-          <mat-label>Type</mat-label>
-  
-          <mat-select formControlName="type">
-  
-            @for (type of ['income', 'expense']; track $index) {
-  
-              <mat-option [value]="type"> {{ type }} </mat-option>
-  
-            }
-  
-          </mat-select>
-  
-        </mat-form-field>
+        <!-- Tiene notas o no -->
+        <mat-button-toggle-group formControlName="hasNotes" class="place-self-center">
+
+          <mat-button-toggle value="N/A">N/A</mat-button-toggle>
+          <mat-button-toggle [value]="true">Has notes</mat-button-toggle>
+          <mat-button-toggle [value]="false">No notes</mat-button-toggle>
+
+        </mat-button-toggle-group>
 
         <!-- Fecha desde -->
         <mat-form-field class="w-full">
@@ -87,13 +94,17 @@
       <!-- Botón filtrar -->
       <div class="text-end">
 
-        <button mat-flat-button type="submit">
+        <button mat-button type="button" (click)="filterForm.reset({hasNotes: 'N/A'})">
+          <mat-icon>restart_alt</mat-icon>
+          <span>Reset filter</span>
+        </button>
+
+        <button mat-flat-button type="submit" class="ml-2">
           <mat-icon>tune</mat-icon>
           <span>Filter</span>
         </button>
 
       </div>
-
 
     </form>
 
@@ -134,11 +145,11 @@
             <div class="flex flex-col w-[58%] pl-4">
 
               <p class="text-sm font-medium break-words text-balance">
-                {{ record.category }}
+                {{ record.category.name }}
               </p>
 
               <p class="text-xs break-words text-balance">
-                {{ record.subCategory }}
+                {{ record.subcategory ? record.subcategory.name : '' }}
               </p>
               
             </div>
@@ -196,11 +207,11 @@
             <div class="mb-4">
 
               <p class="text-sm">
-                <strong>Category:</strong> {{ record.category }}
+                <strong>Category:</strong> {{ record.category.name }}
               </p>
 
               <p class="text-sm">
-                <strong>Subcategory:</strong> {{ record.subCategory }}
+                <strong>Subcategory:</strong> {{ record.subcategory ? record.subcategory.name : '' }}
               </p>
 
               <p 

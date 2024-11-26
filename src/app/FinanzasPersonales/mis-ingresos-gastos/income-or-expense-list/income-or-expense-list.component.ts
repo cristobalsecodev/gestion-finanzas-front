@@ -23,11 +23,12 @@ import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipListboxChange } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -47,6 +48,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatCardModule,
     MatSelectModule,
     MatDatepickerModule,
+    MatChipsModule,
+    MatButtonToggleModule,
     // Pipes
     CurrencySymbolPipe,
     DatePipe,
@@ -69,6 +72,9 @@ export class IncomeOrExpenseListComponent {
   // Formulario de filtro
   filterForm!: FormGroup
 
+  // Categorías y subcategorías del filtro
+  categories = signal<string>('')
+
   groupedRecords: { [year: number]: IncomeOrExpense[] } = {}
   sortedYears: number[] = []
 
@@ -80,6 +86,9 @@ export class IncomeOrExpenseListComponent {
 
   // Modal de ingresos / gastos
   readonly dialog = inject(MatDialog)
+
+  // Función para capitalizar strings
+  capitalize = capitalizeString
 
   // Variables de paginación y lista
   currentPage = signal<number>(0)
@@ -102,6 +111,8 @@ export class IncomeOrExpenseListComponent {
 
       type: new FormControl(''),
 
+      hasNotes: new FormControl('N/A')
+
     })
 
     // Asigna el número registros en caso de que exista en el local
@@ -116,14 +127,6 @@ export class IncomeOrExpenseListComponent {
     this.loadMore()
 
   }
-
-  submitFilter(): void {
-
-    console.log('filtrao')
-
-  }
-
-
 
   groupByYear(): void {
 
@@ -248,7 +251,7 @@ export class IncomeOrExpenseListComponent {
 
   }
 
-  resetList(size: number): void {
+  resetList(size: number = 10): void {
 
     // Resetea los valores de la lista y paginación
     this.pageSize.set(size)

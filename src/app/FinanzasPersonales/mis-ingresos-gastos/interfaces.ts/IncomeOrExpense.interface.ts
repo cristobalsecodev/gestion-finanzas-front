@@ -2,8 +2,8 @@ export interface IncomeOrExpense {
 
   id?: number
   date: string // Fecha de efecto
-  category: string // Categoría
-  subCategory?: string // Subcategoría
+  category: BaseCategory // Categoría
+  subcategory?: BaseCategory // Subcategoría
   amount: number // Cantidad
   currency: string // Divisa
   exchangeRateToUsd: number // Tipo de cambio en relación al USD

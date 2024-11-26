@@ -71,9 +71,6 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   // Tipos de acción
   readonly actionTypes = ActionType
 
-  // Tipos de registro
-  readonly types: string[] = ['income', 'expense']
-
   // Tipos de recurrencia
   readonly recurrenceTypes: string[] = ['daily', 'weekly', 'monthly', 'yearly']
 
@@ -231,18 +228,18 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     // Formulario de ingreso / gasto
     this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type)
-    this.incomeOrExpenseForm.get('amount')?.setValue(this.data.incomeOrExpense?.amount)
+    this.incomeOrExpenseForm.get('amount')?.setValue(this.selectedType() === 'expense' ? -this.data.incomeOrExpense!.amount : this.data.incomeOrExpense?.amount)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
     this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.date)
     this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes ? this.data.incomeOrExpense?.notes : '')
 
     // Filtra categorías
     this.filterCategories()
-    this.incomeOrExpenseForm.get('category')?.setValue(this.categories.find(category => category.name === this.data.incomeOrExpense?.category))
+    this.incomeOrExpenseForm.get('category')?.setValue(this.data.incomeOrExpense?.category)
 
     // Filtra subcategorías
     this.filterSubCategories()
-    this.incomeOrExpenseForm.get('subCategory')?.setValue(this.subCategories.find(subCategory => subCategory.name === this.data.incomeOrExpense?.subCategory))   
+    this.incomeOrExpenseForm.get('subCategory')?.setValue(this.data.incomeOrExpense?.subcategory)   
 
     if(this.isRecurrence()) {
 
@@ -354,14 +351,14 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
           id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
           amount: this.incomeOrExpenseForm.get('amount')?.value,
-          category: this.incomeOrExpenseForm.get('category')?.value.name,
+          category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
           exchangeRateToUsd: this.currencyExchangeService.currencies()
             .find(currency => this.incomeOrExpenseForm.get('currency')?.value === currency.currencyCode)!.exchangeRateToUsd,
           date: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
-          subCategory: this.incomeOrExpenseForm.get('subCategory')?.value.name,
+          subcategory: this.incomeOrExpenseForm.get('subCategory')?.value,
           ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    
 
         }
@@ -388,11 +385,15 @@ export class IncomeOrExpenseFormComponent implements OnInit {
       ? this.data.incomeOrExpense.recurrenceDetails.id
       : undefined 
 
+    const endDate = moment(this.recurrenceForm.get('endDate')?.value).isValid() 
+      ? moment(this.recurrenceForm.get('endDate')?.value).format('YYYY-MM-DD') 
+      : undefined
+
     return {
       id: id,
       frequency: this.recurrenceForm.get('frequency')?.value,
       recurrenceType: this.recurrenceForm.get('recurrenceType')?.value,
-      endDate: moment(this.recurrenceForm.get('endDate')?.value).format('YYYY-MM-DD'),
+      endDate: endDate,
       occurrences: this.recurrenceForm.get('occurrences')?.value
     };
 
