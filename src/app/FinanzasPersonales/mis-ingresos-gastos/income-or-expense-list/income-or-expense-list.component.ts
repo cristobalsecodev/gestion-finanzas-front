@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
-import { IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
+import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
@@ -27,8 +27,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { forkJoin } from 'rxjs';
+import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
+import { SelectGroup } from 'src/app/shared/interfaces/SelectGroup.interface';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -67,13 +70,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   templateUrl: './income-or-expense-list.component.html',
   styleUrl: './income-or-expense-list.component.scss'
 })
-export class IncomeOrExpenseListComponent {
+export class IncomeOrExpenseListComponent implements OnInit {
 
   // Formulario de filtro
   filterForm!: FormGroup
-
-  // Categorías y subcategorías del filtro
-  categories = signal<string>('')
 
   groupedRecords: { [year: number]: IncomeOrExpense[] } = {}
   sortedYears: number[] = []
@@ -96,10 +96,18 @@ export class IncomeOrExpenseListComponent {
   totalElements = signal<number>(0)
   allRecords: IncomeOrExpense[] = []
 
+  // Categorías y subcategorías
+  categories: Categories[] = []
+  filteredCategories: Categories[] = []
+
+  subcategories: SelectGroup[] = []
+  filteredSubcategories: SelectGroup[] = []
+
   constructor(
     private incomeOrExpenseService: IncomeOrExpenseService,
     private notificationsService: NotificacionesService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    public categoriesService: CategoriesAndSubCategoriesService
   ) {
 
     // Filtro
@@ -111,7 +119,11 @@ export class IncomeOrExpenseListComponent {
 
       type: new FormControl(''),
 
-      hasNotes: new FormControl('N/A')
+      hasNotes: new FormControl('N/A'),
+
+      category: new FormControl(''),
+
+      subcategory: new FormControl({value: '', disabled: true})
 
     })
 
@@ -125,6 +137,111 @@ export class IncomeOrExpenseListComponent {
     }
 
     this.loadMore()
+
+  }
+
+  ngOnInit(): void {
+    
+    this.callServices()
+    
+  }
+
+  callServices(): void {
+
+    forkJoin({
+      categories: this.categoriesService.getCategories()
+    }).subscribe({
+
+      next: ({categories}) => {
+
+        this.categories = categories
+        this.filteredCategories = categories
+
+      },
+
+    })
+
+  }
+
+  onChangeChip(matChipChange: MatChipListboxChange): void {
+
+    // Filtra las categorías por selección
+    this.filterCategories(matChipChange.value)
+
+    // Reinicia la subcategoría
+    this.resetSubcategory()
+
+  }
+
+  filterCategories(type: 'income' | 'expense'): void {
+
+    // Reinicia la categoría
+    this.resetCategory()
+
+    let categoriesFiltered: Categories[] | undefined
+      
+    categoriesFiltered = this.categories.filter(category => category.type === type)
+
+    this.filteredCategories = categoriesFiltered ?? this.categories
+
+  }
+
+  filterSubcategories(): void {
+
+    // Reinicia la subcategoría
+    this.resetSubcategory()
+
+    let subcategoriesFiltered: SelectGroup[] = []
+
+    if(this.filterForm.get('category')?.value) {
+
+      subcategoriesFiltered = this.filterForm.get('category')?.value
+        .filter((category: Categories) => category.subcategories && category.subcategories.length > 0)
+        .map((category: Categories) => ({
+
+        name: category.name,
+        values: category.subcategories.map(subcategory => ({
+          value: subcategory.id ?? 0,
+          viewValue: subcategory.name
+
+        }))
+
+      }))
+
+    }
+
+    this.subcategories = subcategoriesFiltered ?? []
+    this.filteredSubcategories = subcategoriesFiltered ?? []
+
+    // Habilita el form de subcategoría en caso de que existan
+    if (this.filteredSubcategories.length > 0) {
+
+      this.filterForm.get('subcategory')?.enable();
+
+    }
+
+  }
+
+  resetCategory(): void {
+
+    // Reseta el form
+    this.filterForm.get('category')?.reset()
+
+    // Vacía la lista filtrada
+    this.filteredCategories = []
+
+  }
+
+
+  resetSubcategory(): void {
+
+    // Reseta el form
+    this.filterForm.get('subcategory')?.disable()
+    this.filterForm.get('subcategory')?.reset()
+
+    // Vacía las listas (dependen de la categoría)
+    this.filteredSubcategories = []
+    this.subcategories = []
 
   }
 
@@ -261,6 +378,8 @@ export class IncomeOrExpenseListComponent {
     this.currentPage.set(0)
     this.allRecords = []
 
+    console.log(this.filterForm)
+
     this.loadMore()
 
   }
@@ -271,7 +390,8 @@ export class IncomeOrExpenseListComponent {
 
       data: {
         actionType: actionType,
-        incomeOrExpense: incomeOrExpense
+        incomeOrExpense: incomeOrExpense,
+        categories: this.categories
       },
       minWidth: '50vh',
       maxWidth: '90vw',

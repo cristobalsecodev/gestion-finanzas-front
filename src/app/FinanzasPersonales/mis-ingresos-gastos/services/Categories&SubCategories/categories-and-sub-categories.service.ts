@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Categories, SubCategories } from '../../interfaces.ts/IncomeOrExpense.interface';
+import { BaseCategory, Categories, SubCategories } from '../../interfaces.ts/IncomeOrExpense.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -23,6 +23,10 @@ export class CategoriesAndSubCategoriesService {
 
     return this.http.get<SubCategories[]>(`${this.subCategoriesUrl}/get-by-user`)
 
+  }
+
+  display(element: BaseCategory): string {
+    return element ? element.name : ''
   }
 
 }

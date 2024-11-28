@@ -79,8 +79,8 @@
         (keyup)="onCategorySearch()"
         />
         <mat-autocomplete #autoCategory="matAutocomplete"
-        [displayWith]="displayCategory"
-        (optionSelected)="filterSubCategories()">
+        [displayWith]="categoriesService.display"
+        (optionSelected)="filterSubcategories()">
 
           @for (option of filteredCategories; track $index) {
 
@@ -124,24 +124,24 @@
 
       <!-- Subcategoría -->
       <mat-form-field class="w-full"
-      [matTooltip]="(filterSubCategories.length === 0 && incomeOrExpenseForm.get('category')?.value | typeCheck:'object') 
+      [matTooltip]="(filterSubcategories.length === 0 && incomeOrExpenseForm.get('category')?.value | typeCheck:'object') 
         ? 'The category doesn\'t have any subcategories'
         : 'Please select a category first'"
-      [matTooltipDisabled]="incomeOrExpenseForm.get('subCategory')?.enabled">
+      [matTooltipDisabled]="incomeOrExpenseForm.get('subcategory')?.enabled">
 
         <mat-label>Subcategory</mat-label>
 
         <input
         type="text"
         matInput
-        formControlName="subCategory"
+        formControlName="subcategory"
         [matAutocomplete]="autoSubCategory"
-        (keyup)="onSubCategorySearch()"
+        (keyup)="onSubcategorySearch()"
         />
         <mat-autocomplete #autoSubCategory="matAutocomplete"
-        [displayWith]="displaySubCategory">
+        [displayWith]="categoriesService.display">
 
-          @for (option of filteredSubCategories; track $index) {
+          @for (option of filteredSubcategories; track $index) {
 
             <mat-option [value]="option">
               {{ option.name }}
@@ -156,7 +156,7 @@
           info
         </mat-icon>
 
-        @if(incomeOrExpenseForm.get('subCategory')?.hasError('objectSelected')) {
+        @if(incomeOrExpenseForm.get('subcategory')?.hasError('objectSelected')) {
 
           <mat-error> You must select a subcategory. </mat-error>
 

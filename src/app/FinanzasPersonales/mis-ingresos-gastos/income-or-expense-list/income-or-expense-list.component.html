@@ -15,12 +15,13 @@
 
     <form [formGroup]="filterForm" (ngSubmit)="resetList()">
 
-      <div class="my-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div class="my-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
 
         <!-- Ingreso o gasto -->
         <mat-chip-listbox #chipList
         class="flex place-self-center space-x-2"
-        formControlName="type">
+        formControlName="type"
+        (change)="onChangeChip($event)">
   
           @for (type of ['income', 'expense']; track $index) {
   
@@ -80,7 +81,7 @@
 
           @if(filterForm.get('toDate')?.value) {
 
-            <mat-icon matIconSuffix class="cursor-pointer"
+            <mat-icon matIconPrefix class="cursor-pointer"
             (click)="filterForm.get('toDate')?.setValue(null)">
               close
             </mat-icon>
@@ -89,12 +90,85 @@
 
         </mat-form-field>
 
+        <!-- Categorías -->
+        <mat-form-field class="w-full">
+          <mat-label>Categories</mat-label>
+          <mat-select formControlName="category" multiple (selectionChange)="filterSubcategories()">
+
+            <mat-select-trigger>
+
+              {{ filterForm.get('category')?.value && filterForm.get('category')?.value.length > 0 
+                  ? filterForm.get('category')?.value[0].name
+                  : '' 
+              }}
+
+              @if ((filterForm.get('category')?.value?.length || 0) > 1) {
+
+                <span class="opacity-75 text-xs leading-none">
+
+                  (+{{(filterForm.get('category')?.value?.length || 0) - 1}} {{filterForm.get('category')?.value?.length === 2 ? 'other' : 'others'}})
+
+                </span>
+
+              }
+
+            </mat-select-trigger>
+
+            @for (category of filteredCategories; track $index) {
+              <mat-option [value]="category">{{ category.name }}</mat-option>
+            }
+
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Subcategorías -->
+        <mat-form-field class="w-full"
+        matTooltip="Please select a category first"
+        [matTooltipDisabled]="filterForm.get('category')?.value && filterForm.get('category')?.value.length > 0">
+          <mat-label>Subcategories</mat-label>
+          <mat-select formControlName="subcategory" multiple>
+            
+            <mat-select-trigger>
+
+              {{ filterForm.get('subcategory')?.value && filterForm.get('subcategory')?.value.length > 0 
+                  ? filterForm.get('subcategory')?.value[0].viewValue 
+                  : '' 
+              }}
+
+              @if ((filterForm.get('subcategory')?.value?.length || 0) > 1) {
+
+                <span class="opacity-75 text-xs leading-none">
+
+                  (+{{(filterForm.get('subcategory')?.value?.length || 0) - 1}} {{filterForm.get('subcategory')?.value?.length === 2 ? 'other' : 'others'}})
+
+                </span>
+
+              }
+
+            </mat-select-trigger>
+
+            @for (group of filteredSubcategories; track $index) {
+
+              <mat-optgroup [label]="group.name">
+
+                @for (subcategory of group.values; track $index) {
+
+                  <mat-option [value]="subcategory">{{ subcategory.viewValue }}</mat-option>
+
+                }
+
+              </mat-optgroup>
+            }
+
+          </mat-select>
+        </mat-form-field>
+
       </div>
 
       <!-- Botón filtrar -->
       <div class="text-end">
 
-        <button mat-button type="button" (click)="filterForm.reset({hasNotes: 'N/A'})">
+        <button mat-button type="button" (click)="filterForm.reset({hasNotes: 'N/A'}); resetList()">
           <mat-icon>restart_alt</mat-icon>
           <span>Reset filter</span>
         </button>
