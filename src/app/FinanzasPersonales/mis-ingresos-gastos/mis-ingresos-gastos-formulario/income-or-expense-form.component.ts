@@ -24,6 +24,7 @@ import moment from 'moment';
 import { objectSelectedValidator } from 'src/app/shared/functions/Validators';
 import { TypeCheckPipe } from 'src/app/shared/pipes/TypeCheck/type-check.pipe';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
+import { amountRequired, invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -102,6 +103,10 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   // Máximo de longitud para las notas
   maxNotesLength: number = 150
+
+  // Mensajes de validación
+  readonly invalidAmount = invalidAmount
+  readonly amountRequired = amountRequired
 
   constructor(
     public currencyExchangeService: CurrencyExchangeService,

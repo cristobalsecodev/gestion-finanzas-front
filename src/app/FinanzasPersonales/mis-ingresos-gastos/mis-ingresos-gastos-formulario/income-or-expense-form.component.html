@@ -99,13 +99,6 @@
             info
           </mat-icon>
 
-        } @else {
-
-          <mat-icon matIconSuffix class="cursor-pointer"
-          matTooltip="You don't have any categories. Click in this button to add one">
-            add
-          </mat-icon>
-
         }
 
         @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
@@ -196,7 +189,7 @@
       <mat-form-field class="w-full" floatLabel="always">
 
         <mat-label>Amount</mat-label>
-        <input matInput placeholder="1000.00" formControlName="amount" required>
+        <input matInput placeholder="0" formControlName="amount" required>
 
         <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
 
@@ -207,13 +200,13 @@
 
         @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
 
-          <mat-error> Amount is required. </mat-error>
+          <mat-error> {{ amountRequired }} </mat-error>
 
         }
 
         @if(incomeOrExpenseForm.get('amount')?.hasError('pattern')) {
 
-          <mat-error> Invalid amount. Max 15 digits and 2 decimals. </mat-error>
+          <mat-error> {{ invalidAmount }} </mat-error>
 
         }
 
@@ -351,7 +344,7 @@
 
           @if(recurrenceForm.get('endDate')?.value) {
 
-            <mat-icon matIconSuffix class="cursor-pointer"
+            <mat-icon matIconPrefix class="cursor-pointer"
             (click)="recurrenceForm.get('endDate')?.setValue(null)">
               close
             </mat-icon>

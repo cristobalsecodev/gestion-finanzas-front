@@ -19,8 +19,8 @@
 
         <!-- Ingreso o gasto -->
         <mat-chip-listbox #chipList
-        class="flex place-self-center space-x-2"
         formControlName="type"
+        class="flex place-self-center space-x-2"
         (change)="onChangeChip($event)">
   
           @for (type of ['income', 'expense']; track $index) {
@@ -33,14 +33,8 @@
   
         </mat-chip-listbox>
 
-        <!-- Tiene notas o no -->
-        <mat-button-toggle-group formControlName="hasNotes" class="place-self-center">
-
-          <mat-button-toggle value="N/A">N/A</mat-button-toggle>
-          <mat-button-toggle [value]="true">Has notes</mat-button-toggle>
-          <mat-button-toggle [value]="false">No notes</mat-button-toggle>
-
-        </mat-button-toggle-group>
+        <!-- Recurrencia -->
+        <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
 
         <!-- Fecha desde -->
         <mat-form-field class="w-full">
@@ -57,7 +51,7 @@
 
           @if(filterForm.get('fromDate')?.value) {
 
-            <mat-icon matIconSuffix class="cursor-pointer"
+            <mat-icon matIconPrefix class="cursor-pointer"
             (click)="filterForm.get('fromDate')?.setValue(null)">
               close
             </mat-icon>
@@ -123,11 +117,14 @@
 
         <!-- Subcategorías -->
         <mat-form-field class="w-full"
-        matTooltip="Please select a category first"
-        [matTooltipDisabled]="filterForm.get('category')?.value && filterForm.get('category')?.value.length > 0">
+        [matTooltip]="(filterForm.get('category')?.value && (filterForm.get('category')?.value.length > 0 && filterSubcategories.length === 0))
+        ? 'The categories doesn\'t have any subcategories'
+        : 'Please select a category first'"
+        [matTooltipDisabled]="filterForm.get('subcategory')?.enabled">
+
           <mat-label>Subcategories</mat-label>
           <mat-select formControlName="subcategory" multiple>
-            
+
             <mat-select-trigger>
 
               {{ filterForm.get('subcategory')?.value && filterForm.get('subcategory')?.value.length > 0 
@@ -161,6 +158,38 @@
             }
 
           </mat-select>
+        </mat-form-field>
+
+        <!-- Cantidad desde -->
+        <mat-form-field class="w-full" floatLabel="always">
+
+          <mat-label>From amount</mat-label>
+          <input matInput formControlName="fromAmount">
+
+          <span matTextPrefix>{{ 0 | currencySymbol: currencyExchangeService.selectedCurrency().currencyCode }}</span>
+
+          @if(filterForm.get('fromAmount')?.hasError('pattern')) {
+
+            <mat-error> {{ invalidAmount }} </mat-error>
+  
+          }
+
+        </mat-form-field>
+
+        <!-- Cantidad hasta -->
+        <mat-form-field class="w-full" floatLabel="always">
+
+          <mat-label>To amount</mat-label>
+          <input matInput formControlName="toAmount">
+
+          <span matTextPrefix>{{ 0 | currencySymbol: currencyExchangeService.selectedCurrency().currencyCode }}</span>
+
+          @if(filterForm.get('toAmount')?.hasError('pattern')) {
+
+            <mat-error> {{ invalidAmount }} </mat-error>
+  
+          }  
+
         </mat-form-field>
 
       </div>

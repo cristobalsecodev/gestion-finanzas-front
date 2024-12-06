@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
-import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
+import { Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
@@ -23,7 +23,7 @@ import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -32,7 +32,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { SelectGroup } from 'src/app/shared/interfaces/SelectGroup.interface';
-
+import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
+import { invalidAmount } from 'src/app/shared/constants/validation-message.constants';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -53,6 +55,7 @@ import { SelectGroup } from 'src/app/shared/interfaces/SelectGroup.interface';
     MatDatepickerModule,
     MatChipsModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
     // Pipes
     CurrencySymbolPipe,
     DatePipe,
@@ -103,11 +106,15 @@ export class IncomeOrExpenseListComponent implements OnInit {
   subcategories: SelectGroup[] = []
   filteredSubcategories: SelectGroup[] = []
 
+  // Mensajes de validación
+  readonly invalidAmount = invalidAmount
+
   constructor(
     private incomeOrExpenseService: IncomeOrExpenseService,
     private notificationsService: NotificacionesService,
     private storageService: StorageService,
-    public categoriesService: CategoriesAndSubCategoriesService
+    private categoriesService: CategoriesAndSubCategoriesService,
+    public currencyExchangeService: CurrencyExchangeService
   ) {
 
     // Filtro
@@ -119,11 +126,25 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       type: new FormControl(''),
 
-      hasNotes: new FormControl('N/A'),
-
       category: new FormControl(''),
 
-      subcategory: new FormControl({value: '', disabled: true})
+      subcategory: new FormControl({value: '', disabled: true}),
+
+      fromAmount: new FormControl('', 
+        [
+          Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
+          Validators.maxLength(18) 
+        ]
+      ),
+
+      toAmount: new FormControl('',
+        [
+          Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
+          Validators.maxLength(18) 
+        ]
+      ),
+
+      recurrences: new FormControl(false)
 
     })
 
@@ -182,7 +203,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
       
     categoriesFiltered = this.categories.filter(category => category.type === type)
 
-    this.filteredCategories = categoriesFiltered ?? this.categories
+    this.filteredCategories = categoriesFiltered && categoriesFiltered.length > 0 ? categoriesFiltered : this.categories
 
   }
 
