@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
-import { Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
+import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
@@ -315,10 +315,10 @@ export class IncomeOrExpenseListComponent implements OnInit {
       size: this.pageSize(),
       sortDir: 'desc',
       categories: this.filterForm.get('categories')?.value
-        ? this.filterForm.get('categories')?.value
+        ? this.filterForm.get('categories')?.value.map((category: BaseCategory) => category.id)
         : undefined,
       subcategories: this.filterForm.get('subcategories')?.value
-        ? this.filterForm.get('subcategories')?.value
+        ? this.filterForm.get('subcategories')?.value.map((subcategory: BaseCategory) => subcategory.id)
         : undefined,
       fromAmount: this.filterForm.get('fromAmount')?.value
         ? Number(this.filterForm.get('fromAmount')?.value)
