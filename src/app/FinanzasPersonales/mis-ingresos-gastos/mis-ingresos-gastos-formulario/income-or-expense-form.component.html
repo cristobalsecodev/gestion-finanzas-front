@@ -332,7 +332,20 @@
         <!-- Fecha de fin -->
         <mat-form-field class="w-full">
 
-          <mat-label>End date</mat-label>
+          <mat-label class="flex">
+
+            <span>End date</span>
+
+            @if(recurrenceForm.get('endDate')?.value) {
+
+              <mat-icon class="cursor-pointer ml-2 place-self-center"
+              (click)="recurrenceForm.get('endDate')?.setValue(null)">
+                close
+              </mat-icon>
+  
+            }
+
+          </mat-label>
 
           <input matInput 
           [matDatepicker]="dp1" 
@@ -342,21 +355,10 @@
           <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
 
-          @if(recurrenceForm.get('endDate')?.value) {
-
-            <mat-icon matIconPrefix class="cursor-pointer"
-            (click)="recurrenceForm.get('endDate')?.setValue(null)">
-              close
-            </mat-icon>
-
-          } @else {
-
-            <mat-icon matIconSuffix
-            matTooltip="(Optional) Set the end date for the recurrence">
-              info
-            </mat-icon>
-
-          }
+          <mat-icon matIconSuffix
+          matTooltip="(Optional) Set the end date for the recurrence">
+            info
+          </mat-icon>
 
           <mat-hint>The end date takes priority over occurrences.</mat-hint>
 

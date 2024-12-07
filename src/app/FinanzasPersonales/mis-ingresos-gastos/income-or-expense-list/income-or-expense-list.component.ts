@@ -35,6 +35,7 @@ import { SelectGroup } from 'src/app/shared/interfaces/SelectGroup.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import moment from 'moment';
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -126,9 +127,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       type: new FormControl(''),
 
-      category: new FormControl(''),
+      categories: new FormControl(''),
 
-      subcategory: new FormControl({value: '', disabled: true}),
+      subcategories: new FormControl({value: '', disabled: true}),
 
       fromAmount: new FormControl('', 
         [
@@ -214,9 +215,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     let subcategoriesFiltered: SelectGroup[] = []
 
-    if(this.filterForm.get('category')?.value) {
+    if(this.filterForm.get('categories')?.value) {
 
-      subcategoriesFiltered = this.filterForm.get('category')?.value
+      subcategoriesFiltered = this.filterForm.get('categories')?.value
         .filter((category: Categories) => category.subcategories && category.subcategories.length > 0)
         .map((category: Categories) => ({
 
@@ -237,7 +238,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     // Habilita el form de subcategoría en caso de que existan
     if (this.filteredSubcategories.length > 0) {
 
-      this.filterForm.get('subcategory')?.enable();
+      this.filterForm.get('subcategories')?.enable();
 
     }
 
@@ -246,7 +247,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   resetCategory(): void {
 
     // Reseta el form
-    this.filterForm.get('category')?.reset()
+    this.filterForm.get('categories')?.reset()
 
     // Vacía la lista filtrada
     this.filteredCategories = []
@@ -257,8 +258,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
   resetSubcategory(): void {
 
     // Reseta el form
-    this.filterForm.get('subcategory')?.disable()
-    this.filterForm.get('subcategory')?.reset()
+    this.filterForm.get('subcategories')?.disable()
+    this.filterForm.get('subcategories')?.reset()
 
     // Vacía las listas (dependen de la categoría)
     this.filteredSubcategories = []
@@ -313,15 +314,30 @@ export class IncomeOrExpenseListComponent implements OnInit {
       page: this.currentPage(),
       size: this.pageSize(),
       sortDir: 'desc',
-      categories: undefined,
-      endAmount: undefined,
-      endDate: undefined,
-      notes: undefined,
-      recurrences: undefined,
-      startAmount: undefined,
-      startDate: undefined,
-      subCategories: undefined,
-      type: undefined
+      categories: this.filterForm.get('categories')?.value
+        ? this.filterForm.get('categories')?.value
+        : undefined,
+      subcategories: this.filterForm.get('subcategories')?.value
+        ? this.filterForm.get('subcategories')?.value
+        : undefined,
+      fromAmount: this.filterForm.get('fromAmount')?.value
+        ? Number(this.filterForm.get('fromAmount')?.value)
+        : undefined,
+      toAmount: this.filterForm.get('toAmount')?.value
+        ? Number(this.filterForm.get('toAmount')?.value)
+        : undefined,
+      fromDate: this.filterForm.get('fromDate')?.value
+        ? moment(this.filterForm.get('fromDate')?.value).format('YYYY-MM-DD')
+        : undefined,
+      toDate: this.filterForm.get('toDate')?.value
+        ? moment(this.filterForm.get('toDate')?.value).format('YYYY-MM-DD')
+        : undefined,
+      recurrences: this.filterForm.get('recurrences')?.value
+        ? this.filterForm.get('recurrences')?.value
+        : undefined,
+      type: this.filterForm.get('type')?.value
+        ? this.filterForm.get('type')?.value
+        : undefined
 
     }
 

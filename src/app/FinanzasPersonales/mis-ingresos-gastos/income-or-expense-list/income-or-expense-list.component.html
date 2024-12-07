@@ -39,7 +39,20 @@
         <!-- Fecha desde -->
         <mat-form-field class="w-full">
 
-          <mat-label>From date</mat-label>
+          <mat-label class="flex">
+
+            <span>From date</span>
+
+            @if(filterForm.get('fromDate')?.value) {
+
+              <mat-icon class="cursor-pointer ml-2 place-self-center"
+              (click)="filterForm.get('fromDate')?.setValue(null)">
+                close
+              </mat-icon>
+  
+            }
+
+          </mat-label>
 
           <input matInput 
           [matDatepicker]="dp" 
@@ -49,21 +62,27 @@
           <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
           <mat-datepicker #dp></mat-datepicker>
 
-          @if(filterForm.get('fromDate')?.value) {
 
-            <mat-icon matIconPrefix class="cursor-pointer"
-            (click)="filterForm.get('fromDate')?.setValue(null)">
-              close
-            </mat-icon>
-
-          }
 
         </mat-form-field>
 
         <!-- Fecha hasta -->
         <mat-form-field class="w-full">
 
-          <mat-label>To date</mat-label>
+          <mat-label class="flex">
+
+            <span>To date</span>
+
+            @if(filterForm.get('toDate')?.value) {
+
+              <mat-icon class="cursor-pointer ml-2 place-self-center"
+              (click)="filterForm.get('toDate')?.setValue(null)">
+                close
+              </mat-icon>
+  
+            }
+
+          </mat-label>
 
           <input matInput 
           [matDatepicker]="dp1" 
@@ -73,34 +92,25 @@
           <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
 
-          @if(filterForm.get('toDate')?.value) {
-
-            <mat-icon matIconPrefix class="cursor-pointer"
-            (click)="filterForm.get('toDate')?.setValue(null)">
-              close
-            </mat-icon>
-
-          }
-
         </mat-form-field>
 
         <!-- Categorías -->
         <mat-form-field class="w-full">
           <mat-label>Categories</mat-label>
-          <mat-select formControlName="category" multiple (selectionChange)="filterSubcategories()">
+          <mat-select formControlName="categories" multiple (selectionChange)="filterSubcategories()">
 
             <mat-select-trigger>
 
-              {{ filterForm.get('category')?.value && filterForm.get('category')?.value.length > 0 
-                  ? filterForm.get('category')?.value[0].name
+              {{ filterForm.get('categories')?.value && filterForm.get('categories')?.value.length > 0 
+                  ? filterForm.get('categories')?.value[0].name
                   : '' 
               }}
 
-              @if ((filterForm.get('category')?.value?.length || 0) > 1) {
+              @if ((filterForm.get('categories')?.value?.length || 0) > 1) {
 
                 <span class="opacity-75 text-xs leading-none">
 
-                  (+{{(filterForm.get('category')?.value?.length || 0) - 1}} {{filterForm.get('category')?.value?.length === 2 ? 'other' : 'others'}})
+                  (+{{(filterForm.get('categories')?.value?.length || 0) - 1}} {{filterForm.get('categories')?.value?.length === 2 ? 'other' : 'others'}})
 
                 </span>
 
@@ -117,26 +127,26 @@
 
         <!-- Subcategorías -->
         <mat-form-field class="w-full"
-        [matTooltip]="(filterForm.get('category')?.value && (filterForm.get('category')?.value.length > 0 && filterSubcategories.length === 0))
+        [matTooltip]="(filterForm.get('categories')?.value && (filterForm.get('categories')?.value.length > 0 && filterSubcategories.length === 0))
         ? 'The categories doesn\'t have any subcategories'
         : 'Please select a category first'"
-        [matTooltipDisabled]="filterForm.get('subcategory')?.enabled">
+        [matTooltipDisabled]="filterForm.get('subcategories')?.enabled">
 
           <mat-label>Subcategories</mat-label>
-          <mat-select formControlName="subcategory" multiple>
+          <mat-select formControlName="subcategories" multiple>
 
             <mat-select-trigger>
 
-              {{ filterForm.get('subcategory')?.value && filterForm.get('subcategory')?.value.length > 0 
-                  ? filterForm.get('subcategory')?.value[0].viewValue 
+              {{ filterForm.get('subcategories')?.value && filterForm.get('subcategories')?.value.length > 0 
+                  ? filterForm.get('subcategories')?.value[0].viewValue 
                   : '' 
               }}
 
-              @if ((filterForm.get('subcategory')?.value?.length || 0) > 1) {
+              @if ((filterForm.get('subcategories')?.value?.length || 0) > 1) {
 
                 <span class="opacity-75 text-xs leading-none">
 
-                  (+{{(filterForm.get('subcategory')?.value?.length || 0) - 1}} {{filterForm.get('subcategory')?.value?.length === 2 ? 'other' : 'others'}})
+                  (+{{(filterForm.get('subcategories')?.value?.length || 0) - 1}} {{filterForm.get('subcategories')?.value?.length === 2 ? 'other' : 'others'}})
 
                 </span>
 
