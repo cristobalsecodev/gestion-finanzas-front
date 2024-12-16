@@ -31,7 +31,7 @@ import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
-import { SelectGroup } from 'src/app/shared/interfaces/SelectGroup.interface';
+import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -314,12 +314,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
       page: this.currentPage(),
       size: this.pageSize(),
       sortDir: 'desc',
-      categories: this.filterForm.get('categories')?.value
-        ? this.filterForm.get('categories')?.value.map((category: BaseCategory) => category.id)
-        : undefined,
-      subcategories: this.filterForm.get('subcategories')?.value
-        ? this.filterForm.get('subcategories')?.value.map((subcategory: BaseCategory) => subcategory.id)
-        : undefined,
+      categorySubcategoryMap: this.createCategoriesSubcategoriesObject(),
       fromAmount: this.filterForm.get('fromAmount')?.value
         ? Number(this.filterForm.get('fromAmount')?.value)
         : undefined,
@@ -345,11 +340,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       next: (records: PaginationData) => {
 
-        if(records._embedded) {
-
-          this.manageRecordsAndSort(records._embedded.incomeOrExpenseList)
-
-        }
+        this.manageRecordsAndSort(records._embedded ? records._embedded.incomeOrExpenseList : [])
 
         this.totalElements.set(records.page.totalElements)
 
@@ -362,34 +353,78 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  manageRecordsAndSort(newRecords: IncomeOrExpense[]): void {
+  createCategoriesSubcategoriesObject(): any[] {
 
-    // Comprueba si el mismo registro ha sido modificado
-    this.allRecords = this.allRecords.map(existingRecord => {
+    // Obtener los ids seleccionados
+    const selectedCategoryIds = this.filterForm.get('categories')?.value && this.filterForm.get('categories')?.value.length > 0 
+      ? this.filterForm.get('categories')?.value.map((category: BaseCategory) => category.id)
+      : []
 
-      // Encuentra un registro con la misma ID
-      const updatedRecord = newRecords.find(newRecord => newRecord.id === existingRecord.id)
-    
-      // Si se encuentra y es diferente, actualiza el registro existente
-      if (updatedRecord && !compareObjects(existingRecord, updatedRecord)) {
+    const selectedSubcategoryIds = this.filterForm.get('subcategories')?.value && this.filterForm.get('subcategories')?.value.length > 0 
+      ? this.filterForm.get('subcategories')?.value.map((subcategory: SelectValue) => subcategory.value)
+      : []
+  
+    // Crear el objeto resultante
+    const result = selectedCategoryIds.map((categoryId: number) => {
 
-        // Actualiza con los nuevos datos
-        return updatedRecord
-
+      const category = this.categories.find(c => c.id === categoryId)
+      
+      if (!category) return { category: categoryId, subcategories: [] } // Si no se encuentra la categoría, devolver un objeto vacío con subcategorías vacías
+  
+      // Filtrar las subcategorías seleccionadas para la categoría actual
+      const selectedSubcategories = category.subcategories.filter(subcategory =>
+        selectedSubcategoryIds.includes(subcategory.id)
+      ).map(subcategory => subcategory.id)
+  
+      return {
+        category: categoryId,
+        subcategories: selectedSubcategories
       }
 
-      // Mantiene el registro actual
-      return existingRecord
+    })
+  
+    return result
 
-    });
+  }
 
-    // Apila los datos con los nuevos evitando duplicados
-    this.allRecords = [
-      ...this.allRecords, 
-      ...newRecords.filter(newRecord => 
-        !this.allRecords.some(existingRecord => compareObjects(existingRecord, newRecord))
-      )
-    ]
+  manageRecordsAndSort(newRecords: IncomeOrExpense[]): void {
+
+    if(newRecords.length !== 0) {
+
+      // Comprueba si el mismo registro ha sido modificado
+      this.allRecords = this.allRecords.map(existingRecord => {
+
+        // Encuentra un registro con la misma ID
+        const updatedRecord = newRecords.find(newRecord => newRecord.id === existingRecord.id)
+      
+        // Si se encuentra y es diferente, actualiza el registro existente
+        if (updatedRecord && !compareObjects(existingRecord, updatedRecord)) {
+
+          // Actualiza con los nuevos datos
+          return updatedRecord
+
+        }
+
+        // Mantiene el registro actual
+        return existingRecord
+
+      });
+
+      // Apila los datos con los nuevos evitando duplicados
+      this.allRecords = [
+        ...this.allRecords, 
+        ...newRecords.filter(newRecord => 
+          !this.allRecords.some(existingRecord => compareObjects(existingRecord, newRecord))
+        )
+      ]
+
+    } else {
+
+      this.allRecords = []
+
+    }
+
+
 
     // Ordena los registros
     this.groupByYear()
@@ -402,6 +437,17 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     // Ordena los registros
     this.groupByYear()
+
+  }
+
+  resetFilter(): void {
+
+    this.filterForm.reset({hasNotes: 'N/A'})
+
+    this.filteredCategories = this.categories
+    this.filteredSubcategories = this.subcategories
+
+    this.resetList()
 
   }
 
