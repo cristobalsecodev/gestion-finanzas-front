@@ -355,7 +355,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   createCategoriesSubcategoriesObject(): any[] {
 
-    // Obtener los ids seleccionados
+    // Obtiene los ids seleccionados
     const selectedCategoryIds = this.filterForm.get('categories')?.value && this.filterForm.get('categories')?.value.length > 0 
       ? this.filterForm.get('categories')?.value.map((category: BaseCategory) => category.id)
       : []
@@ -364,14 +364,14 @@ export class IncomeOrExpenseListComponent implements OnInit {
       ? this.filterForm.get('subcategories')?.value.map((subcategory: SelectValue) => subcategory.value)
       : []
   
-    // Crear el objeto resultante
+    // Crea el objeto resultante
     const result = selectedCategoryIds.map((categoryId: number) => {
 
       const category = this.categories.find(c => c.id === categoryId)
       
-      if (!category) return { category: categoryId, subcategories: [] } // Si no se encuentra la categoría, devolver un objeto vacío con subcategorías vacías
+      if (!category) return { category: categoryId, subcategories: [] } // Si no se encuentra la categoría, devuelve un objeto vacío con subcategorías vacías
   
-      // Filtrar las subcategorías seleccionadas para la categoría actual
+      // Filtra las subcategorías seleccionadas para la categoría actual
       const selectedSubcategories = category.subcategories.filter(subcategory =>
         selectedSubcategoryIds.includes(subcategory.id)
       ).map(subcategory => subcategory.id)
