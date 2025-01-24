@@ -189,7 +189,12 @@
       <mat-form-field class="w-full" floatLabel="always">
 
         <mat-label>Amount</mat-label>
-        <input matInput placeholder="0" formControlName="amount" required>
+        <input 
+        matInput 
+        placeholder="0" 
+        formControlName="amount" 
+        required 
+        (input)="onAmountInput($event)">
 
         <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
 

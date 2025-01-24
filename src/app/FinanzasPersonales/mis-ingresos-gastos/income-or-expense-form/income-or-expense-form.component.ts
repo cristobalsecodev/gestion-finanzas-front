@@ -383,4 +383,17 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
+  onAmountInput(event: Event): void {
+
+    const input = event.target as HTMLInputElement
+    const currentValue = input.value
+  
+    // Reemplaza comas por puntos
+    const correctedValue = currentValue.replace(',', '.')
+  
+    // Actualiza el valor del control de formulario
+    this.incomeOrExpenseForm.get('amount')?.setValue(correctedValue, { emitEvent: false })
+
+  }
+
 }
