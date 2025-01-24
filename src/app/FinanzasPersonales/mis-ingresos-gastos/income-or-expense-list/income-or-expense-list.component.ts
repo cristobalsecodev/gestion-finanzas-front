@@ -17,7 +17,6 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
 import { FilterIncomeOrExpense } from '../interfaces.ts/FilterIncomeOrExpense.interface';
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 import { compareObjects } from 'src/app/shared/functions/CompareObjects';
-import { IncomeOrExpenseFormComponent } from '../mis-ingresos-gastos-formulario/income-or-expense-form.component';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
 import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,6 +35,7 @@ import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchang
 import { invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
+import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -314,7 +314,12 @@ export class IncomeOrExpenseListComponent implements OnInit {
       page: this.currentPage(),
       size: this.pageSize(),
       sortDir: 'desc',
-      categorySubcategoryMap: this.createCategoriesSubcategoriesObject(),
+      categories: this.filterForm.get('categories')?.value && this.filterForm.get('categories')?.value.length > 0
+        ? this.filterForm.get('categories')?.value.map((subcategory: BaseCategory) => subcategory.id)
+        : undefined,
+      subcategories: this.filterForm.get('subcategories')?.value && this.filterForm.get('subcategories')?.value.length > 0
+        ? this.filterForm.get('subcategories')?.value.map((subcategory: SelectValue) => subcategory.value)
+        : undefined,
       fromAmount: this.filterForm.get('fromAmount')?.value
         ? Number(this.filterForm.get('fromAmount')?.value)
         : undefined,
@@ -350,40 +355,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
       }
       
     })
-
-  }
-
-  createCategoriesSubcategoriesObject(): any[] {
-
-    // Obtiene los ids seleccionados
-    const selectedCategoryIds = this.filterForm.get('categories')?.value && this.filterForm.get('categories')?.value.length > 0 
-      ? this.filterForm.get('categories')?.value.map((category: BaseCategory) => category.id)
-      : []
-
-    const selectedSubcategoryIds = this.filterForm.get('subcategories')?.value && this.filterForm.get('subcategories')?.value.length > 0 
-      ? this.filterForm.get('subcategories')?.value.map((subcategory: SelectValue) => subcategory.value)
-      : []
-  
-    // Crea el objeto resultante
-    const result = selectedCategoryIds.map((categoryId: number) => {
-
-      const category = this.categories.find(c => c.id === categoryId)
-      
-      if (!category) return { category: categoryId, subcategories: [] } // Si no se encuentra la categoría, devuelve un objeto vacío con subcategorías vacías
-  
-      // Filtra las subcategorías seleccionadas para la categoría actual
-      const selectedSubcategories = category.subcategories.filter(subcategory =>
-        selectedSubcategoryIds.includes(subcategory.id)
-      ).map(subcategory => subcategory.id)
-  
-      return {
-        category: categoryId,
-        subcategories: selectedSubcategories
-      }
-
-    })
-  
-    return result
 
   }
 
@@ -447,11 +418,11 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.filteredCategories = this.categories
     this.filteredSubcategories = this.subcategories
 
-    this.resetList()
+    this.filterList()
 
   }
 
-  resetList(size: number = 10): void {
+  filterList(size: number = 10): void {
 
     // Resetea los valores de la lista y paginación
     this.pageSize.set(size)

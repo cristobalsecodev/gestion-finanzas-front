@@ -40,7 +40,7 @@ export class FormatAmountPipe implements PipeTransform {
     // Añadir separadores de miles y signo negativo si es necesario
     formatted = formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     
-    return isNegative ? `-${formatted}` : formatted
+    return isNegative ? `-${formatted}` : `+${formatted}`
   }
 
 }

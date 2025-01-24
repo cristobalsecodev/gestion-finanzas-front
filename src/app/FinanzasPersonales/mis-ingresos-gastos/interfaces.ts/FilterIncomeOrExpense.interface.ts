@@ -2,7 +2,8 @@ import { PaginationToSend } from "src/app/shared/interfaces/PaginationData.inter
 
 export interface FilterIncomeOrExpense extends PaginationToSend {
 
-  categorySubcategoryMap: any[]
+  categories: number[]
+  subcategories: number[]
   fromDate: string | undefined
   toDate: string | undefined
   recurrences: string[] | undefined

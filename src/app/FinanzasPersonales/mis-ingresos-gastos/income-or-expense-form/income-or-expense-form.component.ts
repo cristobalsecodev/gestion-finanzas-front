@@ -167,6 +167,12 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     this.categories = this.data.categories
 
+    if(this.data.incomeOrExpense) {
+
+      this.loadForm()
+
+    }
+
   }
 
   filterCategories(): void {
@@ -328,7 +334,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
         let saveIncomeOrExpense: IncomeOrExpense = {
 
           id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
-          amount: this.incomeOrExpenseForm.get('amount')?.value,
+          amount: this.selectedType() === 'expense' ? Number(-this.incomeOrExpenseForm.get('amount')?.value) : Number(this.incomeOrExpenseForm.get('amount')?.value),
           category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value,
           exchangeRateToUsd: this.currencyExchangeService.currencies()
