@@ -1,1 +1,7 @@
-<p>income-or-expense-statistics works!</p>
+@for (record of allRecords(); track $index) {
+
+  <div>
+    {{ record.category.name }} - {{ record.amount }}
+  </div>
+
+}

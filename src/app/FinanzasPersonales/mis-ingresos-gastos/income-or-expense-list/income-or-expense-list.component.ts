@@ -36,6 +36,7 @@ import { invalidAmount } from 'src/app/shared/constants/validation-message.const
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
+import { allRecordsSignal } from '../utils/SharedList';
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -98,7 +99,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   currentPage = signal<number>(0)
   pageSize = signal<number>(10)
   totalElements = signal<number>(0)
-  allRecords: IncomeOrExpense[] = []
+  allRecords = allRecordsSignal()
 
   // Categorías y subcategorías
   categories: Categories[] = []
@@ -395,7 +396,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     }
 
-
+    // Actualiza el signal
+    allRecordsSignal.set(this.allRecords)
 
     // Ordena los registros
     this.groupByYear()
@@ -405,6 +407,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
   deleteRecord(id: number): void {
 
     this.allRecords = this.allRecords.filter(record => record.id !== id)
+
+    // Actualiza el signal
+    allRecordsSignal.set(this.allRecords)
 
     // Ordena los registros
     this.groupByYear()
@@ -430,7 +435,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.storageService.setLocal('IEsize', this.pageSize().toString())
 
     this.currentPage.set(0)
+
     this.allRecords = []
+    allRecordsSignal.set(this.allRecords)
 
     console.log(this.filterForm)
 

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
+import { allRecordsSignal } from '../utils/SharedList';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -8,6 +9,8 @@ import { Component } from '@angular/core';
   styleUrl: './income-or-expense-statistics.component.scss'
 })
 export class IncomeOrExpenseStatisticsComponent {
+
+  allRecords = computed(() => allRecordsSignal())
 
   constructor() { }
 
