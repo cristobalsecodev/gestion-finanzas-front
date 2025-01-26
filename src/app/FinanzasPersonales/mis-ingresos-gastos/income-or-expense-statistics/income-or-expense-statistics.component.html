@@ -1,7 +1,19 @@
-@for (record of allRecords(); track $index) {
-
-  <div>
-    {{ record.category.name }} - {{ record.amount }}
+<div class="flex flex-wrap justify-around">
+  <!-- Gráfico de Income -->
+  <div class="w-2/5 mb-5">
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="incomeChartOptions"
+      class="w-full h-[400px] block">
+    </highcharts-chart>
   </div>
 
-}
+  <!-- Gráfico de Expense -->
+  <div class="w-2/5 mb-5">
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="expenseChartOptions"
+      class="w-full h-[400px] block">
+    </highcharts-chart>
+  </div>
+</div>
