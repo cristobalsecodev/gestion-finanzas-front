@@ -1,28 +1,32 @@
-<div class="flex flex-wrap justify-center gap-5">
-  <!-- Income graphic -->
-  <div class="w-full md:w-2/5">
+@if(incomeOrExpenses()) {
+
+  <section class="flex flex-wrap justify-center gap-5">
+    <!-- Income graphic -->
+    <div class="w-full md:w-2/5">
+      <highcharts-chart
+        [Highcharts]="Highcharts"
+        [options]="incomeChartOptions"
+        class="w-full h-[400px] block">
+      </highcharts-chart>
+    </div>
+  
+    <!-- Expense graphic -->
+    <div class="w-full md:w-2/5">
+      <highcharts-chart
+        [Highcharts]="Highcharts"
+        [options]="expenseChartOptions"
+        class="w-full h-[400px] block">
+      </highcharts-chart>
+    </div>
+  </section>
+  
+  <!-- Resume graphic -->
+  <section class="w-full mt-5">
     <highcharts-chart
       [Highcharts]="Highcharts"
-      [options]="incomeChartOptions"
+      [options]="resumeOptions"
       class="w-full h-[400px] block">
     </highcharts-chart>
-  </div>
-
-  <!-- Expense graphic -->
-  <div class="w-full md:w-2/5">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="expenseChartOptions"
-      class="w-full h-[400px] block">
-    </highcharts-chart>
-  </div>
-</div>
-
-<!-- Resume graphic -->
-<div class="w-full mt-5">
-  <highcharts-chart
-    [Highcharts]="Highcharts"
-    [options]="resumeOptions"
-    class="w-full h-[400px] block">
-  </highcharts-chart>
-</div>
+  </section>
+  
+}

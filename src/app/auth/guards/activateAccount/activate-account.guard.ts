@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { loginRoute, resumeRoute } from 'src/app/shared/constants/variables.constants';
+import { incomeExpensesRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 
@@ -16,7 +16,7 @@ export const activateAccountGuard: CanActivateFn = (route, state) => {
 
       notificationService.addNotification('So... double-checking, just to be on the safe side?', 'info')
       
-      router.navigate([resumeRoute])
+      router.navigate([incomeExpensesRoute])
 
       return false;
 

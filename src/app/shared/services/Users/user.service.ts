@@ -4,9 +4,9 @@ import { Observable, tap } from 'rxjs';
 import { TokenResponse } from 'src/app/auth/interfaces/TokenResponse.interface';
 import { StorageService } from '../Storage/storage.service';
 import { Router } from '@angular/router';
-import { resumeRoute } from '../../constants/variables.constants';
 import { NotificacionesService } from '../Notifications/notificaciones.service';
 import { AuthService } from 'src/app/auth/service/auth.service';
+import { incomeExpensesRoute } from '../../constants/variables.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class UserService {
 
         this.notificationService.addNotification('Activated successfully', 'success')
 
-        this.router.navigate([resumeRoute])
+        this.router.navigate([incomeExpensesRoute])
 
       })
     )

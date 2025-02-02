@@ -216,7 +216,7 @@
         }
 
       </mat-form-field>
-    
+
       <!-- Notas -->
       <mat-form-field class="w-full">
 
@@ -238,6 +238,28 @@
 
       </mat-form-field>
       
+    
+      <!-- Notas -->
+      <mat-form-field class="w-full">
+
+        <mat-label>Notes</mat-label>
+        <input matInput placeholder="Description" formControlName="notes">
+
+        <mat-icon matIconSuffix
+        matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
+          info
+        </mat-icon>
+
+        <mat-hint align="end">{{ incomeOrExpenseForm.get('notes')?.value.length }}/{{ maxNotesLength }}</mat-hint>
+
+        @if(incomeOrExpenseForm.get('notes')?.hasError('maxlength')) {
+
+          <mat-error> Max length reached. </mat-error>
+
+        }
+
+      </mat-form-field>
+
     </div>
     
   </form>

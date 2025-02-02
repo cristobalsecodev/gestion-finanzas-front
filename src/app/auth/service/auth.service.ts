@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/interfaces/User.interface';
-import { activateAccountRoute, signUpRoute, loginRoute, resumeRoute } from '../../shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, loginRoute, incomeExpensesRoute } from '../../shared/constants/variables.constants';
 import { TokenResponse } from '../interfaces/TokenResponse.interface';
 import { jwtDecode } from "jwt-decode";
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
@@ -64,7 +64,7 @@ export class AuthService {
 
             }
 
-            this.router.navigate([resumeRoute])
+            this.router.navigate([incomeExpensesRoute])
 
           } else {
 

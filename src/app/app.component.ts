@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
-import { activateAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, resumeRoute, signUpRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, incomeExpensesRoute, investmentsRoute, loginRoute, signUpRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
@@ -52,7 +52,6 @@ export class AppComponent implements OnInit {
   // Rutas
   readonly investmentsRoute = investmentsRoute
   readonly incomeExpensesRoute = incomeExpensesRoute
-  readonly resumeRoute = resumeRoute
   readonly activateAccountRoute = activateAccountRoute
   readonly signUpRoute = signUpRoute
   readonly loginRoute = loginRoute

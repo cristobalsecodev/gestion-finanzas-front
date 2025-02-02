@@ -30,8 +30,8 @@ export class IncomeOrExpenseStatisticsComponent {
   resumeOptions: any = {
     chart: {
         type: 'bar',
-        height: 170,
-        backgroundColor: null
+        height: 130,
+        backgroundColor: 'transparent'
     },
     title: {
         text: 'Income and expense resume',
@@ -41,15 +41,15 @@ export class IncomeOrExpenseStatisticsComponent {
     },
     plotOptions: {
         bar: {
+            borderWidth: 0,
+            borderColor: 'transparent',
             headSize: 6,
             stacking: 'normal',
             dataLabels: {
-                enabled: true,
-                y: 20,
-                verticalAlign: 'bottom'
+                enabled: false
             },
-            color: 'rgb(255, 7, 77)',
-            negativeColor: 'rgb(1, 127, 250)',
+            color: 'var(--sys-action-green)',
+            negativeColor: 'var(--sys-action-red)',
             accessibility: {
                 exposeAsGroupOnly: true
             }
@@ -71,9 +71,10 @@ export class IncomeOrExpenseStatisticsComponent {
     },
     yAxis: {
         reversedStacks: false,
+        gridLineWidth: 0,
         opposite: true,
         labels: {
-            enabled: false
+            enabled: false,
         },
         title: '',
         accessibility: {
@@ -83,7 +84,10 @@ export class IncomeOrExpenseStatisticsComponent {
             enabled: true,
             verticalAlign: 'top',
             style: {
-                fontSize: '1.2em'
+              color: 'var(--sys-on-background)',
+              fontSize: '0.9em',
+              fontWeight: 'bold',
+              textOutline: 'none'
             },
             format: '{#if isNegative}Expense{else}Income{/if}: {total}'
         },
@@ -92,6 +96,7 @@ export class IncomeOrExpenseStatisticsComponent {
     },
     xAxis: {
         visible: false,
+        gridLineWidth: 0,
         title: '',
         accessibility: {
             description: ''
@@ -101,7 +106,7 @@ export class IncomeOrExpenseStatisticsComponent {
         enabled: false
     },
     credits: {
-      enabled: false
+        enabled: false
     },
     series: [
 
@@ -129,20 +134,36 @@ export class IncomeOrExpenseStatisticsComponent {
         }
     },
     tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>',
+      useHTML: true,
+      backgroundColor: 'var(--sys-background)',
+      borderRadius: 0, // Bordes redondeados
+      style: {
+        color: 'var(--sys-on-background)',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      },
+      pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
     },
     legend: {
         enabled: false
     },
     plotOptions: {
         series: {
+            borderWidth: 0,
+            borderColor: 'transparent',
             allowPointSelect: true,
             cursor: 'pointer',
-            borderRadius: 8,
+            borderRadius: 0,
             dataLabels: [{
                 enabled: true,
                 distance: 20,
-                format: '{point.name}'
+                format: '{point.name}',
+                style: {
+                  color: 'var(--sys-on-background)',
+                  fontSize: '0.9em',
+                  fontWeight: 'bold',
+                  textOutline: 'none'
+                }
             }, {
                 enabled: true,
                 distance: -15,
@@ -155,7 +176,7 @@ export class IncomeOrExpenseStatisticsComponent {
         }
     },
     series: [{
-        name: 'Registrations',
+        name: 'Total',
         colorByPoint: true,
         innerSize: '75%',
         data: []
@@ -183,20 +204,36 @@ export class IncomeOrExpenseStatisticsComponent {
         }
     },
     tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>',
+      useHTML: true,
+      backgroundColor: 'var(--sys-background)',
+      borderRadius: 0,
+      style: {
+        color: 'var(--sys-on-background)',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      },
+      pointFormat: '{series.name}: <b>{point.y:.2f}</b>'
     },
     legend: {
         enabled: false
     },
     plotOptions: {
         series: {
+            borderWidth: 0,
+            borderColor: 'transparent',
             allowPointSelect: true,
             cursor: 'pointer',
-            borderRadius: 8,
+            borderRadius: 0,
             dataLabels: [{
                 enabled: true,
                 distance: 20,
-                format: '{point.name}'
+                format: '{point.name}',
+                style: {
+                  color: 'var(--sys-on-background)',
+                  fontSize: '0.9em',
+                  fontWeight: 'bold',
+                  textOutline: 'none'
+                }
             }, {
                 enabled: true,
                 distance: -15,
@@ -258,12 +295,6 @@ export class IncomeOrExpenseStatisticsComponent {
 
     this.incomeChartOptions = {
       ...this.incomeChartOptions,
-      subtitle: {
-        text: 'Total Income: +' + this.sumIncome,
-        style: {
-          color: 'var(--sys-on-background)'
-        }
-      },
       series: [{
         ...this.incomeChartOptions.series[0],
         data: data
@@ -280,97 +311,13 @@ export class IncomeOrExpenseStatisticsComponent {
 
     this.expenseChartOptions = {
       ...this.expenseChartOptions,
-      subtitle: {
-        text: 'Total Expense: ' + this.sumExpense,
-        style: {
-          color: 'var(--sys-on-background)'
-        }
-      },
       series: [{
         ...this.expenseChartOptions.series[0],
         data: data
       }]
     };    
 
-    // this.expenseChartOptions = this.createDonutChartOptions(
-
-    //   'Expense Overview',
-    //   'Total Expense: -' + data.reduce((sum, record) => sum + record.y!, 0).toFixed(2),
-    //   data
-
-    // )
   }
-
-  // private createDonutChartOptions(
-  //   title: string,
-  //   total: string,
-  //   data: Highcharts.PointOptionsObject[]
-  // ): any {
-    
-  //   return {
-
-  //     chart: {
-  //         type: 'pie',
-  //         backgroundColor: null, // Elimina el fondo blanco
-  //     },
-  //     accessibility: {
-  //         point: {
-  //             valueSuffix: '%'
-  //         }
-  //     },
-  //     title: {
-  //         text: title,
-  //         style: {
-  //           color: 'var(--sys-on-background)'
-  //         }
-  //     },
-  //     subtitle: {
-  //       text: total,
-  //       style: {
-  //         color: 'var(--sys-on-background)'
-  //       }
-  //     },
-  //     tooltip: {
-  //         pointFormat: '{series.name}: <b>{point.percentage:.0f}%</b>',
-  //         style: {
-  //           backgroundColor: 'var(--sys-surface-container-low)',
-  //         }
-  //     },
-  //     legend: {
-  //         enabled: false
-  //     },
-  //     plotOptions: {
-  //         series: {
-  //             allowPointSelect: true,
-  //             cursor: 'pointer',
-  //             borderRadius: 1,
-  //             dataLabels: [{
-  //                 enabled: true,
-  //                 distance: 20,
-  //                 format: '{point.name}'
-  //             }, {
-  //                 enabled: true,
-  //                 distance: -15,
-  //                 format: '{point.percentage:.0f}%',
-  //                 style: {
-  //                     fontSize: '0.9em'
-  //                 }
-  //             }],
-  //             showInLegend: true
-  //         }
-  //     },
-  //     series: [{
-  //         name: 'Registrations',
-  //         colorByPoint: true,
-  //         innerSize: '75%',
-  //         data: data
-  //     }],
-  //     credits: {
-  //       enabled: false
-  //     }
-  //   }
-  // }
-
 
   private processChartData(type: 'income' | 'expense'): Highcharts.PointOptionsObject[] {
     
