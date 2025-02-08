@@ -5,7 +5,7 @@ import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MatButtonModule } from '@angular/material/button';
-import { MatIcon, MatIconRegistry } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
@@ -18,6 +18,7 @@ import { NotificacionesComponent } from './shared/components/notificaciones/noti
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
 import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service';
+import { UserService } from './shared/services/Users/user.service';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service
     // Angular Material
     MatToolbar,
     MatButtonModule,
-    MatIcon,
+    MatIconModule,
     MatSidenavModule,
     MatListModule,
     MatMenuModule,
@@ -64,7 +65,8 @@ export class AppComponent implements OnInit {
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
     public currencyExchangeService: CurrencyExchangeService,
-    public themeModeService: ThemeModeService
+    public themeModeService: ThemeModeService,
+    private userService: UserService
   ) {
 
     // Añadimos los SVGs
@@ -100,6 +102,7 @@ export class AppComponent implements OnInit {
     if(this.authService.isTokenValid()) {
 
       this.currencyExchangeService.manageCurrencyService()
+      this.userService.manageUserInfo()
 
     }
 

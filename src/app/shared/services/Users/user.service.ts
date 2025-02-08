@@ -1,44 +1,59 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { TokenResponse } from 'src/app/auth/interfaces/TokenResponse.interface';
-import { StorageService } from '../Storage/storage.service';
-import { Router } from '@angular/router';
-import { NotificacionesService } from '../Notifications/notificaciones.service';
-import { AuthService } from 'src/app/auth/service/auth.service';
-import { incomeExpensesRoute } from '../../constants/variables.constants';
+import { UserInfo } from './interfaces/UserInfo.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private userUrl = 'http://localhost:8080/user/activate-account'
+  private userUrl = 'http://localhost:8080/user'
+
+  // Info usuario
+  userInfo = signal<UserInfo | undefined>(undefined)
 
   constructor(
-    private http: HttpClient,
-    private storageService: StorageService,
-    private router: Router,
-    private authService: AuthService,
-    private notificationService: NotificacionesService
+    private http: HttpClient
   ) { }
 
   activateAccount(activationCode: string): Observable<TokenResponse> {
 
-    return this.http.post<TokenResponse>(this.userUrl, activationCode)
-    .pipe(
-      tap(response => {
+    return this.http.post<TokenResponse>(this.userUrl + '/activate-account', activationCode)
 
-        this.storageService.setSession('token', response.token)
+  }
 
-        this.authService.startTokenCheck()
+  saveFavoriteCurrency(favoriteCurrency: string): Observable<void> {
 
-        this.notificationService.addNotification('Activated successfully', 'success')
+    return this.http.post<void>(this.userUrl + '/save-favorite-currency', favoriteCurrency)
 
-        this.router.navigate([incomeExpensesRoute])
+  }
 
-      })
-    )
+  manageUserInfo(): void {
+
+    this.getUserInfo().subscribe({
+      next: (userInfo: UserInfo) => {
+
+        // Asigna la info del usuario
+        this.userInfo.set(userInfo)
+
+      }
+    })
+
+  }
+
+  private getUserInfo(): Observable<UserInfo> {
+
+    if(!this.userInfo()) {
+
+      return this.http.get<UserInfo>(`${this.userUrl}/user-info`)
+
+    } else {
+
+      return of(this.userInfo()!)
+
+    }
 
   }
 

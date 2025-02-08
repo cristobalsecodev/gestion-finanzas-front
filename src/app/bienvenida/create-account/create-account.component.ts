@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {RouterLink } from '@angular/router';
-import { CreateUser } from 'src/app/shared/interfaces/User.interface';
+import { CreateUser } from 'src/app/shared/services/Users/interfaces/CreateUser.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { passwordMatchValidator } from 'src/app/shared/functions/Validators';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';

@@ -7,7 +7,6 @@ import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constant
 export const actuallyLoggedGuard: CanActivateFn = (route, state) => {
 
   const authService = inject(AuthService)
-
   const storageService = inject(StorageService)
 
   const router = inject(Router)

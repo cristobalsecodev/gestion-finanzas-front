@@ -231,6 +231,9 @@
     Add income / expense
     </button>
 
+    <!-- Convertir divisas -->
+    <app-currency-selector (emitCurrency)="convertCurrenciesIntoSingle(recordsToShow, $event)"></app-currency-selector>
+
   </div>
 
   <!-- Lista de ingresos y gastos -->
@@ -413,15 +416,15 @@
       <div class="flex items-center space-x-1 self-center"
       matTooltip="Records loaded / total records">
         <mat-icon>visibility</mat-icon>
-        <span>{{ allRecords.length + ' / ' + totalElements() }}</span>
+        <span>{{ recordsToShow.length + ' / ' + totalElements() }}</span>
       </div>
 
       <button mat-flat-button 
-      (click)="loadMore()"
-      [disabled]="allRecords.length >= totalElements()"
+      (click)="getFilteredIncomeOrExpenses(buildFilter())"
+      [disabled]="recordsToShow.length >= totalElements()"
       class="w-fit self-center">
 
-        @if(allRecords.length >= totalElements()) {
+        @if(recordsToShow.length >= totalElements()) {
 
           <mat-icon>keyboard_arrow_up</mat-icon>
 
@@ -431,7 +434,7 @@
 
         }
 
-        <span>{{ allRecords.length >= totalElements() ? 'All records are loaded' : 'Load more' }}</span>
+        <span>{{ recordsToShow.length >= totalElements() ? 'All records are loaded' : 'Load more' }}</span>
 
       </button>
 

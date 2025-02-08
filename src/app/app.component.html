@@ -51,7 +51,7 @@
   
         @for(currency of currencyExchangeService.currencies(); track currency) {
   
-          <button mat-menu-item (click)="currencyExchangeService.selectFavoriteCurrency(currency.currencyCode, currency.currencyName)">
+          <button mat-menu-item (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
             <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
             @if(currency.currencyCode === currencyExchangeService.selectedCurrency().currencyCode) {
               <mat-icon>check</mat-icon>

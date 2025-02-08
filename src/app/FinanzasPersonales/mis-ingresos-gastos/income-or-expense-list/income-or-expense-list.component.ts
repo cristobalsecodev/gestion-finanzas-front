@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,13 +8,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
-import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces.ts/IncomeOrExpense.interface';
+import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
-import { FilterIncomeOrExpense } from '../interfaces.ts/FilterIncomeOrExpense.interface';
+import { FilterIncomeOrExpense } from '../interfaces/FilterIncomeOrExpense.interface';
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 import { compareObjects } from 'src/app/shared/functions/CompareObjects';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
@@ -37,6 +37,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 import { allRecordsSignal } from '../utils/SharedList';
+import { CurrencySelectorComponent } from 'src/app/shared/components/currency-selector/currency-selector.component';
+import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
+import { convertCurrenciesIntoSingle } from 'src/app/shared/functions/ConvertCurrencies';
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -62,7 +65,9 @@ import { allRecordsSignal } from '../utils/SharedList';
     CurrencySymbolPipe,
     DatePipe,
     FormatAmountPipe,
-    FormatThousandSeparatorsPipe
+    FormatThousandSeparatorsPipe,
+    // Components
+    CurrencySelectorComponent
   ],
   animations: [
     // Animación para el componente de detalles
@@ -92,6 +97,12 @@ export class IncomeOrExpenseListComponent implements OnInit {
   // Modal de ingresos / gastos
   readonly dialog = inject(MatDialog)
 
+  // Servicios
+  currencyExchangeService = inject(CurrencyExchangeService)
+  incomeOrExpenseService = inject(IncomeOrExpenseService)
+  categoriesService = inject(CategoriesAndSubCategoriesService)
+  notificationsService = inject(NotificacionesService)
+
   // Función para capitalizar strings
   capitalize = capitalizeString
 
@@ -99,7 +110,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
   currentPage = signal<number>(0)
   pageSize = signal<number>(10)
   totalElements = signal<number>(0)
-  allRecords = allRecordsSignal()
+  originalCurrencyRecords: IncomeOrExpense[] = []
+  recordsToShow: IncomeOrExpense[] = []
 
   // Categorías y subcategorías
   categories: Categories[] = []
@@ -112,11 +124,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   readonly invalidAmount = invalidAmount
 
   constructor(
-    private incomeOrExpenseService: IncomeOrExpenseService,
-    private notificationsService: NotificacionesService,
-    private storageService: StorageService,
-    private categoriesService: CategoriesAndSubCategoriesService,
-    public currencyExchangeService: CurrencyExchangeService
+    private storageService: StorageService
   ) {
 
     // Filtro
@@ -159,13 +167,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     }
 
-    this.loadMore()
-
   }
 
   ngOnInit(): void {
     
     this.callServices()
+
+    this.getFilteredIncomeOrExpenses(this.buildFilter())
     
   }
 
@@ -273,7 +281,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     // Resetea el grouped records cada vez que se haga el cálculo
     this.groupedRecords = []
 
-    this.allRecords.forEach(record => {
+    this.recordsToShow.forEach(record => {
 
       const year = new Date(record.date).getFullYear()
 
@@ -308,9 +316,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  loadMore(): void {
+  buildFilter(): FilterIncomeOrExpense {
 
-    const buildFilter: FilterIncomeOrExpense = {
+    return {
 
       page: this.currentPage(),
       size: this.pageSize(),
@@ -342,11 +350,18 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     }
 
+  }
+
+  getFilteredIncomeOrExpenses(buildFilter: FilterIncomeOrExpense): void {
+
     this.incomeOrExpenseService.getFilteredIncomeOrExpenses(buildFilter).subscribe({
 
       next: (records: PaginationData) => {
 
-        this.manageRecordsAndSort(records._embedded ? records._embedded.incomeOrExpenseList : [])
+        this.convertCurrenciesIntoSingle(
+          records._embedded ? records._embedded.incomeOrExpenseList : [], 
+          JSON.parse(this.storageService.getLocal('currency')!) || this.currencyExchangeService.defaultCurrency
+        )
 
         this.totalElements.set(records.page.totalElements)
 
@@ -354,7 +369,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
         this.currentPage.set(this.currentPage() + 1)
 
       }
-      
+
     })
 
   }
@@ -364,7 +379,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     if(newRecords.length !== 0) {
 
       // Comprueba si el mismo registro ha sido modificado
-      this.allRecords = this.allRecords.map(existingRecord => {
+      this.recordsToShow = this.recordsToShow.map(existingRecord => {
 
         // Encuentra un registro con la misma ID
         const updatedRecord = newRecords.find(newRecord => newRecord.id === existingRecord.id)
@@ -383,21 +398,21 @@ export class IncomeOrExpenseListComponent implements OnInit {
       });
 
       // Apila los datos con los nuevos evitando duplicados
-      this.allRecords = [
-        ...this.allRecords, 
+      this.recordsToShow = [
+        ...this.recordsToShow, 
         ...newRecords.filter(newRecord => 
-          !this.allRecords.some(existingRecord => compareObjects(existingRecord, newRecord))
+          !this.recordsToShow.some(existingRecord => compareObjects(existingRecord, newRecord))
         )
       ]
 
     } else {
 
-      this.allRecords = []
+      this.recordsToShow = []
 
     }
 
     // Actualiza el signal
-    allRecordsSignal.set(this.allRecords)
+    allRecordsSignal.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -406,10 +421,10 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   deleteRecord(id: number): void {
 
-    this.allRecords = this.allRecords.filter(record => record.id !== id)
+    this.recordsToShow = this.recordsToShow.filter(record => record.id !== id)
 
     // Actualiza el signal
-    allRecordsSignal.set(this.allRecords)
+    allRecordsSignal.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -436,12 +451,12 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     this.currentPage.set(0)
 
-    this.allRecords = []
-    allRecordsSignal.set(this.allRecords)
+    this.recordsToShow = []
+    allRecordsSignal.set(this.recordsToShow)
 
     console.log(this.filterForm)
 
-    this.loadMore()
+    this.getFilteredIncomeOrExpenses(this.buildFilter())
 
   }
 
@@ -577,4 +592,23 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
+  convertCurrenciesIntoSingle(records: IncomeOrExpense[], currency: CurrencyExchange): void {
+
+    let managedRecords: IncomeOrExpense[] = []
+
+    if(currency.currencyCode !== 'NONE') {
+
+      this.originalCurrencyRecords = records
+      managedRecords = convertCurrenciesIntoSingle(records, currency)
+
+    } else {
+
+      managedRecords = this.originalCurrencyRecords
+
+    }
+
+    this.manageRecordsAndSort(managedRecords)
+
+  }
+  
 }

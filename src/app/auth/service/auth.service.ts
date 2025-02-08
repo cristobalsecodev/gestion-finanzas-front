@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
-import { CreateUser } from '../../shared/interfaces/User.interface';
+import { CreateUser } from '../../shared/services/Users/interfaces/CreateUser.interface';
 import { activateAccountRoute, signUpRoute, loginRoute, incomeExpensesRoute } from '../../shared/constants/variables.constants';
 import { TokenResponse } from '../interfaces/TokenResponse.interface';
 import { jwtDecode } from "jwt-decode";
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { WantResetPassword } from '../interfaces/WantResetPassword.interface';
 import { ResetPassword } from '../interfaces/ResetPassword.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
+import { UserService } from 'src/app/shared/services/Users/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,8 @@ export class AuthService {
     private storageService: StorageService,
     private notificationsService: NotificacionesService,
     private router: Router,
-    private currencyExchangeService: CurrencyExchangeService
+    private currencyExchangeService: CurrencyExchangeService,
+    private userService: UserService
   ) {
 
     this.isTokenValid.set(this.isAuthenticated())
@@ -52,12 +54,13 @@ export class AuthService {
 
           this.storageService.setSession('token', response.token)
 
-          // Llamamos al servicio de divisas
+          // Llama al servicio de divisas e info de usuario
           this.currencyExchangeService.manageCurrencyService()
+          this.userService.manageUserInfo()
 
           if(this.isAccountActivated()) {
 
-            // Empezamos a comprobar el checkeo si no existe el intervalo
+            // Empieza a comprobar el checkeo si no existe el intervalo
             if(!this.intervalId) {
 
               this.startTokenCheck()
@@ -85,7 +88,7 @@ export class AuthService {
 
           this.storageService.setSession('token', response.token)
           
-          // Llamamos al servicio de divisas
+          // Llama al servicio de divisas
           this.currencyExchangeService.manageCurrencyService()
 
           this.notificationsService.addNotification('Account created', 'success')
@@ -191,7 +194,7 @@ export class AuthService {
   }
 
   // Comprueba si la cuenta está activada
-  isAccountActivated(): Observable<boolean> {
+  isAccountActivated(): boolean {
 
     const decodedToken = this.decodeToken()
     

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { IncomeOrExpense } from '../../interfaces.ts/IncomeOrExpense.interface';
+import { IncomeOrExpense } from '../../interfaces/IncomeOrExpense.interface';
 import { map, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { FilterIncomeOrExpense } from '../../interfaces.ts/FilterIncomeOrExpense.interface';
+import { FilterIncomeOrExpense } from '../../interfaces/FilterIncomeOrExpense.interface';
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 
 @Injectable({

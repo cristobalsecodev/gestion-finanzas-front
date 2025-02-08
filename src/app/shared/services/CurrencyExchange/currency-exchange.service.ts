@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CurrencyExchange } from './CurrencyExchange.interface';
 import { CurrencyCodeENUM, CurrencyNameENUM } from '../../enums/Currency.enum';
 import { StorageService } from '../Storage/storage.service';
+import { UserService } from '../Users/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +30,12 @@ export class CurrencyExchangeService {
   // Divisas
   currencies = signal<CurrencyExchange[]>([])
 
+  // Servicios
+  private storageService = inject(StorageService)
+  private userService = inject(UserService)
+
   constructor(
-    private http: HttpClient,
-    private storageService: StorageService
+    private http: HttpClient
   ) { }
 
   manageCurrencyService(): void {
@@ -39,8 +43,13 @@ export class CurrencyExchangeService {
     this.getCurrencies().subscribe({
       next: (currencies: CurrencyExchange[]) => {
 
-        // Comprueba si el usuario tiene una divisa seleccionada y la actualiza en caso negativo
-        this.updateUserCurrency()
+        // Recoge la divisa de conversión en caso de que esté
+        const convertCurrency: string | null = this.storageService.getLocal('convertCurrency')
+
+        // Comprueba la divisa favorita y la divisa de conversión
+        this.validateStorageCurrency(convertCurrency, 'convertCurrency')
+
+        this.selectedCurrency.set(currencies.find(currency => currency.currencyCode === this.userService.userInfo()?.favoriteCurrency) || this.defaultCurrency)
 
         // Actualizamos las divisas
         this.currencies.set(currencies)
@@ -64,35 +73,21 @@ export class CurrencyExchangeService {
 
   }
 
-  private updateUserCurrency(): void {
-
-    const currency: CurrencyExchange = this.storageService.getLocal('currency')
-    ? JSON.parse(this.storageService.getLocal('currency')!)
-    : null
-
+  private validateStorageCurrency(currency: string | null, storageType: string): void {
+    
     if(!currency) {
 
-      this.storageService.setLocal('currency', JSON.stringify(this.defaultCurrency))
-
-    } else {
-
-      this.selectedCurrency.set(currency)
+      this.storageService.setLocal(storageType, this.defaultCurrency.currencyCode)
 
     }
 
   }
 
-  selectFavoriteCurrency(currencyCode: string, currencyName: string): void {
+  selectFavoriteCurrency(currency: CurrencyExchange): void {
 
-    const currency: CurrencyExchange = {
-      currencyCode: currencyCode,
-      currencyName: currencyName,
-      exchangeRateToUsd: this.currencies().find(x => x.currencyCode === currencyCode)?.exchangeRateToUsd!
-    }
+    this.userService.saveFavoriteCurrency(currency.currencyCode).subscribe()
 
     this.selectedCurrency.set(currency)
-
-    this.storageService.setLocal('currency', JSON.stringify(currency))
 
   }
 
