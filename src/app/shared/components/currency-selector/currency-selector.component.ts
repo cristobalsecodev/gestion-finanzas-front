@@ -1,4 +1,4 @@
-import { Component, computed, effect, EventEmitter, inject, Output } from '@angular/core';
+import { Component, computed, effect, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CurrencyExchangeService } from '../../services/CurrencyExchange/currency-exchange.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,8 +8,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CurrencyExchange } from '../../services/CurrencyExchange/CurrencyExchange.interface';
 import { FLAGS } from '../../constants/svg.constants';
 import { DomSanitizer } from '@angular/platform-browser';
-import { StorageService } from '../../services/Storage/storage.service';
-import { UserService } from '../../services/Users/user.service';
+import { TokenService } from '../../services/token/token.service';
+import { CurrencyCodeENUM, CurrencyNameENUM } from '../../enums/Currency.enum';
 
 @Component({
   selector: 'app-currency-selector',
@@ -30,18 +30,20 @@ export class CurrencySelectorComponent {
 
   // Servicios
   currencyExchangeService = inject(CurrencyExchangeService)
-  storageService = inject(StorageService)
-  userService = inject(UserService)
+  tokenService = inject(TokenService)
 
-  noCurrency: CurrencyExchange = {
-    currencyCode: 'NONE',
-    currencyName: 'None',
-    exchangeRateToUsd: 1.0000
-  }
-
+  @Input() tooltip: string = ''
+  @Input() buttonText: string = ''
   @Output() emitCurrency = new EventEmitter<CurrencyExchange>()
 
-  selectedCurrency: CurrencyExchange = this.noCurrency
+  // Divisa por defecto
+  defaultCurrency: CurrencyExchange = {
+    currencyCode: CurrencyCodeENUM.USD, 
+    currencyName: CurrencyNameENUM.USD,
+    exchangeRateToUsd: 1.0000
+  }  
+
+  selectedCurrency: CurrencyExchange = this.defaultCurrency
 
   currencies = computed(() => this.currencyExchangeService.currencies())
 
@@ -62,25 +64,10 @@ export class CurrencySelectorComponent {
 
     effect( () => {
 
-      const convertCurrency: string | null = this.storageService.getLocal('convertCurrency')
-
-      if(convertCurrency) {
-
-        this.selectCurrency(
-          this.currencies().find(currency => currency.currencyCode === this.storageService.getLocal('convertCurrency')) 
-          || this.noCurrency
-        )
-
-      } else {
-
-        this.selectCurrency(
-          this.currencies().find(currency => currency.currencyCode === this.userService.userInfo()?.favoriteCurrency) 
-          || this.noCurrency
-        )
-
-      }
-
-
+      this.selectCurrency(
+        this.currencies().find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) 
+        || this.defaultCurrency
+      )
 
     })
 
@@ -89,8 +76,6 @@ export class CurrencySelectorComponent {
   selectCurrency(currency: CurrencyExchange): void {
 
     this.selectedCurrency = currency
-
-    this.storageService.setLocal('convertCurrency', currency.currencyCode)
 
     // Emite al padre la divisa seleccionada
     this.emitCurrency.emit(currency)

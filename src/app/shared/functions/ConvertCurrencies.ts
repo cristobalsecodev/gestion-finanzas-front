@@ -16,11 +16,11 @@ export function convertCurrenciesIntoSingle(
     const amountInUsd = transaction.amount / transaction.exchangeRateToUsd
 
     // Convertir de USD a la divisa destino
-    const convertedAmount = amountInUsd * targetCurrency.exchangeRateToUsd
+    const convertedAmount: number = amountInUsd * targetCurrency.exchangeRateToUsd
 
     return {
       ...transaction,
-      amount: convertedAmount,
+      amount: Number(convertedAmount.toFixed(2)),
       currency: targetCurrency.currencyCode
     }
 

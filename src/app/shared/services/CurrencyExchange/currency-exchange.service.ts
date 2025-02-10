@@ -5,6 +5,8 @@ import { CurrencyExchange } from './CurrencyExchange.interface';
 import { CurrencyCodeENUM, CurrencyNameENUM } from '../../enums/Currency.enum';
 import { StorageService } from '../Storage/storage.service';
 import { UserService } from '../Users/user.service';
+import { AuthService } from 'src/app/auth/service/auth.service';
+import { TokenService } from '../token/token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +34,7 @@ export class CurrencyExchangeService {
 
   // Servicios
   private storageService = inject(StorageService)
+  private tokenService = inject(TokenService)
   private userService = inject(UserService)
 
   constructor(
@@ -49,7 +52,7 @@ export class CurrencyExchangeService {
         // Comprueba la divisa favorita y la divisa de conversión
         this.validateStorageCurrency(convertCurrency, 'convertCurrency')
 
-        this.selectedCurrency.set(currencies.find(currency => currency.currencyCode === this.userService.userInfo()?.favoriteCurrency) || this.defaultCurrency)
+        this.selectedCurrency.set(currencies.find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) || this.defaultCurrency)
 
         // Actualizamos las divisas
         this.currencies.set(currencies)

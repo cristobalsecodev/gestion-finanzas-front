@@ -1,18 +1,18 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { incomeExpensesRoute, loginRoute } from 'src/app/shared/constants/variables.constants';
-import { AuthService } from 'src/app/auth/service/auth.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { TokenService } from 'src/app/shared/services/token/token.service';
 
 export const activateAccountGuard: CanActivateFn = (route, state) => {
 
-  const authService = inject(AuthService)
+  const tokenService = inject(TokenService)
   const notificationService = inject(NotificacionesService)
   const router = inject(Router)
 
-  if(authService.isAuthenticated()) {
+  if(tokenService.isAuthenticated()) {
 
-    if(authService.isAccountActivated()) {
+    if(tokenService.isAccountActivated()) {
 
       notificationService.addNotification('So... double-checking, just to be on the safe side?', 'info')
       

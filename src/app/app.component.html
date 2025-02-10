@@ -5,7 +5,7 @@
     </button>
 
     <!-- Navegación -->
-    @if(authService.isTokenValid()) {
+    @if(tokenService.isTokenValid()) {
 
       <section class="hidden sm:ml-30 sm:block space-x-20">
 
@@ -28,7 +28,7 @@
     <!-- Espacio intermedio de separación -->
     <span class="flex-auto"></span>
 
-    @if(authService.isTokenValid()) {
+    @if(tokenService.isTokenValid()) {
 
       <!-- Selector cambio de divisa -->
       <section>
@@ -93,7 +93,7 @@
     </button>
 
     <!-- Icono cuenta -->
-    @if(authService.isTokenValid()) {
+    @if(tokenService.isTokenValid()) {
 
       <button mat-icon-button [matMenuTriggerFor]="accountMenu">
 
@@ -112,7 +112,7 @@
 
     }
 
-    @if(authService.isTokenValid()) {
+    @if(tokenService.isTokenValid()) {
 
       <!-- Menú lateral -->
        @if(sidenavOpened) {

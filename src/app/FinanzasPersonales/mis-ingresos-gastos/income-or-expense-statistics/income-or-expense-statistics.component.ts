@@ -1,8 +1,13 @@
-import { Component, computed, effect } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { allRecordsSignal } from '../utils/SharedList';
 import { CommonModule } from '@angular/common';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
+import { CurrencySelectorComponent } from 'src/app/shared/components/currency-selector/currency-selector.component';
+import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
+import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
+import { TokenService } from 'src/app/shared/services/token/token.service';
+import { IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -12,8 +17,9 @@ import * as Highcharts from 'highcharts';
     CommonModule,
     // Angular material
     // Librería
-    HighchartsChartModule
+    HighchartsChartModule,
     // Componentes
+    CurrencySelectorComponent
   ],
   templateUrl: './income-or-expense-statistics.component.html',
   styleUrl: './income-or-expense-statistics.component.scss'
@@ -23,10 +29,12 @@ export class IncomeOrExpenseStatisticsComponent {
   sumIncome: number = 0
   sumExpense: number = 0
 
-  incomeOrExpenses = computed(() => allRecordsSignal())
+  recordsComputed = computed(() => allRecordsSignal())
+  convertedRecords: IncomeOrExpense[] = []
 
   Highcharts: typeof Highcharts = Highcharts
 
+  // Gráfico total de ingresos y gastos
   resumeOptions: any = {
     chart: {
         type: 'bar',
@@ -116,6 +124,7 @@ export class IncomeOrExpenseStatisticsComponent {
     ]
   }
 
+  // Gráfico de ingresos
   incomeChartOptions: any = {
 
     chart: {
@@ -186,6 +195,7 @@ export class IncomeOrExpenseStatisticsComponent {
     }
   }
 
+  // Gráfico de gastos
   expenseChartOptions: any = {
 
     chart: {
@@ -246,7 +256,7 @@ export class IncomeOrExpenseStatisticsComponent {
         }
     },
     series: [{
-        name: 'Registrations',
+        name: 'Total',
         colorByPoint: true,
         innerSize: '75%',
         data: []
@@ -256,11 +266,19 @@ export class IncomeOrExpenseStatisticsComponent {
     }
   }
 
+  // Servicios
+  currencyExchangeService = inject(CurrencyExchangeService)
+  tokenService = inject(TokenService)
+
   constructor() {
 
     // Suscribe los cambios del signal para actualizar los gráficos
     effect(() => {
 
+      this.currencyChange(
+        this.currencyExchangeService.currencies().find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) 
+        || this.currencyExchangeService.defaultCurrency
+      )
       this.updateIncomeChart()
       this.updateExpenseChart()
       this.updateResumeChart()
@@ -323,7 +341,7 @@ export class IncomeOrExpenseStatisticsComponent {
     
     const categoryMap = new Map<string, number>()
 
-    this.incomeOrExpenses()
+    this.convertedRecords
       .filter(record => record.type === type)
       .forEach(record => {
 
@@ -342,6 +360,13 @@ export class IncomeOrExpenseStatisticsComponent {
     }))
 
     return a
+
+  }
+
+  currencyChange(currency: CurrencyExchange) {
+
+    // Convierte los registros a una divisa seleccionada
+    
 
   }
 

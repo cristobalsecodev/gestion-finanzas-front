@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -37,9 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 import { allRecordsSignal } from '../utils/SharedList';
-import { CurrencySelectorComponent } from 'src/app/shared/components/currency-selector/currency-selector.component';
-import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
-import { convertCurrenciesIntoSingle } from 'src/app/shared/functions/ConvertCurrencies';
+
 @Component({
   selector: 'app-income-or-expense-list',
   standalone: true,
@@ -65,9 +63,7 @@ import { convertCurrenciesIntoSingle } from 'src/app/shared/functions/ConvertCur
     CurrencySymbolPipe,
     DatePipe,
     FormatAmountPipe,
-    FormatThousandSeparatorsPipe,
-    // Components
-    CurrencySelectorComponent
+    FormatThousandSeparatorsPipe
   ],
   animations: [
     // Animación para el componente de detalles
@@ -358,9 +354,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       next: (records: PaginationData) => {
 
-        this.convertCurrenciesIntoSingle(
-          records._embedded ? records._embedded.incomeOrExpenseList : [], 
-          JSON.parse(this.storageService.getLocal('currency')!) || this.currencyExchangeService.defaultCurrency
+        this.manageRecordsAndSort(
+          records._embedded ? records._embedded.incomeOrExpenseList : []
         )
 
         this.totalElements.set(records.page.totalElements)
@@ -589,25 +584,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
     const unit = frequency === 1 ? recurrence.singular : recurrence.plural
 
     return `The recurrence occurs every ${frequency} ${unit}.`
-
-  }
-
-  convertCurrenciesIntoSingle(records: IncomeOrExpense[], currency: CurrencyExchange): void {
-
-    let managedRecords: IncomeOrExpense[] = []
-
-    if(currency.currencyCode !== 'NONE') {
-
-      this.originalCurrencyRecords = records
-      managedRecords = convertCurrenciesIntoSingle(records, currency)
-
-    } else {
-
-      managedRecords = this.originalCurrencyRecords
-
-    }
-
-    this.manageRecordsAndSort(managedRecords)
 
   }
   

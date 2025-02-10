@@ -5,16 +5,11 @@
     type="button"
     [matMenuTriggerFor]="currencyMenu" 
     aria-label="Currency exchange menu"
-    matTooltip="Convert all currencies into a single currency"
+    [matTooltip]="tooltip"
     class="ms-3 me-3">
 
-      <span>Convert all currencies into: </span>
-
-      @if(noCurrency.currencyCode === selectedCurrency.currencyCode) {
-        <mat-icon>block</mat-icon>
-      } @else {
-        <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
-      }
+      <span>{{ buttonText }}</span>
+      <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
 
       <span>{{ selectedCurrency.currencyCode }}</span>
 
@@ -24,14 +19,6 @@
 
 <!-- Menú divisas -->
 <mat-menu #currencyMenu="matMenu">
-
-  <button mat-menu-item (click)="selectCurrency(noCurrency)">
-    <mat-icon>block</mat-icon>
-    @if(noCurrency.currencyCode === selectedCurrency.currencyCode) {
-      <mat-icon>check</mat-icon>
-    }
-    <span>None</span>
-  </button>
 
   @for(currency of currencyExchangeService.currencies(); track currency) {
 

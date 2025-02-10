@@ -1,13 +1,13 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthService } from '../../service/auth.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 import { loginRoute, authRoute } from 'src/app/shared/constants/variables.constants';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/services/token/token.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   
-  const authService = inject(AuthService)
+  const tokenService = inject(TokenService)
 
   const storageService = inject(StorageService)
 
@@ -25,7 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   // Si no existe el token, redireccionamos al login
-  if(!authService.isAuthenticated()) {
+  if(!tokenService.isAuthenticated()) {
 
     router.navigate([loginRoute])
 

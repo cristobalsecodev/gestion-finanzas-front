@@ -1,4 +1,10 @@
-@if(incomeOrExpenses()) {
+<app-currency-selector 
+(emitCurrency)="currencyChange($event)" 
+[buttonText]="'Chart in: '"
+[tooltip]="'Convert all the charts into the selected currency'"
+></app-currency-selector>
+
+@if(recordsComputed()) {
 
   <section class="flex flex-wrap justify-center gap-5">
     <!-- Income graphic -->

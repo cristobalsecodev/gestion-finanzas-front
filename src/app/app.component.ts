@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -18,7 +18,7 @@ import { NotificacionesComponent } from './shared/components/notificaciones/noti
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
 import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service';
-import { UserService } from './shared/services/Users/user.service';
+import { TokenService } from './shared/services/token/token.service';
 
 @Component({
   selector: 'app-root',
@@ -57,16 +57,18 @@ export class AppComponent implements OnInit {
   readonly signUpRoute = signUpRoute
   readonly loginRoute = loginRoute
 
+  // Servicios
+  private router = inject(Router)
+  private authService = inject(AuthService)
+  public tokenService = inject(TokenService)
+  public currencyExchangeService = inject(CurrencyExchangeService)
+  public themeModeService = inject(ThemeModeService)
+
   constructor(
     iconRegistry: MatIconRegistry,
-    private router: Router,
     private viewportScroller: ViewportScroller,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-    public authService: AuthService,
-    public currencyExchangeService: CurrencyExchangeService,
-    public themeModeService: ThemeModeService,
-    private userService: UserService
+    private domSanitizer: DomSanitizer
   ) {
 
     // Añadimos los SVGs
@@ -99,10 +101,9 @@ export class AppComponent implements OnInit {
 
     })
 
-    if(this.authService.isTokenValid()) {
+    if(this.tokenService.isTokenValid()) {
 
       this.currencyExchangeService.manageCurrencyService()
-      this.userService.manageUserInfo()
 
     }
 
