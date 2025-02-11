@@ -449,8 +449,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.recordsToShow = []
     allRecordsSignal.set(this.recordsToShow)
 
-    console.log(this.filterForm)
-
     this.getFilteredIncomeOrExpenses(this.buildFilter())
 
   }

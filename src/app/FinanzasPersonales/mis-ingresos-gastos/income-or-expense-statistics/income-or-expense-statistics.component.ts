@@ -8,6 +8,7 @@ import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/Curre
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
 import { IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
+import { convertCurrenciesIntoSingle } from 'src/app/shared/functions/ConvertCurrencies';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -58,24 +59,11 @@ export class IncomeOrExpenseStatisticsComponent {
             },
             color: 'var(--sys-action-green)',
             negativeColor: 'var(--sys-action-red)',
-            accessibility: {
-                exposeAsGroupOnly: true
-            }
         }
     },
     tooltip: {
         format: '<span style="color:{point.color}">\u25CF</span> ' +
             '<b>{series.name}: {point.y}</b>'
-    },
-    accessibility: {
-        typeDescription: 'Stacked bar "force" chart. Positive forces ' +
-            'are shown on the right side and negative on the left.',
-        series: {
-            descriptionFormat: 'Series {add series.index 1} of ' +
-            '{chart.series.length}, Name: {series.name}, ' +
-            '{#if (gt series.points.0.y 0)}accelerating' +
-            '{else}decelerating{/if} value of {series.points.0.y}.'
-        }
     },
     yAxis: {
         reversedStacks: false,
@@ -85,9 +73,6 @@ export class IncomeOrExpenseStatisticsComponent {
             enabled: false,
         },
         title: '',
-        accessibility: {
-            description: ''
-        },
         stackLabels: {
             enabled: true,
             verticalAlign: 'top',
@@ -106,9 +91,6 @@ export class IncomeOrExpenseStatisticsComponent {
         visible: false,
         gridLineWidth: 0,
         title: '',
-        accessibility: {
-            description: ''
-        }
     },
     legend: {
         enabled: false
@@ -130,11 +112,6 @@ export class IncomeOrExpenseStatisticsComponent {
     chart: {
         type: 'pie',
         backgroundColor: null,
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
     },
     title: {
         text: 'Income Overview',
@@ -201,11 +178,6 @@ export class IncomeOrExpenseStatisticsComponent {
     chart: {
         type: 'pie',
         backgroundColor: null,
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
     },
     title: {
         text: 'Expense Overview',
@@ -279,9 +251,6 @@ export class IncomeOrExpenseStatisticsComponent {
         this.currencyExchangeService.currencies().find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) 
         || this.currencyExchangeService.defaultCurrency
       )
-      this.updateIncomeChart()
-      this.updateExpenseChart()
-      this.updateResumeChart()
 
     })
 
@@ -366,7 +335,13 @@ export class IncomeOrExpenseStatisticsComponent {
   currencyChange(currency: CurrencyExchange) {
 
     // Convierte los registros a una divisa seleccionada
-    
+    this.convertedRecords = convertCurrenciesIntoSingle(this.recordsComputed(), currency)
+
+    // Actualiza los gráficos
+    this.updateIncomeChart()
+    this.updateExpenseChart()
+    this.updateResumeChart()
+
 
   }
 

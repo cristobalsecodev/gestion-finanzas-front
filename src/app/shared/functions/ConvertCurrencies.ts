@@ -6,23 +6,24 @@ export function convertCurrenciesIntoSingle(
   targetCurrency: CurrencyExchange, 
 ): IncomeOrExpense[] {
   return transactions.map(transaction => {
-
-    // No convertir si la divisa es la misma que la divisa destino
+    
     if (transaction.currency === targetCurrency.currencyCode) {
       return transaction
     }
 
-    // Convertir a USD
+    // Convertir a USD (sin redondeo intermedio)
     const amountInUsd = transaction.amount / transaction.exchangeRateToUsd
 
-    // Convertir de USD a la divisa destino
-    const convertedAmount: number = amountInUsd * targetCurrency.exchangeRateToUsd
+    // Convertir de USD a la divisa destino (manteniendo precisión)
+    const convertedAmount = amountInUsd * targetCurrency.exchangeRateToUsd
 
     return {
       ...transaction,
-      amount: Number(convertedAmount.toFixed(2)),
+      amount: convertedAmount, 
       currency: targetCurrency.currencyCode
     }
-
-  })
+  }).map(transaction => ({
+    ...transaction,
+    amount: Number(transaction.amount.toFixed(2))
+  }))
 }
