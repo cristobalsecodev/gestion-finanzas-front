@@ -22,7 +22,7 @@ import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -37,6 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 import { allRecordsSignal } from '../utils/SharedList';
+import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -136,19 +137,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       subcategories: new FormControl({value: '', disabled: true}),
 
-      fromAmount: new FormControl('', 
-        [
-          Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
-          Validators.maxLength(18) 
-        ]
-      ),
-
-      toAmount: new FormControl('',
-        [
-          Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
-          Validators.maxLength(18) 
-        ]
-      ),
+      currencies: new FormControl(''),
 
       recurrences: new FormControl(false)
 
@@ -325,11 +314,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
       subcategories: this.filterForm.get('subcategories')?.value && this.filterForm.get('subcategories')?.value.length > 0
         ? this.filterForm.get('subcategories')?.value.map((subcategory: SelectValue) => subcategory.value)
         : undefined,
-      fromAmount: this.filterForm.get('fromAmount')?.value
-        ? Number(this.filterForm.get('fromAmount')?.value)
-        : undefined,
-      toAmount: this.filterForm.get('toAmount')?.value
-        ? Number(this.filterForm.get('toAmount')?.value)
+      currencies: this.filterForm.get('currencies')?.value
+        ? this.filterForm.get('currencies')?.value
         : undefined,
       fromDate: this.filterForm.get('fromDate')?.value
         ? moment(this.filterForm.get('fromDate')?.value).format('YYYY-MM-DD')

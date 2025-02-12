@@ -104,6 +104,12 @@
         </app-dynamic-button>
 
       </form>
+
+      <!-- Botón usuario test -->
+      <button mat-flat-button class="mt-2" (click)="testLogin()">
+        <mat-icon> bug_report </mat-icon>
+        Try it with a test user
+      </button>
       
       <!-- Botón contraseña olvidada -->
       <button mat-button class="mt-2" (click)="changeForm.set(!changeForm())">

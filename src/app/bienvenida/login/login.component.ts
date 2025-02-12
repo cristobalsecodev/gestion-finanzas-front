@@ -103,6 +103,12 @@ export class LoginComponent {
     }
   }
 
+  testLogin(): void {
+
+    this.authService.testLogin().subscribe()
+
+  }
+
   wantResetPassword(): void {
 
     if(this.resetPaswordForm.valid) {

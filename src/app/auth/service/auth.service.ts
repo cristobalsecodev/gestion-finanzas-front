@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { StorageService } from '../../shared/services/Storage/storage.service';
 import { CreateUser } from '../../shared/services/Users/interfaces/CreateUser.interface';
-import { activateAccountRoute, signUpRoute, loginRoute, incomeExpensesRoute } from '../../shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, loginRoute, incomeExpensesRoute, testLoginRoute } from '../../shared/constants/variables.constants';
 import { TokenResponse } from '../interfaces/TokenResponse.interface';
 
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
@@ -35,30 +35,49 @@ export class AuthService {
       .pipe(
         tap(response => {
 
-          this.storageService.setSession('token', response.token)
+          this.managePostLogin(response)
+          
+        })
+      )
+  }
 
-          // Llama al servicio de divisas
-          this.currencyExchangeService.manageCurrencyService()
+  // Login de TEST
+  testLogin(): Observable<TokenResponse> {
 
-          if(this.tokenService.isAccountActivated()) {
+    return this.http.get<TokenResponse>(`${this.authUrl}/${testLoginRoute}`)
+      .pipe(
+        tap(response => {
 
-            // Empieza a comprobar el checkeo si no existe el intervalo
-            if(!this.tokenService.intervalId) {
-
-              this.tokenService.startTokenCheck()
-
-            }
-
-            this.router.navigate([incomeExpensesRoute])
-
-          } else {
-
-            this.router.navigate([activateAccountRoute])
-
-          }
+          this.managePostLogin(response)
 
         })
       )
+  }
+
+  private managePostLogin(response: any): void {
+
+    this.storageService.setSession('token', response.token)
+
+    // Llama al servicio de divisas
+    this.currencyExchangeService.manageCurrencyService()
+
+    if(this.tokenService.isAccountActivated()) {
+
+      // Empieza a comprobar el checkeo si no existe el intervalo
+      if(!this.tokenService.intervalId) {
+
+        this.tokenService.startTokenCheck()
+
+      }
+
+      this.router.navigate([incomeExpensesRoute])
+
+    } else {
+
+      this.router.navigate([activateAccountRoute])
+
+    }
+
   }
 
   // Creación del usuario

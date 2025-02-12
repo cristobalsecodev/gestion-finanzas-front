@@ -170,35 +170,20 @@
           </mat-select>
         </mat-form-field>
 
-        <!-- Cantidad desde -->
-        <mat-form-field class="w-full" floatLabel="always">
+        <!-- Divisa -->
+        <mat-form-field class="w-full">
 
-          <mat-label>From amount</mat-label>
-          <input matInput formControlName="fromAmount">
+          <mat-label>Currencies</mat-label>
 
-          <span matTextPrefix>{{ 0 | currencySymbol: currencyExchangeService.selectedCurrency().currencyCode }}</span>
+          <mat-select formControlName="currencies" multiple>
 
-          @if(filterForm.get('fromAmount')?.hasError('pattern')) {
+            @for (currency of currencyExchangeService.currencies(); track $index) {
 
-            <mat-error> {{ invalidAmount }} </mat-error>
-  
-          }
+              <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
 
-        </mat-form-field>
+            }
 
-        <!-- Cantidad hasta -->
-        <mat-form-field class="w-full" floatLabel="always">
-
-          <mat-label>To amount</mat-label>
-          <input matInput formControlName="toAmount">
-
-          <span matTextPrefix>{{ 0 | currencySymbol: currencyExchangeService.selectedCurrency().currencyCode }}</span>
-
-          @if(filterForm.get('toAmount')?.hasError('pattern')) {
-
-            <mat-error> {{ invalidAmount }} </mat-error>
-  
-          }  
+          </mat-select>
 
         </mat-form-field>
 
@@ -229,6 +214,11 @@
     <button mat-button (click)="openIncomeOrExpenseDialog(actionType.CREATE)">
     <mat-icon>add</mat-icon>
     Add income / expense
+    </button>
+
+    <button mat-button (click)="openIncomeOrExpenseDialog(actionType.CREATE)">
+      <mat-icon>add</mat-icon>
+      Add categories / subcategories
     </button>
 
   </div>

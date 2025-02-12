@@ -1,7 +1,7 @@
 import { IncomeOrExpense } from "src/app/finanzasPersonales/mis-ingresos-gastos/interfaces/IncomeOrExpense.interface";
 import { CurrencyExchange } from "../services/CurrencyExchange/CurrencyExchange.interface";
 
-export function convertCurrenciesIntoSingle(
+export function convertAmountsIntoOneCurrency(
   transactions: IncomeOrExpense[], 
   targetCurrency: CurrencyExchange, 
 ): IncomeOrExpense[] {

@@ -8,7 +8,6 @@ export interface FilterIncomeOrExpense extends PaginationToSend {
   toDate: string | undefined
   recurrences: string[] | undefined
   type: string | undefined
-  fromAmount: number | undefined
-  toAmount: number | undefined
+  currencies: string[]
 
 }

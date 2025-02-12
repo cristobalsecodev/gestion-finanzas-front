@@ -7,7 +7,7 @@ export interface IncomeOrExpense {
   amount: number // Cantidad
   currency: string // Divisa
   exchangeRateToUsd: number // Tipo de cambio en relación al USD
-  type: 'income' | 'expense' // Tipo
+  type: 'income' | 'expense' // Tipo de registro
   notes?: string // Pequeña descripción
   recurrenceDetails?: RecurrenceDetails // Detalles de recurrencia en caso de que exista
 
@@ -24,9 +24,12 @@ export interface RecurrenceDetails {
 }
 
 export interface BaseCategory {
-  id?: number;
-  name: string;
-  type: string;
+
+  id?: number
+  name: string
+  type: string
+  color: string
+
 }
 
 export interface Categories extends BaseCategory {

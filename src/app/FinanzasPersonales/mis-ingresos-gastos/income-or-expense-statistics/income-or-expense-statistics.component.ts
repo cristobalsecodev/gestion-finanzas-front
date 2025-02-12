@@ -8,7 +8,7 @@ import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/Curre
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
 import { IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
-import { convertCurrenciesIntoSingle } from 'src/app/shared/functions/ConvertCurrencies';
+import { convertAmountsIntoOneCurrency } from 'src/app/shared/functions/ConvertCurrencies';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -307,35 +307,35 @@ export class IncomeOrExpenseStatisticsComponent {
   }
 
   private processChartData(type: 'income' | 'expense'): Highcharts.PointOptionsObject[] {
-    
-    const categoryMap = new Map<string, number>()
-
+  
+    const categoryMap = new Map<string, { value: number, color: string }>()
+  
     this.convertedRecords
       .filter(record => record.type === type)
       .forEach(record => {
-
+  
         const categoryName = record.category.name
-        const amount = categoryMap.get(categoryName) || 0
-
-        categoryMap.set(categoryName, amount + Math.abs(record.amount))
-
+        const categoryColor = record.category.color
+        const existing = categoryMap.get(categoryName)
+  
+        categoryMap.set(categoryName, {
+          value: (existing?.value || 0) + Math.abs(record.amount),
+          color: existing?.color || categoryColor
+        })
+  
       })
-
-    const a = Array.from(categoryMap, ([name, value]) => ({
-
+  
+    return Array.from(categoryMap, ([name, data]) => ({
       name,
-      y: value
-
+      y: data.value,
+      color: data.color
     }))
-
-    return a
-
   }
-
+  
   currencyChange(currency: CurrencyExchange) {
 
     // Convierte los registros a una divisa seleccionada
-    this.convertedRecords = convertCurrenciesIntoSingle(this.recordsComputed(), currency)
+    this.convertedRecords = convertAmountsIntoOneCurrency(this.recordsComputed(), currency)
 
     // Actualiza los gráficos
     this.updateIncomeChart()
