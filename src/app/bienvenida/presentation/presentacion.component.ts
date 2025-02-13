@@ -29,7 +29,7 @@ export class PresentacionComponent {
   readonly webName = webName
 
   // Texto de info
-  readonly subject = 'Financia Sphere is your all-in-one solution for personal finance management. Seamlessly organize and track your income, expenses, assets, and investments, empowering you to make informed decisions and achieve your financial goals.'
+  readonly subject = 'Financia Sphere is your all-in-one solution for personal finance management. Seamlessly organize and track your income and expenses, empowering you to make informed decisions and achieve your financial goals.'
 
   // Servicios
   public tokenService = inject(TokenService)

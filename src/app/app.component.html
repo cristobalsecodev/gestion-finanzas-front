@@ -15,12 +15,6 @@
             <span>My income/expenses</span>
         </button>
   
-        <button mat-button class="h-12" [routerLink]="[investmentsRoute]"
-          [ngClass]="{'selected-button': currentUrl().includes(investmentsRoute)}">
-            <mat-icon>query_stats</mat-icon>
-            <span>My investments</span>
-        </button>
-  
       </section>
 
     }
@@ -147,12 +141,6 @@
           [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}" 
           (click)="drawer.toggle()">
             <span>My income/expenses</span>
-        </a>
-
-        <a mat-list-item [routerLink]="[investmentsRoute]" 
-          [ngClass]="{'selected-button': currentUrl().includes(investmentsRoute)}" 
-          (click)="drawer.toggle()">
-            <span>My investments</span>
         </a>
 
       </mat-nav-list>

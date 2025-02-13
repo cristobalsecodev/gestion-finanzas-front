@@ -4,7 +4,7 @@
 [tooltip]="'Convert all the charts into the selected currency'"
 ></app-currency-selector>
 
-@if(recordsComputed()) {
+@if(recordsComputed().length > 0) {
 
   <section class="flex flex-wrap justify-center gap-5">
     <!-- Income graphic -->

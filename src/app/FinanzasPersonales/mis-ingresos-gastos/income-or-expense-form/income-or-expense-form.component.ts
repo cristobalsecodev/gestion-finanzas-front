@@ -18,7 +18,7 @@ import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currenc
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
-import { capitalizeString } from 'src/app/shared/functions/Utils';
+import { capitalizeString, markForms } from 'src/app/shared/functions/Utils';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import moment from 'moment';
 import { objectSelectedValidator } from 'src/app/shared/functions/Validators';
@@ -255,7 +255,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     }
 
-    this.filteredCategories = filterAutocomplete(this.categories, searchTerm, ['name'])
+    this.filteredCategories = filterAutocomplete(this.categories.filter(category => category.type === this.selectedType()), searchTerm, ['name'])
 
   }
 
@@ -315,15 +315,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   markForms(form: FormGroup): void {
 
-    Object.keys(form.controls).forEach(controlName => {
-
-      const control = form.get(controlName);
-
-      if (control && control.invalid && control.hasValidator(Validators.required)) {
-        control.markAsTouched();
-      }
-      
-    });
+    markForms(form)
 
   }
 
@@ -342,7 +334,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           date: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
-          subcategory: this.incomeOrExpenseForm.get('subcategory')?.value,
+          subcategory: this.incomeOrExpenseForm.get('subcategory')?.value ? this.incomeOrExpenseForm.get('subcategory')?.value : undefined,
           ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    
 
         }

@@ -1,0 +1,264 @@
+
+
+
+<mat-dialog-content>
+
+  <h1 mat-dialog-title class="flex items-center justify-center space-x-2 text-center">
+    <span class="font-semibold">Manage categories and subcategories</span>
+  </h1>
+
+  <!-- Primera línea de separación -->
+  <div class="mx-auto w-11/12 border-t my-2"></div>
+
+  <!-- Elección de tipo -->
+  <div class="flex flex-col space-y-2 mb-4 w-full items-center">
+
+    <!-- Etiqueta de selección centrada y en la parte superior -->
+    <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
+
+    <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
+    (change)="onChangeChip($event)">
+
+      @for (type of ['category', 'subcategory']; track $index) {
+
+        <mat-chip-option [value]="type" class="px-4 py-2">
+          {{ capitalize(type) }}
+        </mat-chip-option>
+
+      }
+
+    </mat-chip-listbox>
+
+  </div>
+
+  @if(!isForm()) {
+
+
+
+  }
+
+  <!-- Formulario de categoría -->
+  @if(isForm() && selectedType() === 'category') {
+
+    <form [formGroup]="categoryForm">
+
+      <!-- Segunda línea de separación -->
+      <div class="mx-auto w-11/12 border-t mt-4"></div>
+  
+      <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  
+        <!-- Nombre -->
+        <mat-form-field class="w-full">
+  
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name" formControlName="name">
+  
+          <mat-icon matIconSuffix
+          matTooltip="The name of the category">
+            info
+          </mat-icon>
+  
+          <mat-hint align="end">{{ categoryForm.get('name')?.value.length }}/{{ maxNotesLength }}</mat-hint>
+  
+          @if(categoryForm.get('name')?.hasError('maxlength')) {
+  
+            <mat-error> {{ maxLengthMessage }} </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Tipo -->
+        <mat-form-field class="w-full">
+  
+          <mat-label>Type</mat-label>
+  
+          <mat-select formControlName="type" required (selectionChange)="filterCategories()">
+  
+            @for (type of ['income', 'expense']; track $index) {
+  
+              <mat-option [value]="type"> {{ capitalize(type) }} </mat-option>
+  
+            }
+  
+          </mat-select>
+  
+          <mat-icon matIconSuffix
+          matTooltip="Specify if the category is for an income or expense">
+            info
+          </mat-icon>
+  
+          @if(subcategoryForm.get('type')?.hasError('required')) {
+  
+            <mat-error> {{ typeMessage }} </mat-error>
+  
+          }
+  
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+
+          <mat-label>Select color</mat-label>
+
+          <input matInput formControlName="color" type="color"/>
+
+          <mat-icon matIconSuffix
+          matTooltip="Specify the color of the category for the graphics">
+            info
+          </mat-icon>
+
+        </mat-form-field>
+        
+  
+      </div>
+      
+    </form>
+
+  }
+
+  <!-- Formulario de subcategoría -->
+  @if(isForm() && selectedType() === 'subcategory') {
+
+    <form [formGroup]="subcategoryForm">
+  
+      <!-- Segunda línea de separación -->
+      <div class="mx-auto w-11/12 border-t mt-4"></div>
+  
+      <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  
+        <!-- Nombre -->
+        <mat-form-field class="w-full">
+  
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name" formControlName="name">
+  
+          <mat-icon matIconSuffix
+          matTooltip="The name of the subcategory">
+            info
+          </mat-icon>
+  
+          <mat-hint align="end">{{ subcategoryForm.get('name')?.value.length }}/{{ maxNotesLength }}</mat-hint>
+  
+          @if(subcategoryForm.get('name')?.hasError('maxlength')) {
+  
+            <mat-error> {{ maxLengthMessage }} </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Tipo -->
+        <mat-form-field class="w-full">
+  
+          <mat-label>Type</mat-label>
+  
+          <mat-select formControlName="type" required (selectionChange)="filterCategories()">
+  
+            @for (type of ['income', 'expense']; track $index) {
+  
+              <mat-option [value]="type"> {{ capitalize(type) }} </mat-option>
+  
+            }
+  
+          </mat-select>
+  
+          <mat-icon matIconSuffix
+          matTooltip="Specify if the subcategory is for an income or expense">
+            info
+          </mat-icon>
+  
+          @if(subcategoryForm.get('type')?.hasError('required')) {
+  
+            <mat-error> {{ typeMessage }} </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Categoría -->
+        <mat-form-field class="w-full">
+  
+          <mat-label>Category</mat-label>
+  
+          <input
+          type="text"
+          matInput
+          formControlName="category"
+          [matAutocomplete]="autoCategory"
+          (keyup)="onCategorySearch()"
+          />
+          <mat-autocomplete #autoCategory="matAutocomplete"
+          [displayWith]="categoriesService.display">
+  
+            @for (option of filteredCategories; track $index) {
+  
+              <mat-option [value]="option">
+                {{ option.name }}
+              </mat-option>
+  
+            }
+  
+          </mat-autocomplete>
+  
+          @if(categories.length > 0) {
+  
+            <mat-icon matIconSuffix
+            matTooltip="Choose the category to link the subcategory">
+              info
+            </mat-icon>
+  
+          }
+  
+          @if(categoryForm.get('category')?.hasError('required')) {
+  
+            <mat-error> Category is required. </mat-error>
+  
+          }
+  
+          @if(categoryForm.get('category')?.hasError('objectSelected')) {
+  
+            <mat-error> You must select a category. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+      </div>
+      
+    </form>
+  
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  @if(isForm()) {
+
+    <button mat-button class="mr-2" (click)="isForm.set(false)">Cancel</button>
+
+    <div
+    matTooltip="There are mandatory fields not filled"
+    [matTooltipDisabled]="(selectedType() === 'subcategory' && subcategoryForm.valid) || (selectedType() === 'category' && categoryForm.valid)"
+    (mouseover)="checkMandatoryFields()">
+  
+      <button 
+      mat-flat-button 
+      type="submit"
+      (click)="submitForm()"
+      [disabled]="(selectedType() === 'subcategory' && subcategoryForm.invalid) || (selectedType() === 'category' && categoryForm.invalid)">
+  
+        <mat-icon>add</mat-icon>
+        {{ actionType() }}
+
+      </button>
+  
+    </div>
+
+  } @else {
+
+    <button mat-button mat-dialog-close class="mr-2">Close</button>
+
+  }
+
+</mat-dialog-actions>

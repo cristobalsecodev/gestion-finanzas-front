@@ -6,7 +6,6 @@ export const noValue = 'N/A'
 
 // Rutas de navegación
 export const incomeExpensesRoute = 'my-income-expenses'
-export const investmentsRoute = 'my-investments'
 export const loginRoute = 'login'
 export const testLoginRoute = 'test-login'
 export const signUpRoute = 'sign-up'

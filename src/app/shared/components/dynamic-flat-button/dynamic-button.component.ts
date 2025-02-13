@@ -54,7 +54,7 @@ export class DynamicButtonComponent {
 
   clicked(): void {
 
-    this.buttonClicked.emit
+    this.buttonClicked.emit()
 
   }
 

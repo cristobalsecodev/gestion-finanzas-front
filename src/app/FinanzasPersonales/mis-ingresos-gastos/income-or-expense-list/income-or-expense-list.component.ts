@@ -37,7 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 import { allRecordsSignal } from '../utils/SharedList';
-import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
+import { CategoriesSubcategoriesFormComponent } from '../categories-subcategories-form/categories-subcategories-form.component';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -480,6 +480,22 @@ export class IncomeOrExpenseListComponent implements OnInit {
       }
 
     }))
+
+  }
+
+  openCategoriesDialog(): void {
+
+    this.dialog.open(CategoriesSubcategoriesFormComponent, {
+
+      data: {
+        categories: this.categories
+      },
+      minWidth: '50vh',
+      maxWidth: '90vw',
+      minHeight: '10vh',
+      maxHeight: '80vh',
+
+    })
 
   }
 

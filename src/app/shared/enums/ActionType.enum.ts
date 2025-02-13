@@ -2,6 +2,7 @@ export enum ActionType {
   
   CREATE = 'Create',
   EDIT = 'Edit',
-  DELETE = 'Delete'
+  DELETE = 'Delete',
+  VIEW = 'View'
 
 }
