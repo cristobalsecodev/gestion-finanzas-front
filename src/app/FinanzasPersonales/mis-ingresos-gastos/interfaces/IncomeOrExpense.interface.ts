@@ -2,7 +2,7 @@ export interface IncomeOrExpense {
 
   id?: number
   date: string // Fecha de efecto
-  category: BaseCategory // Categoría
+  category: Categories // Categoría
   subcategory?: BaseCategory // Subcategoría
   amount: number // Cantidad
   currency: string // Divisa
@@ -28,12 +28,12 @@ export interface BaseCategory {
   id?: number
   name: string
   type: string
-  color: string
 
 }
 
 export interface Categories extends BaseCategory {
 
+  color: string
   subcategories: BaseCategory[]
 
 }
