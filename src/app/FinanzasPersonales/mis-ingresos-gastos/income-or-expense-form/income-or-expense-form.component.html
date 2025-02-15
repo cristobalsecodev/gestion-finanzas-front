@@ -417,7 +417,12 @@
     (click)="submitForm()"
     [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid)">
 
-      <mat-icon>add</mat-icon>
+      @if(data.actionType === actionTypes.EDIT) {
+        <mat-icon>edit</mat-icon>
+      } @else {
+        <mat-icon>add</mat-icon>
+      }
+      
       {{ data.actionType }}
 
     </button>

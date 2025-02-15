@@ -37,16 +37,21 @@ export class CategoriesAndSubCategoriesService {
 
   }
 
-  disableCategory(categoryId: number): Observable<void> {
+  disableCategory(categoryId: number): Observable<string> {
 
-    return this.http.post<void>(`${this.categoriesUrl}/disable`, categoryId)
+    return this.http.post<any>(`${this.categoriesUrl}/disable`, categoryId)
+      .pipe(
+        map(response => response.message)
+      )
 
   }
 
-  enableCategory(categoryId: number): Observable<void> {
+  enableCategory(categoryId: number): Observable<string> {
 
-    return this.http.post<void>(`${this.categoriesUrl}/enable`, categoryId)
-
+    return this.http.post<any>(`${this.categoriesUrl}/enable`, categoryId)
+      .pipe(
+        map(response => response.message)
+      )
   }
 
 }

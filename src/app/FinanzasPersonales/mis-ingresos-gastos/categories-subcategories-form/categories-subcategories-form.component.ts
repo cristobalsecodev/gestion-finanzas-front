@@ -16,6 +16,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
+import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -23,6 +25,7 @@ import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-
   imports: [
     // Angular core
     ReactiveFormsModule,
+    CommonModule,
     // Angular material
     MatInputModule,
     MatFormFieldModule,
@@ -81,9 +84,11 @@ export class CategoriesSubcategoriesFormComponent {
   // Servicio
   categoriesService = inject(CategoriesAndSubCategoriesService)
   readonly dialog = inject(MatDialog)
+  notificationsService = inject(NotificacionesService)
 
   // Tablas
-  displayedColumns: string[] = ['name', 'type', 'actions']
+  columnsCategory: string[] = ['name', 'type', 'actions']
+  columnsSubcategory: string[] = ['name', 'actions']
   dataSourceCategories = new MatTableDataSource<Categories>([])
   dataSourceSubcategories = new MatTableDataSource<BaseCategory>([])
 
@@ -288,7 +293,7 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.categoriesService.saveCategory(categoryToSave).subscribe({
       next: (category: Categories) => {
-
+        debugger
         if(index) {
 
           this.dataSourceCategories.data[index] = category
@@ -298,6 +303,10 @@ export class CategoriesSubcategoriesFormComponent {
           this.dataSourceCategories.data.push(category)
 
         }
+
+        this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+
+        this.showNotificationMessage('Category updated')
 
       }
     })
@@ -409,9 +418,9 @@ export class CategoriesSubcategoriesFormComponent {
     if (entityType === 'category') {
 
       this.categoriesService.deleteCategory(id).subscribe({
-        next: () => {
+        next: (message: string) => {
 
-
+          this.showNotificationMessage(message)
 
         }
       })
@@ -427,7 +436,7 @@ export class CategoriesSubcategoriesFormComponent {
   private handleDisable(id: number): void {
 
     this.categoriesService.disableCategory(id).subscribe({
-      next: () => {
+      next: (message: string) => {
 
         const category = this.dataSourceCategories.data.find(category => category.id === id)
 
@@ -435,6 +444,8 @@ export class CategoriesSubcategoriesFormComponent {
 
           category.active = false
           this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+
+          this.showNotificationMessage(message)
 
         }
 
@@ -446,7 +457,7 @@ export class CategoriesSubcategoriesFormComponent {
   private handleEnable(id: number): void {
 
     this.categoriesService.enableCategory(id).subscribe({
-      next: () => {
+      next: (message: string) => {
 
         const category = this.dataSourceCategories.data.find(category => category.id === id)
 
@@ -455,11 +466,22 @@ export class CategoriesSubcategoriesFormComponent {
           category.active = true
           this.dataSourceCategories.data = [...this.dataSourceCategories.data]
 
+          this.showNotificationMessage(message)
+
         }
 
 
       }
     })
+
+  }
+
+  private showNotificationMessage(message: string): void {
+
+    this.notificationsService.addNotification(
+      message, 
+      'success'
+    )
 
   }
   
