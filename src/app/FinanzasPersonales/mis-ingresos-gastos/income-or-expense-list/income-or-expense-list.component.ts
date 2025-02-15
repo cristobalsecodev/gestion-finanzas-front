@@ -91,7 +91,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   // Tipos de acciones
   readonly actionType = ActionType
 
-  // Modal de ingresos / gastos
+  // Modal
   readonly dialog = inject(MatDialog)
 
   // Servicios
@@ -164,17 +164,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   callServices(): void {
 
-    forkJoin({
-      categories: this.categoriesService.getCategories()
-    }).subscribe({
-
-      next: ({categories}) => {
+    this.categoriesService.getCategories(true).subscribe({
+      next: (categories) => {
 
         this.categories = categories
         this.filteredCategories = categories
 
-      },
-
+      }
     })
 
   }
@@ -487,15 +483,18 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     this.dialog.open(CategoriesSubcategoriesFormComponent, {
 
-      data: {
-        categories: this.categories
-      },
       minWidth: '50vh',
       maxWidth: '90vw',
       minHeight: '10vh',
       maxHeight: '80vh',
 
-    })
+    }).afterClosed().subscribe((() => {
+
+      this.callServices()
+
+      this.filterList()
+
+    }))
 
   }
 
@@ -534,7 +533,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
         })
 
       }
-
 
     }))
 

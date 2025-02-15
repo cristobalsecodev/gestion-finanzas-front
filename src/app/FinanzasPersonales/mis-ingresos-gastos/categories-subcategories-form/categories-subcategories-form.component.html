@@ -35,33 +35,65 @@
 
     </div>
 
-    <table mat-table [dataSource]="dataSourceCategories" class="mat-elevation-z8 w-full">
+    <table mat-table [dataSource]="dataSourceCategories" class="mat-elevation-z8">
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="text-left w-full">Name</th>
+        <th mat-header-cell *matHeaderCellDef class="text-left w-3/5">Name</th>
         <td mat-cell *matCellDef="let category" class="text-left">{{ category.name }}</td>
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef class="text-center w-1/6">Type</th>
-        <td mat-cell *matCellDef="let category" class="text-center">{{ category.type }}</td>
+        <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center">Type</th>
+        <td mat-cell *matCellDef="let category" class="!text-center">{{ category.type }}</td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="text-center w-1/4">
-          <button mat-icon-button (click)="isFormCategory.set(true)">
+        <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center">
+          <button mat-icon-button 
+          (click)="isFormCategory.set(true); actionTypeCategory.set(actionTypes.CREATE)"
+          matTooltip="New">
             <mat-icon>add</mat-icon>
           </button>
         </th>
         <td mat-cell *matCellDef="let category" class="text-center">
 
-          <button mat-icon-button (click)="isFormCategory.set(true)">
+          <button mat-icon-button 
+          (click)="setEditCategory(category)"
+          matTooltip="Edit">
             <mat-icon>edit</mat-icon>
           </button>
 
-          <button mat-icon-button (click)="isFormCategory.set(true)">
-            <mat-icon>block</mat-icon>
-          </button>
+          @if(category.linked) {
+
+            @if(category.active) {
+
+              <button mat-icon-button
+              matTooltip="Disable"
+              (click)="openActionDialog({id: category.id, name: category.name}, 'category', 'warning')">
+                <mat-icon>do_not_disturb_on</mat-icon>
+              </button>
+
+            } @else {
+
+              <button mat-icon-button
+              matTooltip="Enable"
+              (click)="openActionDialog({id: category.id, name: category.name}, 'category', 'info')">
+                <mat-icon>power_settings_new</mat-icon>
+              </button>
+
+            }
+
+          } @else {
+
+            <button mat-icon-button
+            matTooltip="Delete"
+            (click)="openActionDialog({id: category.id, name: category.name}, 'category', 'delete')">
+              <mat-icon>delete</mat-icon>
+            </button>
+
+          }
+
+
 
         </td>
       </ng-container>
@@ -88,7 +120,9 @@
         </mat-form-field>
 
         <!-- Tipo -->
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full"
+        matTooltip="This category is linked to an actual {{ editingCategory?.type }}"
+        [matTooltipDisabled]="!editingCategory?.linked">
           <mat-label>Type</mat-label>
           <mat-select formControlName="type" required (selectionChange)="filterCategories()">
             @for (type of ['income', 'expense']; track $index) {
@@ -121,36 +155,51 @@
       </mat-expansion-panel-header>
 
       @if(!isFormSubcategory()) {
-        <table mat-table [dataSource]="dataSourceSubcategories" class="mat-elevation-z8 w-full">
+        
+        <table mat-table [dataSource]="dataSourceSubcategories" class="mat-elevation-z8">
 
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef class="text-left w-full">Name</th>
+            <th mat-header-cell *matHeaderCellDef class="text-left w-3/5">Name</th>
             <td mat-cell *matCellDef="let subcategory" class="text-left">{{ subcategory.name }}</td>
           </ng-container>
 
           <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef class="text-center w-1/6">Type</th>
+            <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center">Type</th>
             <td mat-cell *matCellDef="let subcategory" class="text-center">{{ subcategory.type }}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
 
-            <th mat-header-cell *matHeaderCellDef class="text-center w-1/4">
+            <th mat-header-cell *matHeaderCellDef class="w-1/5 !text-center">
 
-              <button mat-icon-button (click)="isFormSubcategory.set(true)">
+              <button mat-icon-button 
+              (click)="isFormSubcategory.set(true); actionTypeSubcategory.set(actionTypes.CREATE)"
+              matTooltip="New">
                 <mat-icon>add</mat-icon>
               </button>
 
             </th>
-            <td mat-cell *matCellDef="let subcategory" class="text-center">
+            <td mat-cell *matCellDef="let subcategory" class="!text-center">
 
-              <button mat-icon-button (click)="isFormCategory.set(true)">
+              <button mat-icon-button 
+              (click)="setEditSubcategory(subcategory)"
+              matTooltip="Edit">
                 <mat-icon>edit</mat-icon>
               </button>
     
-              <button mat-icon-button (click)="isFormCategory.set(true)">
-                <mat-icon>block</mat-icon>
-              </button>    
+              <div
+              matTooltip="This subcategory is linked to an actual {{ subcategory.type}}"
+              [matTooltipDisabled]="!subcategory.linked">
+
+                <button mat-icon-button
+                matTooltip="Delete"
+                [disabled]="subcategory.linked"
+                (click)="openActionDialog({id: subcategory.id, name: subcategory.name}, 'subcategory', 'delete')">
+                  <mat-icon>delete</mat-icon>
+                </button> 
+
+              </div>
+
 
             </td>
 
@@ -183,6 +232,12 @@
 
             </mat-form-field>
 
+            <button mat-button (click)="resetSubcategoryForm()">Cancel</button>
+
+            <button mat-flat-button type="submit" (click)="submitSubcategoryForm()" [disabled]="categoryForm.invalid">
+              <mat-icon>add</mat-icon> {{ actionTypeSubcategory() }}
+            </button>        
+
           </div>
 
         </form>
@@ -199,10 +254,10 @@
 
   @if(isFormCategory()) {
 
-    <button mat-button (click)="isFormCategory.set(false)">Cancel</button>
+    <button mat-button (click)="resetCategoryForm()">Cancel</button>
 
-    <button mat-flat-button type="submit" (click)="submitForm()" [disabled]="categoryForm.invalid">
-      <mat-icon>add</mat-icon> {{ actionType() }}
+    <button mat-flat-button type="submit" (click)="submitCategoryForm()" [disabled]="categoryForm.invalid">
+      <mat-icon>add</mat-icon> {{ actionTypeCategory() }}
     </button>
 
   } @else {
