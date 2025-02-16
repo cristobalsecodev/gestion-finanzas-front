@@ -238,7 +238,7 @@
 
             <button mat-button (click)="resetSubcategoryForm()">Cancel</button>
 
-            <button mat-flat-button type="submit" (click)="submitSubcategoryForm()" [disabled]="categoryForm.invalid">
+            <button mat-flat-button type="submit" (click)="submitSubcategoryForm()" [disabled]="subcategoryForm.invalid">
 
               @if(actionTypeSubcategory() === actionTypes.EDIT) {
                 <mat-icon>edit</mat-icon>

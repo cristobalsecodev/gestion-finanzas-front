@@ -9,6 +9,7 @@ import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchang
 import { TokenService } from 'src/app/shared/services/token/token.service';
 import { IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 import { convertAmountsIntoOneCurrency } from 'src/app/shared/functions/ConvertCurrencies';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -17,6 +18,7 @@ import { convertAmountsIntoOneCurrency } from 'src/app/shared/functions/ConvertC
     // Angular core
     CommonModule,
     // Angular material
+    MatIconModule,
     // Librería
     HighchartsChartModule,
     // Componentes

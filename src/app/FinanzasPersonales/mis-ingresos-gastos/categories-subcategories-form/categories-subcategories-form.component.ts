@@ -293,7 +293,7 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.categoriesService.saveCategory(categoryToSave).subscribe({
       next: (category: Categories) => {
-        debugger
+
         if(index) {
 
           this.dataSourceCategories.data[index] = category
@@ -351,8 +351,6 @@ export class CategoriesSubcategoriesFormComponent {
   
   private addSubcategory(): void {
 
-    if (!this.editingCategory) return
-  
     const newSubcategory: BaseCategory = {
       name: this.subcategoryForm.get('name')?.value,
       type: '',
@@ -422,13 +420,16 @@ export class CategoriesSubcategoriesFormComponent {
 
           this.showNotificationMessage(message)
 
+          this.dataSourceCategories.data = this.dataSourceCategories.data.filter(category => category.id !== id)
+          this.updateCategoryTable()
+
         }
       })
 
     } else {
 
       this.dataSourceSubcategories.data = this.dataSourceSubcategories.data.filter(subcategory => subcategory.id !== id)
- 
+
     }
 
   }
@@ -443,7 +444,7 @@ export class CategoriesSubcategoriesFormComponent {
         if (category) {
 
           category.active = false
-          this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+          this.updateCategoryTable()
 
           this.showNotificationMessage(message)
 
@@ -464,7 +465,7 @@ export class CategoriesSubcategoriesFormComponent {
         if (category) {
 
           category.active = true
-          this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+          this.updateCategoryTable()
 
           this.showNotificationMessage(message)
 
@@ -485,6 +486,16 @@ export class CategoriesSubcategoriesFormComponent {
 
   }
   
-  
+  private updateCategoryTable(): void {
+
+    this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+
+  }
+
+  private updateSubcategoryTable(): void {
+
+    this.dataSourceSubcategories.data = [...this.dataSourceSubcategories.data]
+
+  }
   
 }
