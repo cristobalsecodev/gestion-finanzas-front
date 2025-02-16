@@ -13,7 +13,7 @@
 
     </mat-expansion-panel-header>
 
-    <form [formGroup]="filterForm" (ngSubmit)="filterList()">
+    <form [formGroup]="filterForm" (ngSubmit)="filterList(pageSize())">
 
       <div class="my-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
 
@@ -424,6 +424,19 @@
         <span>{{ recordsToShow.length >= totalElements() ? 'All records are loaded' : 'Load more' }}</span>
 
       </button>
+
+      @if(recordsToShow.length < totalElements()) {
+
+        <button mat-flat-button 
+        (click)="getFilteredIncomeOrExpenses(buildFilter(true))"
+        class="w-fit self-center">
+
+          <mat-icon>keyboard_double_arrow_down</mat-icon>
+          <span>Load all coincidences</span>
+  
+        </button>
+
+      }
 
       <!-- Selector tamaño de página -->
       <button mat-button 

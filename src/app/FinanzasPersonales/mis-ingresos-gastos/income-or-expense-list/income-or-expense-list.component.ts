@@ -297,7 +297,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  buildFilter(): FilterIncomeOrExpense {
+  buildFilter(allRecords?: boolean): FilterIncomeOrExpense {
 
     return {
 
@@ -324,7 +324,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
         : undefined,
       type: this.filterForm.get('type')?.value
         ? this.filterForm.get('type')?.value
-        : undefined
+        : undefined,
+      allRecords: allRecords ? allRecords : false
 
     }
 
@@ -492,7 +493,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       this.callServices()
 
-      this.filterList()
+      this.filterList(this.pageSize())
 
     }))
 

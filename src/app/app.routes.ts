@@ -1,40 +1,42 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { IncomeOrExpenseComponent } from './finanzasPersonales/mis-ingresos-gastos/income-or-expense.component';
-import { PresentacionComponent } from './bienvenida/presentation/presentacion.component';
 import { LoginComponent } from './bienvenida/login/login.component';
-import { authGuard } from './auth/guards/auth/auth.guard';
-import { activateAccountRoute, signUpRoute, incomeExpensesRoute, loginRoute, newPasswordRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, incomeExpensesRoute, newPasswordRoute, loginRoute } from './shared/constants/variables.constants';
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
 import { ActivateAccountComponent } from './bienvenida/activate-account/activate-account.component';
-import { activateAccountGuard } from './auth/guards/activateAccount/activate-account.guard';
-import { actuallyLoggedGuard } from './auth/guards/actuallyLogged/actually-logged.guard';
 import { NewPasswordComponent } from './shared/components/new-password/new-password.component';
+import { AuthResolverService } from './auth/service/resolvers/AuthResolver/auth-resolver.service';
+import { NewPasswordResolverService } from './auth/service/resolvers/NewPasswordResolver/new-password-resolver.service';
+import { LoggedResolverService } from './auth/service/resolvers/LoggedResolver/logged-resolver.service';
+import { ActivateAccountResolverService } from './auth/service/resolvers/ActivateAccountResolver/activate-account-resolver.service';
 
 export const routes: Routes = [
   {
     path: incomeExpensesRoute, 
     component: IncomeOrExpenseComponent,
-    canActivate: [authGuard]
+    resolve: { auth: AuthResolverService }
   },
   {
     path: `${newPasswordRoute}/:urlToken`, 
-    component: NewPasswordComponent
-  },
-  {
-    path: loginRoute, component: LoginComponent,
-    canActivate: [actuallyLoggedGuard]
+    component: NewPasswordComponent,
+    resolve: { auth: NewPasswordResolverService }
   },
   {
     path: signUpRoute, component: CreateAccountComponent,
-    canActivate: [actuallyLoggedGuard]
+    resolve: { auth: LoggedResolverService }
   },
   {
     path: activateAccountRoute, component: ActivateAccountComponent,
-    canActivate: [activateAccountGuard]
+    resolve: { auth: ActivateAccountResolverService }
   },
   {
-    path: '', component: PresentacionComponent
+    path: loginRoute, 
+    component: LoginComponent,
+    resolve: { auth: LoggedResolverService }
+  },
+  {
+    path: '', redirectTo: incomeExpensesRoute, pathMatch: 'full'
   },
   {
     path: '**', component: NotFoundComponent

@@ -1,50 +1,33 @@
 <header>
+  
   <mat-toolbar class="border-solid border-b border-color">
-    <button mat-icon-button [routerLink]="['']">
-      <mat-icon>finance</mat-icon>
-    </button>
 
     <!-- Navegación -->
-    @if(tokenService.isTokenValid()) {
-
-      <section class="hidden sm:ml-30 sm:block space-x-20">
-
+    <!-- @if(tokenService.isTokenValid()) {
+      <nav class="hidden sm:flex sm:ml-30 space-x-20">
         <button mat-button class="h-12 ml-5" [routerLink]="[incomeExpensesRoute]" 
           [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}">
-            <mat-icon>payments</mat-icon>
-            <span>My income/expenses</span>
+          <mat-icon>payments</mat-icon>
+          <span>My income/expenses</span>
         </button>
-  
-      </section>
+      </nav>
+    } -->
 
-    }
-
-    <!-- Espacio intermedio de separación -->
+    <!-- Espaciador -->
     <span class="flex-auto"></span>
 
     @if(tokenService.isTokenValid()) {
+      <!-- Selector de divisa -->
+      <button mat-button [matMenuTriggerFor]="currencyMenu" 
+        aria-label="Currency exchange menu"
+        matTooltip="Currently selected: {{ currencyExchangeService.selectedCurrency().currencyName }}"
+        class="ms-3 me-3">
+        <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
+        <span>{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
+      </button>
 
-      <!-- Selector cambio de divisa -->
-      <section>
-  
-        <button mat-button 
-          [matMenuTriggerFor]="currencyMenu" 
-          aria-label="Currency exchange menu"
-          matTooltip="This is your main currency. Currently selected: {{ currencyExchangeService.selectedCurrency().currencyName }}"
-          class="ms-3 me-3">
-   
-            <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
-            <span>{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
-
-        </button>
-        
-      </section>
-  
-      <!-- Menú divisas -->
       <mat-menu #currencyMenu="matMenu">
-  
         @for(currency of currencyExchangeService.currencies(); track currency) {
-  
           <button mat-menu-item (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
             <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
             @if(currency.currencyCode === currencyExchangeService.selectedCurrency().currencyCode) {
@@ -52,108 +35,52 @@
             }
             <span>{{ currency.currencyName }}</span>
           </button>
-  
         } @empty {
-  
           <button mat-menu-item matTooltip="It is possible that the API has reached its maximum call limit">
             <mat-icon>report</mat-icon>
             <span>No currencies available</span>
           </button>
-  
         }
-  
       </mat-menu>
-
     }
 
-    <!-- Icono modo visual -->
+    <!-- Modo oscuro -->
     <button mat-icon-button 
-    (click)="themeModeService.setMode(
-      themeModeService.themeMode() === themeModeService.themeModes.DARK 
-        ? themeModeService.themeModes.LIGHT 
-        : themeModeService.themeModes.DARK
-    )">
-
-      @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
-
-        <mat-icon>dark_mode</mat-icon>
-
-      } @else {
-
-        <mat-icon>light_mode</mat-icon>
-        
-      }
-
+      (click)="themeModeService.setMode(
+        themeModeService.themeMode() === themeModeService.themeModes.DARK 
+          ? themeModeService.themeModes.LIGHT 
+          : themeModeService.themeModes.DARK
+      )">
+      <mat-icon>
+        @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
+          dark_mode
+        } @else {
+          light_mode
+        }
+      </mat-icon>
     </button>
 
-    <!-- Icono cuenta -->
+    <!-- Cuenta -->
     @if(tokenService.isTokenValid()) {
-
       <button mat-icon-button [matMenuTriggerFor]="accountMenu">
-
         <mat-icon>account_circle</mat-icon>
-  
       </button>
-  
+
       <mat-menu #accountMenu="matMenu">
-  
         <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
-  
       </mat-menu>
-
-    }
-
-    @if(tokenService.isTokenValid()) {
-
-      <!-- Menú lateral -->
-       @if(sidenavOpened) {
-  
-        <section>
-          <button mat-icon-button (click)="drawer.toggle()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </section>
-  
-       } @else {
-  
-        <section class="block sm:hidden sm:ml-30">
-          <button mat-icon-button (click)="drawer.toggle()">
-            <mat-icon>menu</mat-icon>
-          </button>
-        </section>
-  
-       }
-      
     }
 
   </mat-toolbar>
 </header>
 
 <main class="h-[95%]">
-  <mat-sidenav-container class="h-full" hasBackdrop="false">
-    <mat-sidenav #drawer mode="over" position="end"  [(opened)]="sidenavOpened" class="modificar-esquinas">
-      <mat-nav-list>
-
-        <a mat-list-item [routerLink]="[incomeExpensesRoute]" 
-          [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}" 
-          (click)="drawer.toggle()">
-            <span>My income/expenses</span>
-        </a>
-
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content>
-
-      <!-- Componentes hijos -->
-      <section>
-        <router-outlet></router-outlet>
-      </section>
-
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  <section>
+    <router-outlet></router-outlet>
+  </section>
 </main>
 
 <app-notificaciones></app-notificaciones>

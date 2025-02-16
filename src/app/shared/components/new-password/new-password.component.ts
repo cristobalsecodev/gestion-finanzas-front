@@ -64,22 +64,22 @@ export class NewPasswordComponent implements OnInit {
   ngOnInit(): void {
 
     // Recuperamos la url completa con el token de url
-    const urlParts: string[] = this.storageService.getFullUrl().split('/')
+    // const urlParts: string[] = this.storageService.getFullUrl().split('/')
 
-    const urlToken = urlParts.pop() || ''
+    // const urlToken = urlParts.pop() || ''
 
-    this.authService.checkOneTimeUrl(urlToken).subscribe({
-      next: (response) => {
+    // this.authService.checkOneTimeUrl(urlToken).subscribe({
+    //   next: (response) => {
 
-        this.notificationService.addNotification(response.message, 'success')
+    //     this.notificationService.addNotification(response.message, 'success')
 
-      },
-      error: () => {
+    //   },
+    //   error: () => {
 
-        this.router.navigate([''])
+    //     this.router.navigate([loginRoute])
 
-      }
-    }) 
+    //   }
+    // }) 
 
   }
 

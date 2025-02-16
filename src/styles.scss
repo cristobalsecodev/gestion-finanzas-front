@@ -13,151 +13,175 @@ $custom-theme: mat.define-theme((
 ));
 
 html {
-
   /* PALETA EN HEX */
-  --sys-background: #e3e9f0;
+  --sys-background: #f8f9fa;
   --sys-on-background: #181c20;
-  --sys-surface: #cde0f0;
-  --sys-surface-dim: #d7dadf;
-  --sys-surface-bright: #f7f9ff;
+  --sys-surface: #ffffff;
+  --sys-surface-dim: #e8ecef;
+  --sys-surface-bright: #ffffff;
   --sys-surface-container-lowest: #ffffff;
-  --sys-surface-container-low: #f1f4f9;
-  --sys-surface-container: #ebeef3;
-  --sys-surface-container-high: #e5e8ed;
-  --sys-surface-container-highest: #e0e3e8;
+  --sys-surface-container-low: #f5f6f8;
+  --sys-surface-container: #edeff1;
+  --sys-surface-container-high: #e6e8eb;
+  --sys-surface-container-highest: #e0e2e5;
   --sys-on-surface: #181c20;
-  --sys-surface-variant: #dde3ea;
+  --sys-surface-variant: #dcdfe3;
   --sys-on-surface-variant: #41474d;
   --sys-inverse-surface: #2d3135;
-  --sys-inverse-on-surface: #eef1f6;
-  --sys-outline: #71787e;
+  --sys-inverse-on-surface: #f1f3f6;
+  --sys-outline: #8a8f96;
   --sys-outline-variant: #c1c7ce;
   --sys-shadow: #000000;
   --sys-scrim: #000000;
-  --sys-surface-tint: #266489;
-  --sys-primary: #266489;
+  --sys-surface-tint: #2d6a93;
+
+  --sys-primary: #2d6a93;
   --sys-on-primary: #ffffff;
-  --sys-primary-container: #c9e6ff;
-  --sys-on-primary-container: #004b6f;
-  --sys-inverse-primary: #95cdf7;
-  --sys-secondary: #256489;
+  --sys-primary-container: #d0e8ff;
+  --sys-on-primary-container: #00334d;
+  --sys-inverse-primary: #85bde3;
+
+  --sys-secondary: #2d6a93;
   --sys-on-secondary: #ffffff;
-  --sys-secondary-container: #c9e6ff;
-  --sys-on-secondary-container: #004c6e;
-  --sys-tertiary: #66558e;
+  --sys-secondary-container: #d0e8ff;
+  --sys-on-secondary-container: #00334d;
+
+  --sys-tertiary: #6c5b91;
   --sys-on-tertiary: #ffffff;
-  --sys-tertiary-container: #eaddff;
-  --sys-on-tertiary-container: #4e3d75;
-  --sys-error: #904a43;
+  --sys-tertiary-container: #e7dbff;
+  --sys-on-tertiary-container: #4d3a70;
+
+  --sys-error: #c62828;
   --sys-on-error: #ffffff;
   --sys-error-container: #ffdad5;
-  --sys-on-error-container: #73342d;
-  --sys-neutral: #74777c;
-  --sys-neutral-variant: #72787e;
-  --sys-primary-fixed: #c9e6ff;
-  --sys-primary-fixed-dim: #95cdf7;
+  --sys-on-error-container: #7a2a2a;
+
+  --sys-neutral: #6f7378;
+  --sys-neutral-variant: #767c82;
+
+  --sys-primary-fixed: #d0e8ff;
+  --sys-primary-fixed-dim: #85bde3;
   --sys-on-primary-fixed: #001e2f;
-  --sys-on-primary-fixed-variant: #004b6f;
-  --sys-secondary-fixed: #c9e6ff;
-  --sys-secondary-fixed-dim: #94cdf7;
+  --sys-on-primary-fixed-variant: #00334d;
+
+  --sys-secondary-fixed: #d0e8ff;
+  --sys-secondary-fixed-dim: #85bde3;
   --sys-on-secondary-fixed: #001e2f;
-  --sys-on-secondary-fixed-variant: #004c6e;
-  --sys-tertiary-fixed: #eaddff;
-  --sys-tertiary-fixed-dim: #d1bcfd;
+  --sys-on-secondary-fixed-variant: #00334d;
+
+  --sys-tertiary-fixed: #e7dbff;
+  --sys-tertiary-fixed-dim: #c1a7e7;
   --sys-on-tertiary-fixed: #220f46;
-  --sys-on-tertiary-fixed-variant: #4e3d75;
-  --sys-inverse-secondary: #94cdf7;
-  --sys-inverse-tertiary: #d1bcfd;
+  --sys-on-tertiary-fixed-variant: #4d3a70;
+
+  --sys-inverse-secondary: #85bde3;
+  --sys-inverse-tertiary: #c1a7e7;
   --sys-inverse-error: #ffb4ab;
+
   --sys-error-fixed: #ffdad5;
   --sys-error-fixed-dim: #ffb4ab;
   --sys-on-error-fixed: #3b0907;
-  --sys-on-error-fixed-variant: #73342d;
+  --sys-on-error-fixed-variant: #7a2a2a;
 
-  /* Custom (WIP) */
-  --sys-action-green: #4CAF50;
-  --sys-action-red: #D32F2F;
-  --sys-action-yellow: #715c0c;
-  --sys-action-blue: #236488;
-  --sys-hover-component: #d2dbeb;
-
+  /* Custom */
+  --sys-action-green: #4caf50;
+  --sys-action-red: #d32f2f;
+  --sys-action-yellow: #e3af09;
+  --sys-action-blue: #2d6a93;
+  --sys-hover-component: #e0e4e9;
 }
 
 .dark {
-
   /* PALETA EN HEX */
-  --sys-background: #222b31;
-  --sys-on-background: #e0e3e8;
-  --sys-surface: #101417;
+  --sys-background: #1a2127;
+  --sys-on-background: #dadfe4;
+  --sys-surface: #12171b;
   --sys-surface-dim: #101417;
-  --sys-surface-bright: #363a3e;
-  --sys-surface-container-lowest: #0b0f12;
-  --sys-surface-container-low: #181c20;
-  --sys-surface-container: #1c2024;
-  --sys-surface-container-high: #262a2e;
-  --sys-surface-container-highest: #313539;
-  --sys-on-surface: #e0e3e8;
-  --sys-surface-variant: #41474d;
-  --sys-on-surface-variant: #c1c7ce;
-  --sys-inverse-surface: #e0e3e8;
-  --sys-inverse-on-surface: #2d3135;
-  --sys-outline: #8b9198;
-  --sys-outline-variant: #41474d;
+  --sys-surface-bright: #3c4248;
+  --sys-surface-container-lowest: #0c1013;
+  --sys-surface-container-low: #181d22;
+  --sys-surface-container: #1e2328;
+  --sys-surface-container-high: #272c31;
+  --sys-surface-container-highest: #32373c;
+  --sys-on-surface: #dce1e6;
+  --sys-surface-variant: #3c434a;
+  --sys-on-surface-variant: #b3bac2;
+  --sys-inverse-surface: #dadfe4;
+  --sys-inverse-on-surface: #2c3136;
+  --sys-outline: #8c939b;
+  --sys-outline-variant: #3c434a;
   --sys-shadow: #000000;
   --sys-scrim: #000000;
-  --sys-surface-tint: #95cdf7;
-  --sys-primary: #95cdf7;
-  --sys-on-primary: #00344e;
-  --sys-primary-container: #004b6f;
-  --sys-on-primary-container: #c9e6ff;
-  --sys-inverse-primary: #266489;
-  --sys-secondary: #94cdf7;
-  --sys-on-secondary: #00344d;
-  --sys-secondary-container: #004c6e;
-  --sys-on-secondary-container: #c9e6ff;
-  --sys-tertiary: #d1bcfd;
-  --sys-on-tertiary: #37265d;
-  --sys-tertiary-container: #4e3d75;
-  --sys-on-tertiary-container: #eaddff;
-  --sys-error: #ffb4ab;
-  --sys-on-error: #561e19;
-  --sys-error-container: #73342d;
+  --sys-surface-tint: #78b7e3;
+
+  --sys-primary: #78b7e3;
+  --sys-on-primary: #002a41;
+  --sys-primary-container: #003d5c;
+  --sys-on-primary-container: #bfe3ff;
+  --sys-inverse-primary: #1f5b85;
+
+  --sys-secondary: #77b5e1;
+  --sys-on-secondary: #00273f;
+  --sys-secondary-container: #00415c;
+  --sys-on-secondary-container: #bfe3ff;
+
+  --sys-tertiary: #bba1ef;
+  --sys-on-tertiary: #2b194d;
+  --sys-tertiary-container: #423066;
+  --sys-on-tertiary-container: #e7dbff;
+
+  --sys-error: #f28b82;
+  --sys-on-error: #541b18;
+  --sys-error-container: #692d2a;
   --sys-on-error-container: #ffdad5;
+
   --sys-neutral: #74777c;
   --sys-neutral-variant: #72787e;
-  --sys-primary-fixed: #c9e6ff;
-  --sys-primary-fixed-dim: #95cdf7;
-  --sys-on-primary-fixed: #001e2f;
-  --sys-on-primary-fixed-variant: #004b6f;
-  --sys-secondary-fixed: #c9e6ff;
-  --sys-secondary-fixed-dim: #94cdf7;
-  --sys-on-secondary-fixed: #001e2f;
-  --sys-on-secondary-fixed-variant: #004c6e;
-  --sys-tertiary-fixed: #eaddff;
-  --sys-tertiary-fixed-dim: #d1bcfd;
+
+  --sys-primary-fixed: #bfe3ff;
+  --sys-primary-fixed-dim: #78b7e3;
+  --sys-on-primary-fixed: #001a2d;
+  --sys-on-primary-fixed-variant: #003d5c;
+
+  --sys-secondary-fixed: #bfe3ff;
+  --sys-secondary-fixed-dim: #77b5e1;
+  --sys-on-secondary-fixed: #001a2d;
+  --sys-on-secondary-fixed-variant: #00415c;
+
+  --sys-tertiary-fixed: #e7dbff;
+  --sys-tertiary-fixed-dim: #bba1ef;
   --sys-on-tertiary-fixed: #220f46;
-  --sys-on-tertiary-fixed-variant: #4e3d75;
-  --sys-inverse-secondary: #256489;
-  --sys-inverse-tertiary: #66558e;
-  --sys-inverse-error: #904a43;
+  --sys-on-tertiary-fixed-variant: #423066;
+
+  --sys-inverse-secondary: #1e5b7f;
+  --sys-inverse-tertiary: #65508a;
+  --sys-inverse-error: #b02a2a;
+
   --sys-error-fixed: #ffdad5;
-  --sys-error-fixed-dim: #ffb4ab;
+  --sys-error-fixed-dim: #f28b82;
   --sys-on-error-fixed: #3b0907;
-  --sys-on-error-fixed-variant: #73342d;
+  --sys-on-error-fixed-variant: #692d2a;
 
-  /* Custom (WIP) */
-  --sys-action-green: #6FBF73;
-  --sys-action-red: #E57373;
-  --sys-action-yellow: #f6e992;
-  --sys-action-blue: #9dcff3;
-  --sys-hover-component: #363d43;
-
+  /* Custom */
+  --sys-action-green: #60ad68;
+  --sys-action-red: #e57373;
+  --sys-action-yellow: #f5da6c;
+  --sys-action-blue: #78b7e3;
+  --sys-hover-component: #2b333a;
 }
 
 html {
 
   @include mat.all-component-themes($custom-theme);
 
+}
+
+body {
+
+  background-color: var(--sys-background);
+  color: var(--sys-on-background);
+  transition: background-color 0.3s ease;
+  
 }
 
 // Reglas de tailwindcss

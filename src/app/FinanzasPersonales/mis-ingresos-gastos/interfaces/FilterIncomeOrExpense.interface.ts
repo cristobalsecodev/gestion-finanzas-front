@@ -9,5 +9,6 @@ export interface FilterIncomeOrExpense extends PaginationToSend {
   recurrences: string[] | undefined
   type: string | undefined
   currencies: string[]
+  allRecords: boolean | undefined
 
 }
