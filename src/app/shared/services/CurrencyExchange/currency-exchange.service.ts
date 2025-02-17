@@ -5,15 +5,15 @@ import { CurrencyExchange } from './CurrencyExchange.interface';
 import { CurrencyCodeENUM, CurrencyNameENUM } from '../../enums/Currency.enum';
 import { StorageService } from '../Storage/storage.service';
 import { UserService } from '../Users/user.service';
-import { AuthService } from 'src/app/auth/service/auth.service';
 import { TokenService } from '../token/token.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyExchangeService {
 
-  private currencyExchangeUrl = 'http://localhost:8080/currency-exchange-ratio'
+  private currencyExchangeUrl = `${environment.apiUrl}/currency-exchange-ratio`
 
   // Divisas ENUM
   readonly currencyCode = CurrencyCodeENUM

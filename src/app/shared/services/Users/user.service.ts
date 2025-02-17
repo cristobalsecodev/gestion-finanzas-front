@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TokenResponse } from 'src/app/auth/interfaces/TokenResponse.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private userUrl = 'http://localhost:8080/user'
+  private userUrl = `${environment.apiUrl}/user`
 
   constructor(
     private http: HttpClient

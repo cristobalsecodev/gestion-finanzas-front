@@ -12,13 +12,14 @@ import { WantResetPassword } from '../interfaces/WantResetPassword.interface';
 import { ResetPassword } from '../interfaces/ResetPassword.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { TokenService } from 'src/app/shared/services/token/token.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private authUrl = 'http://localhost:8080/auth'
+  private authUrl = `${environment.apiUrl}/auth`
 
   // Servicios
   private http = inject(HttpClient)

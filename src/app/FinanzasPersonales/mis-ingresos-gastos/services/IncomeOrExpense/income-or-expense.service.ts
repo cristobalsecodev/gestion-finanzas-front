@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { IncomeOrExpense } from '../../interfaces/IncomeOrExpense.interface';
 import { map, Observable } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { FilterIncomeOrExpense } from '../../interfaces/FilterIncomeOrExpense.interface';
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncomeOrExpenseService {
 
-  private incomeOrExpenseUrl = 'http://localhost:8080/income-or-expense'
+  private incomeOrExpenseUrl = `${environment.apiUrl}/income-or-expense`
 
 
   constructor(private http: HttpClient) { }

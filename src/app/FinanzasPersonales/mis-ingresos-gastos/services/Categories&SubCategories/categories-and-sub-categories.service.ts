@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BaseCategory, Categories, SubCategories } from '../../interfaces/IncomeOrExpense.interface';
+import { BaseCategory, Categories } from '../../interfaces/IncomeOrExpense.interface';
 import { map, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriesAndSubCategoriesService {
 
-  private categoriesUrl = 'http://localhost:8080/income-or-expense-categories'
+  private categoriesUrl = `${environment.apiUrl}/income-or-expense-categories`
 
   constructor(private http: HttpClient) { }
 
