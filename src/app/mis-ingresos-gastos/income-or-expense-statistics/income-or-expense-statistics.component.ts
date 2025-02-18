@@ -2,7 +2,7 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { allRecordsSignal } from '../utils/SharedList';
 import { CommonModule } from '@angular/common';
 import { HighchartsChartModule } from 'highcharts-angular';
-import * as Highcharts from 'highcharts';
+import Highcharts from 'highcharts/es-modules/masters/highcharts.src.js';
 import { CurrencySelectorComponent } from 'src/app/shared/components/currency-selector/currency-selector.component';
 import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';

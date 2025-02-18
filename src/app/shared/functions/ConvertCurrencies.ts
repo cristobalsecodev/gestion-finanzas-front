@@ -1,4 +1,4 @@
-import { IncomeOrExpense } from "src/app/finanzasPersonales/mis-ingresos-gastos/interfaces/IncomeOrExpense.interface";
+import { IncomeOrExpense } from "src/app/mis-ingresos-gastos/interfaces/IncomeOrExpense.interface";
 import { CurrencyExchange } from "../services/CurrencyExchange/CurrencyExchange.interface";
 
 export function convertAmountsIntoOneCurrency(

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
-import { IncomeOrExpenseComponent } from './finanzasPersonales/mis-ingresos-gastos/income-or-expense.component';
 import { LoginComponent } from './bienvenida/login/login.component';
 import { activateAccountRoute, signUpRoute, incomeExpensesRoute, newPasswordRoute, loginRoute } from './shared/constants/variables.constants';
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
@@ -10,6 +9,7 @@ import { AuthResolverService } from './auth/service/resolvers/AuthResolver/auth-
 import { NewPasswordResolverService } from './auth/service/resolvers/NewPasswordResolver/new-password-resolver.service';
 import { LoggedResolverService } from './auth/service/resolvers/LoggedResolver/logged-resolver.service';
 import { ActivateAccountResolverService } from './auth/service/resolvers/ActivateAccountResolver/activate-account-resolver.service';
+import { IncomeOrExpenseComponent } from './mis-ingresos-gastos/income-or-expense.component';
 
 export const routes: Routes = [
   {
