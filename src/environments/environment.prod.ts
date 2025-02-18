@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.production.com'
+  apiUrl: 'http://gestion-finanzas-back-production.up.railway.app'
 }
