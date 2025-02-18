@@ -1,6 +1,9 @@
 // Nombre de la página
 export const webName = 'Financia Sphere'
 
+// Versión app
+export const webVersion = '1.0.0'
+
 // Valor por defecto en caso de fallo
 export const noValue = 'N/A'
 

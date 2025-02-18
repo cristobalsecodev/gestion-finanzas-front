@@ -2,16 +2,8 @@
   
   <mat-toolbar class="border-solid border-b border-color">
 
-    <!-- Navegación -->
-    <!-- @if(tokenService.isTokenValid()) {
-      <nav class="hidden sm:flex sm:ml-30 space-x-20">
-        <button mat-button class="h-12 ml-5" [routerLink]="[incomeExpensesRoute]" 
-          [ngClass]="{'selected-button': currentUrl().includes(incomeExpensesRoute)}">
-          <mat-icon>payments</mat-icon>
-          <span>My income/expenses</span>
-        </button>
-      </nav>
-    } -->
+    <!-- Versión -->
+    <span>Version: {{ webVersion }}</span>
 
     <!-- Espaciador -->
     <span class="flex-auto"></span>

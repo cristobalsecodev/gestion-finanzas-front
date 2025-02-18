@@ -1,6 +1,6 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
-import { activateAccountRoute, incomeExpensesRoute, loginRoute, signUpRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, incomeExpensesRoute, loginRoute, signUpRoute, webVersion } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
@@ -26,7 +26,6 @@ import { TokenService } from './shared/services/token/token.service';
   imports: [
     // Angular core
     RouterOutlet,
-    RouterLink,
     CommonModule,
     // Angular Material
     MatToolbar,
@@ -43,6 +42,9 @@ import { TokenService } from './shared/services/token/token.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+
+  // Versión app
+  webVersion = webVersion
 
   // Almacena la URL
   currentUrl = signal<string>('')
