@@ -66,7 +66,7 @@
     
       <!-- Categoría -->
       <mat-form-field class="w-full"
-      matTooltip="Please select a type first"
+      [matTooltip]="categories.length === 0 ? 'No categories have been created yet' : 'Please select a type first'"
       [matTooltipDisabled]="incomeOrExpenseForm.get('category')?.enabled">
 
         <mat-label>Category</mat-label>
@@ -415,7 +415,7 @@
     mat-flat-button 
     type="submit"
     (click)="submitForm()"
-    [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid)">
+    [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid) || categories.length === 0">
 
       @if(data.actionType === actionTypes.EDIT) {
         <mat-icon>edit</mat-icon>

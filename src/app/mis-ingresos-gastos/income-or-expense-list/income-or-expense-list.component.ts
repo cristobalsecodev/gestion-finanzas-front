@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -170,26 +170,32 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  onChangeChip(matChipChange: MatChipListboxChange): void {
+  onChangeSelect(matSelectChange: MatSelectChange): void {
 
     // Filtra las categorías por selección
-    this.filterCategories(matChipChange.value)
+    this.filterCategories(matSelectChange.value)
 
     // Reinicia la subcategoría
     this.resetSubcategory()
 
   }
 
-  filterCategories(type: 'income' | 'expense'): void {
+  filterCategories(type: 'income' | 'expense' | ''): void {
 
     // Reinicia la categoría
     this.resetCategory()
 
-    let categoriesFiltered: Categories[] | undefined
-      
-    categoriesFiltered = this.categories.filter(category => category.type === type)
+    if (type === '') {
 
-    this.filteredCategories = categoriesFiltered && categoriesFiltered.length > 0 ? categoriesFiltered : this.categories
+      this.filteredCategories = this.categories
+
+    } else {
+
+      this.filteredCategories = this.categories.filter(category => category.type === type)
+      
+    }
+
+
 
   }
 

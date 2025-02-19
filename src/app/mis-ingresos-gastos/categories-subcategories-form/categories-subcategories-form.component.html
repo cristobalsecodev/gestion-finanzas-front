@@ -1,4 +1,4 @@
-<mat-dialog-content class="p-4">
+<mat-dialog-content class="!pb-3">
 
   <h1 mat-dialog-title class="flex items-center justify-center text-lg font-semibold text-center">
     Manage categories and subcategories
@@ -107,7 +107,11 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columnsCategory"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell p-3 text-center" colspan="3">No categories in sight</td>
+      </tr>
+
+      <tr mat-header-row *matHeaderRowDef="columnsCategory; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: columnsCategory"></tr>
     </table>
 
@@ -225,7 +229,11 @@
             
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="columnsSubcategory"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell p-3 text-center" colspan="3">No subcategories in sight</td>
+          </tr>
+
+          <tr mat-header-row *matHeaderRowDef="columnsSubcategory; sticky: true"></tr>
           <tr mat-row *matRowDef="let row; columns: columnsSubcategory"></tr>
 
         </table>

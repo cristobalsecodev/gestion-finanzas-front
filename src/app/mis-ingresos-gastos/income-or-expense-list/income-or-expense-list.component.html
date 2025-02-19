@@ -18,7 +18,7 @@
       <div class="my-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
 
         <!-- Ingreso o gasto -->
-        <mat-chip-listbox #chipList
+        <!-- <mat-chip-listbox #chipList
         formControlName="type"
         class="flex place-self-center space-x-2"
         (change)="onChangeChip($event)">
@@ -31,10 +31,7 @@
   
           }
   
-        </mat-chip-listbox>
-
-        <!-- Recurrencia -->
-        <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
+        </mat-chip-listbox> -->
 
         <!-- Fecha desde -->
         <mat-form-field class="w-full">
@@ -91,6 +88,23 @@
           readonly>
           <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
           <mat-datepicker #dp1></mat-datepicker>
+
+        </mat-form-field>
+
+        <!-- Selector tipo -->
+        <mat-form-field class="w-full">
+
+          <mat-label>Type</mat-label>
+
+          <mat-select formControlName="type" (selectionChange)="onChangeSelect($event)">
+
+            @for (type of ['', 'income', 'expense']; track $index) {
+
+              <mat-option [value]="type">{{ type === '' ? 'No selection' : capitalize(type) }}</mat-option>
+
+            }
+
+          </mat-select>
 
         </mat-form-field>
 
@@ -186,6 +200,9 @@
           </mat-select>
 
         </mat-form-field>
+
+        <!-- Recurrencia -->
+        <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
 
       </div>
 
@@ -400,7 +417,7 @@
     <!-- Botonera del listado -->
     <section class="rounded-xl sticky bottom-0 component-bg p-4 flex justify-between items-center">
 
-      <div class="flex items-center space-x-1 self-center"
+      <div class="hidden md:flex items-center space-x-1 self-center"
       matTooltip="Records loaded / total records">
         <mat-icon>visibility</mat-icon>
         <span>{{ recordsToShow.length + ' / ' + totalElements() }}</span>
