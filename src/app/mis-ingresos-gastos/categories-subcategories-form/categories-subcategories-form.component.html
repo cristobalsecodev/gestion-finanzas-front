@@ -123,9 +123,25 @@
           <input matInput placeholder="Name" formControlName="name">
           <mat-icon matSuffix matTooltip="The name of the category">info</mat-icon>
           <mat-hint align="end">{{ categoryForm.get('name')?.value?.length || 0 }}/{{ maxNotesLength }}</mat-hint>
+
           @if(categoryForm.get('name')?.hasError('maxlength')) {
+
             <mat-error>{{ maxLengthMessage }}</mat-error>
+
           }
+
+          @if(categoryForm.get('name')?.hasError('required')) {
+
+            <mat-error>{{ nameMessage }}</mat-error>
+
+          }
+
+          @if(categoryForm.get('name')?.hasError('whiteSpace')) {
+
+            <mat-error>{{ whiteSpaceMessage }}</mat-error>
+            
+          }
+
         </mat-form-field>
 
         <!-- Tipo -->
@@ -232,6 +248,19 @@
               @if(subcategoryForm.get('name')?.hasError('maxlength')) {
 
                 <mat-error>{{ maxLengthMessage }}</mat-error>
+
+              }
+
+              @if(subcategoryForm.get('name')?.hasError('required')) {
+
+                <mat-error>{{ nameMessage }}</mat-error>
+    
+              }
+
+              @if(subcategoryForm.get('name')?.hasError('whiteSpace')) {
+
+                <mat-error>{{ whiteSpaceMessage }}</mat-error>
+
               }
 
             </mat-form-field>

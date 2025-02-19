@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { CommonModule } from '@angular/common';
+import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -95,6 +96,8 @@ export class CategoriesSubcategoriesFormComponent {
   // Avisos formulario
   typeMessage: string = 'Type is required.'
   maxLengthMessage: string = 'Max length reached.'
+  whiteSpaceMessage: string = 'Only whitespace is not allowed.'
+  nameMessage: string = 'Name is required'
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -103,7 +106,7 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.categoryForm = new FormGroup({
 
-      name: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      name: new FormControl('', [Validators.required, Validators.maxLength(30), whiteSpaceValidator]),
       
       type: new FormControl('', [Validators.required]),
 
@@ -113,7 +116,7 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.subcategoryForm = new FormGroup({
 
-      name: new FormControl('', [Validators.required, Validators.maxLength(30)]),
+      name: new FormControl('', [Validators.required, Validators.maxLength(30), whiteSpaceValidator]),
 
     })
 
@@ -240,8 +243,11 @@ export class CategoriesSubcategoriesFormComponent {
   submitCategoryForm(): void {
 
     if (!this.categoryForm.valid) return
-  
+    
     this.editingCategory ? this.updateCategory() : this.addCategory()
+
+    this.dataSourceSubcategories.data = []
+    this.updateSubcategoryTable()
 
     this.resetCategoryForm()
 
@@ -294,7 +300,7 @@ export class CategoriesSubcategoriesFormComponent {
     this.categoriesService.saveCategory(categoryToSave).subscribe({
       next: (category: Categories) => {
 
-        if(index) {
+        if(index !== undefined) {
 
           this.dataSourceCategories.data[index] = category
 
@@ -304,7 +310,7 @@ export class CategoriesSubcategoriesFormComponent {
 
         }
 
-        this.dataSourceCategories.data = [...this.dataSourceCategories.data]
+        this.updateCategoryTable()
 
         this.showNotificationMessage('Category updated')
 

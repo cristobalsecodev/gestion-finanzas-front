@@ -28,11 +28,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { forkJoin } from 'rxjs';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
-import { invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
@@ -116,9 +114,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   subcategories: SelectGroup[] = []
   filteredSubcategories: SelectGroup[] = []
-
-  // Mensajes de validación
-  readonly invalidAmount = invalidAmount
 
   constructor(
     private storageService: StorageService
@@ -463,12 +458,17 @@ export class IncomeOrExpenseListComponent implements OnInit {
               'success'
             )
 
-            // Asigna el ID creado
-            incomeOrExpense.id = id
+            // En caso de creación de registro, asigna el ID creado y asigna un elemento más a la página
+            if(!incomeOrExpense.id) {
 
+              incomeOrExpense.id = id
+
+              this.totalElements.set(this.totalElements() + 1)
+
+            }
+
+            // Recalcula el listado
             this.manageRecordsAndSort([incomeOrExpense])
-
-            this.totalElements.set(this.totalElements() + 1)
 
           }
 

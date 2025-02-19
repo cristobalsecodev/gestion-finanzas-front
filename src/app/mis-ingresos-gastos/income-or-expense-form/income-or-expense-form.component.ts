@@ -24,7 +24,6 @@ import moment from 'moment';
 import { objectSelectedValidator } from 'src/app/shared/functions/Validators';
 import { TypeCheckPipe } from 'src/app/shared/pipes/TypeCheck/type-check.pipe';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
-import { amountRequired, invalidAmount } from 'src/app/shared/constants/validation-message.constants';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -105,8 +104,8 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   maxNotesLength: number = 150
 
   // Mensajes de validación
-  readonly invalidAmount = invalidAmount
-  readonly amountRequired = amountRequired
+  readonly invalidAmount = 'Invalid amount. Max 13 digits and 2 decimals.'
+  readonly amountRequired = 'Amount is required.'
 
   constructor(
     public currencyExchangeService: CurrencyExchangeService,
@@ -125,7 +124,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
       amount: new FormControl('', [
         Validators.required, 
-        Validators.pattern('^\\d{1,15}(\\.\\d{1,2})?$'), // Acepta hasta 15 enteros y 2 decimales
+        Validators.pattern('^\\d{1,13}(\\.\\d{1,2})?$'), // Acepta hasta 13 enteros y 2 decimales
         Validators.maxLength(18) 
       ]),
 

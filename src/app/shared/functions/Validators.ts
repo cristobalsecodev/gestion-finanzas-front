@@ -16,3 +16,14 @@ export function objectSelectedValidator(control: AbstractControl) {
   return typeof control.value === 'object' || !control.value ? null : { objectSelected: true }
 
 }
+
+// Validador formulario vacío
+export function whiteSpaceValidator(control: AbstractControl) {
+
+  if (!control.value) {
+    return null
+  }
+
+  return control.value.trim().length === 0 ? { whiteSpace: true } : null
+
+}
