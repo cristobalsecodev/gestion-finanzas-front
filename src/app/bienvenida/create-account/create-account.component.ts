@@ -12,6 +12,7 @@ import {RouterLink } from '@angular/router';
 import { CreateUser } from 'src/app/shared/services/Users/interfaces/CreateUser.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
 import { passwordMatchValidator } from 'src/app/shared/functions/Validators';
+import { DynamicButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-button.component';
 import { loginRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
@@ -28,7 +29,9 @@ import { loginRoute } from 'src/app/shared/constants/variables.constants';
     MatButtonModule,
     MatInputModule,
     MatStepperModule,
-    MatTooltipModule
+    MatTooltipModule,
+    // Componentes
+    DynamicButtonComponent
   ],
   host: { 
     '[style.--mdc-filled-button-label-text-size]': '1.450 + "rem"',
@@ -49,8 +52,11 @@ export class CreateAccountComponent {
   formName!: FormGroup
   formPassword!: FormGroup
 
-  // Rutas
+  // Ruta login
   loginRoute = loginRoute
+
+  // Loader
+  buttonLoader = signal<boolean>(false)
 
   constructor(
     private authService: AuthService
@@ -92,7 +98,22 @@ export class CreateAccountComponent {
         password: this.formPassword.get('password')?.value
       }
 
-      this.authService.signUp(user).subscribe()
+      this.buttonLoader.set(true)
+
+      this.authService.signUp(user).subscribe({
+
+        next: () => {
+
+          this.buttonLoader.set(false)
+
+        },
+        error: () => {
+
+          this.buttonLoader.set(false)
+
+        }
+
+      })
 
     }
   }

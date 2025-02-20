@@ -19,6 +19,7 @@ import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { CommonModule } from '@angular/common';
 import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -41,7 +42,8 @@ import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
     MatTableModule,
     MatExpansionModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './categories-subcategories-form.component.html',
   styleUrl: './categories-subcategories-form.component.scss'
@@ -102,6 +104,9 @@ export class CategoriesSubcategoriesFormComponent {
   // Función para capitalizar strings
   capitalize = capitalizeString
 
+  // Loader
+  tableLoader = signal<boolean>(false)
+
   constructor() {
 
     this.categoryForm = new FormGroup({
@@ -132,11 +137,20 @@ export class CategoriesSubcategoriesFormComponent {
 
   ngOnInit(): void {
 
+    this.tableLoader.set(true)
+
     this.categoriesService.getCategories(false).subscribe({
       next: (categories) => {
 
         this.categories = categories
         this.dataSourceCategories.data = categories
+
+        this.tableLoader.set(false)
+
+      },
+      error: () => {
+
+        this.tableLoader.set(false)
 
       }
     })

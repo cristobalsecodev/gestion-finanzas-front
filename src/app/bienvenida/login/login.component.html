@@ -91,15 +91,17 @@
         </section>
   
         <!-- Sección botón de login -->
-        <app-dynamic-button 
+        <app-dynamic-button
         type="submit"
         buttonText="Log in"
         matIcon="login"
         [textSizeRem]="textSizeRem"
         [shapePx]="10"
         [heightPx]="70"
+        [disabled]="buttonLoader()"
+        [loader]="buttonLoader()"
         buttonType="flat"
-        buttonClass="w-full">            
+        buttonClass="w-full">     
         </app-dynamic-button>
 
       </form>
@@ -183,7 +185,16 @@
 
             <button mat-flat-button type="submit">
 
-              <mat-icon>key</mat-icon>
+              @if(buttonLoader()) {
+
+                <mat-spinner></mat-spinner>
+
+              } @else {
+
+                <mat-icon>key</mat-icon>
+
+              }
+
               <span> Reset </span>
 
             </button>
@@ -195,8 +206,6 @@
         </form>
 
       }
-
-
 
     }
   

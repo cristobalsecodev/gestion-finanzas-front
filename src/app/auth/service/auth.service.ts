@@ -62,14 +62,14 @@ export class AuthService {
     // Llama al servicio de divisas
     this.currencyExchangeService.manageCurrencyService()
 
+    // Empieza a comprobar el checkeo si no existe el intervalo
+    if(!this.tokenService.intervalId) {
+
+      this.tokenService.startTokenCheck()
+
+    }
+
     if(this.tokenService.isAccountActivated()) {
-
-      // Empieza a comprobar el checkeo si no existe el intervalo
-      if(!this.tokenService.intervalId) {
-
-        this.tokenService.startTokenCheck()
-
-      }
 
       this.router.navigate([incomeExpensesRoute])
 
@@ -94,6 +94,13 @@ export class AuthService {
           this.currencyExchangeService.manageCurrencyService()
 
           this.notificationsService.addNotification('Account created', 'success')
+
+          // Empieza a comprobar el checkeo si no existe el intervalo
+          if(!this.tokenService.intervalId) {
+
+            this.tokenService.startTokenCheck()
+
+          }
 
           this.router.navigate([activateAccountRoute])
 

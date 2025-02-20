@@ -175,15 +175,18 @@
 
               <div class="mb-5">
 
-                <button 
-                mat-flat-button
-                (click)="onSubmit()"
-                [disabled]="formEmail.invalid || formPassword.invalid">
-
-                  <mat-icon> person_add </mat-icon>
-                  <span> Create account </span>
-
-                </button>
+                <app-dynamic-button
+                type="button"
+                buttonText="Create account"
+                matIcon="person_add"
+                [shapePx]="10"
+                [heightPx]="70"
+                [disabled]="buttonLoader() || formEmail.invalid || formPassword.invalid"
+                [loader]="buttonLoader()"
+                buttonType="flat"
+                buttonClass="w-full"
+                (click)="onSubmit()">     
+                </app-dynamic-button>        
 
               </div>
 
@@ -365,17 +368,19 @@
 
         <div class="flex flex-col items-center space-y-2">
 
-          <button
-          mat-flat-button
-          (click)="onSubmit()"
-          [disabled]="formEmail.invalid || formPassword.invalid"
-          class="w-full max-w-xs">
+          <app-dynamic-button
+          type="button"
+          buttonText="Create account"
+          matIcon="person_add"
+          [shapePx]="10"
+          [heightPx]="70"
+          [disabled]="buttonLoader() || formEmail.invalid || formPassword.invalid"
+          [loader]="buttonLoader()"
+          buttonType="flat"
+          buttonClass="w-full"
+          (click)="onSubmit()">     
+          </app-dynamic-button>        
 
-            <mat-icon> person_add </mat-icon>
-            <span> Create account </span>
-
-          </button>
-          
           <button 
           mat-button 
           [routerLink]="['/' + loginRoute]"

@@ -26,7 +26,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatChipListboxChange, MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.interface';
@@ -55,9 +55,9 @@ import { CategoriesSubcategoriesFormComponent } from '../categories-subcategorie
     MatCardModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatChipsModule,
     MatButtonToggleModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
     // Pipes
     CurrencySymbolPipe,
     DatePipe,
@@ -114,6 +114,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   subcategories: SelectGroup[] = []
   filteredSubcategories: SelectGroup[] = []
+
+  // Loader
+  filterLoader = signal<boolean>(false)
 
   constructor(
     private storageService: StorageService
@@ -194,8 +197,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
       this.filteredCategories = this.categories.filter(category => category.type === type)
       
     }
-
-
 
   }
 
@@ -334,6 +335,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   getFilteredIncomeOrExpenses(buildFilter: FilterIncomeOrExpense): void {
 
+    this.filterLoader.set(true)
+
     this.incomeOrExpenseService.getFilteredIncomeOrExpenses(buildFilter).subscribe({
 
       next: (records: PaginationData) => {
@@ -346,6 +349,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
         // Incrementa la página para la próxima solicitud
         this.currentPage.set(this.currentPage() + 1)
+
+        this.filterLoader.set(false)
+
+      },
+      error: () => {
+
+        this.filterLoader.set(false)
 
       }
 

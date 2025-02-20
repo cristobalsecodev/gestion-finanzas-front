@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
@@ -31,7 +32,8 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
     MatButtonModule,
     MatInputModule,
     MatStepperModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressSpinner
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -64,6 +66,9 @@ export class LoginComponent {
   // Rutas
   signUpRoute = signUpRoute
 
+  // Loader
+  buttonLoader = signal<boolean>(false)
+
   constructor(
     private authService: AuthService,
     private storageService: StorageService
@@ -95,10 +100,25 @@ export class LoginComponent {
 
     if(this.form.valid) {
 
+      this.buttonLoader.set(true)
+
       this.authService.login(
         this.form.get('email')?.value, 
         this.form.get('password')?.value
-      ).subscribe()
+      ).subscribe({
+
+        next: () => {
+
+          this.buttonLoader.set(false)
+
+        },
+        error: () => {
+
+          this.buttonLoader.set(false)
+
+        }
+
+      })
 
     }
   }
@@ -120,9 +140,22 @@ export class LoginComponent {
   
       }
 
-      this.authService.wantResetPassword(wantResetInfo).subscribe(() => {
+      this.buttonLoader.set(true)
 
-        this.serviceCalled.set(!this.serviceCalled())
+      this.authService.wantResetPassword(wantResetInfo).subscribe({
+        
+        next: () => {
+
+          this.serviceCalled.set(!this.serviceCalled())
+
+          this.buttonLoader.set(false)
+
+        },
+        error: () => {
+
+          this.buttonLoader.set(false)
+          
+        }
 
       })
 

@@ -17,22 +17,6 @@
 
       <div class="my-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
 
-        <!-- Ingreso o gasto -->
-        <!-- <mat-chip-listbox #chipList
-        formControlName="type"
-        class="flex place-self-center space-x-2"
-        (change)="onChangeChip($event)">
-  
-          @for (type of ['income', 'expense']; track $index) {
-  
-            <mat-chip-option [value]="type" class="px-4 py-2">
-              {{ capitalize(type) }}
-            </mat-chip-option>
-  
-          }
-  
-        </mat-chip-listbox> -->
-
         <!-- Fecha desde -->
         <mat-form-field class="w-full">
 
@@ -101,6 +85,23 @@
             @for (type of ['', 'income', 'expense']; track $index) {
 
               <mat-option [value]="type">{{ type === '' ? 'No selection' : capitalize(type) }}</mat-option>
+
+            }
+
+          </mat-select>
+
+        </mat-form-field>
+
+        <!-- Divisa -->
+        <mat-form-field class="w-full">
+
+          <mat-label>Currencies</mat-label>
+
+          <mat-select formControlName="currencies" multiple>
+
+            @for (currency of currencyExchangeService.currencies(); track $index) {
+
+              <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
 
             }
 
@@ -184,23 +185,6 @@
           </mat-select>
         </mat-form-field>
 
-        <!-- Divisa -->
-        <mat-form-field class="w-full">
-
-          <mat-label>Currencies</mat-label>
-
-          <mat-select formControlName="currencies" multiple>
-
-            @for (currency of currencyExchangeService.currencies(); track $index) {
-
-              <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
-
-            }
-
-          </mat-select>
-
-        </mat-form-field>
-
         <!-- Recurrencia -->
         <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
 
@@ -209,12 +193,20 @@
       <!-- Botón filtrar -->
       <div class="text-end">
 
-        <button mat-button type="button" (click)="resetFilter()">
+        <button 
+        mat-button 
+        type="button"
+        [disabled]="filterLoader()"
+        (click)="resetFilter()">
           <mat-icon>restart_alt</mat-icon>
           <span>Reset filter</span>
         </button>
 
-        <button mat-flat-button type="submit" class="ml-2">
+        <button 
+        mat-flat-button 
+        type="submit" 
+        class="ml-2"
+        [disabled]="filterLoader()">
           <mat-icon>tune</mat-icon>
           <span>Filter</span>
         </button>
@@ -243,174 +235,184 @@
   <!-- Lista de ingresos y gastos -->
   <section>
 
-    @for (year of sortedYears; track $index) {
+    @if(filterLoader()) {
 
-      <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
+      <div class="place-items-center p-3">
+        <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
 
-      @for (record of groupedRecords[year]; track $index) {
+    } @else {
 
-        <mat-card class="flex p-4 cursor-pointer shadow-none component-bg-hover"
-        [ngClass]="{'component-bg': selectedRecordId === record.id, 'mb-4': selectedRecordId !== record.id}"
-        (click)="toggleDetails(record.id!)">
+      @for (year of sortedYears; track $index) {
 
-          <div class="flex w-full items-center">
-
-            <!-- Fecha -->
-            <div class="flex flex-col items-center w-[7%]">
-              <div class="text-lg font-bold">{{ record.date | date: 'dd' }}</div>
-              <div class="text-base font-semibold">{{ record.date | date: 'MMM' }}</div>
-            </div>
-    
-            <!-- Categoría y subcategoría -->
-            <div class="flex flex-col w-[58%] pl-4">
-
-              <p class="text-sm font-medium break-words text-balance">
-                {{ record.category.name }}
-              </p>
-
-              <p class="text-xs break-words text-balance">
-                {{ record.subcategory ? record.subcategory.name : '' }}
-              </p>
-              
-            </div>
-    
-            <!-- Icono recurrencia -->
-            @if (record.recurrenceDetails) {
-
-              <mat-icon class="text-sm text-center absolute top-1 right-1"
-              matTooltip="This {{ record.type }} has a recurrency">
-                currency_exchange
-              </mat-icon>
-
-            }
-
-            <!-- Cantidad y divisa -->
-            <div class="flex flex-grow justify-end w-[35%]">
-    
-              <div class="font-medium">
-                
-                <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: record.currency }}</span>
-
-                <span [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}"
-                matTooltip="{{ record.amount | formatThousandSeparators }}"
-                [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)">
-                  {{ record.amount | formatAmount }}
-                </span>
+        <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
+  
+        @for (record of groupedRecords[year]; track $index) {
+  
+          <mat-card class="flex p-4 cursor-pointer shadow-none component-bg-hover"
+          [ngClass]="{'component-bg': selectedRecordId === record.id, 'mb-4': selectedRecordId !== record.id}"
+          (click)="toggleDetails(record.id!)">
+  
+            <div class="flex w-full items-center">
+  
+              <!-- Fecha -->
+              <div class="flex flex-col items-center w-[7%]">
+                <div class="text-lg font-bold">{{ record.date | date: 'dd' }}</div>
+                <div class="text-base font-semibold">{{ record.date | date: 'MMM' }}</div>
+              </div>
+      
+              <!-- Categoría y subcategoría -->
+              <div class="flex flex-col w-[58%] pl-4">
+  
+                <p class="text-sm font-medium break-words text-balance">
+                  {{ record.category.name }}
+                </p>
+  
+                <p class="text-xs break-words text-balance">
+                  {{ record.subcategory ? record.subcategory.name : '' }}
+                </p>
                 
               </div>
-
+      
+              <!-- Icono recurrencia -->
+              @if (record.recurrenceDetails) {
+  
+                <mat-icon class="text-sm text-center absolute top-1 right-1"
+                matTooltip="This {{ record.type }} has a recurrency">
+                  currency_exchange
+                </mat-icon>
+  
+              }
+  
+              <!-- Cantidad y divisa -->
+              <div class="flex flex-grow justify-end w-[35%]">
+      
+                <div class="font-medium">
+                  
+                  <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: record.currency }}</span>
+  
+                  <span [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}"
+                  matTooltip="{{ record.amount | formatThousandSeparators }}"
+                  [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)">
+                    {{ record.amount | formatAmount }}
+                  </span>
+                  
+                </div>
+  
+              </div>
             </div>
-          </div>
-        </mat-card>
-
-        <!-- Componente de detalles -->
-        @if (selectedRecordId === record.id) {
-
-          <article @fadeInOut class="p-4 mb-4 rounded-lg shadow-md mx-2">
+          </mat-card>
+  
+          <!-- Componente de detalles -->
+          @if (selectedRecordId === record.id) {
+  
+            <article @fadeInOut class="p-4 mb-4 rounded-lg shadow-md mx-2">
+              
+              <!-- Cabecera -->
+              <header class="mb-4 flex justify-between items-center">
+  
+                <h3 class="text-xl font-semibold">Detalles</h3>
+  
+                <span 
+                  class="px-2 py-1 rounded text-xs font-medium"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': record.type === 'income',
+                    'bg-red-100 text-red-800': record.type === 'expense'
+                  }">
+                  {{ record.type === 'income' ? 'Income' : 'Expense' }}
+                </span>
+              </header>
             
-            <!-- Cabecera -->
-            <header class="mb-4 flex justify-between items-center">
-
-              <h3 class="text-xl font-semibold">Detalles</h3>
-
-              <span 
-                class="px-2 py-1 rounded text-xs font-medium"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': record.type === 'income',
-                  'bg-red-100 text-red-800': record.type === 'expense'
-                }">
-                {{ record.type === 'income' ? 'Income' : 'Expense' }}
-              </span>
-            </header>
-          
-            <!-- Detalles generales -->
-            <div class="mb-4">
-
-              <p class="text-sm">
-                <strong>Category:</strong> {{ record.category.name }}
-              </p>
-
-              <p class="text-sm">
-                <strong>Subcategory:</strong> {{ record.subcategory ? record.subcategory.name : '' }}
-              </p>
-
-              <p 
-                class="text-sm font-semibold" 
-                [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}">
-                <strong>Amount:</strong> 
-                {{ 0 | currencySymbol: record.currency }} 
-                {{ record.amount | formatThousandSeparators }}
-              </p>
-
-              <p class="text-sm">
-                <strong>Notes:</strong> {{ record.notes }}
-              </p>
-
-            </div>
-          
-            <!-- Detalles de recurrencia -->
-            @if(record.recurrenceDetails) {
-
-              <section class="mb-4">
-
-                <h4 class="text-lg font-semibold mb-2">Recurrence</h4>
-
+              <!-- Detalles generales -->
+              <div class="mb-4">
+  
                 <p class="text-sm">
-                  {{ getRecurrenceMessage(record.recurrenceDetails.recurrenceType, record.recurrenceDetails.frequency) }}
+                  <strong>Category:</strong> {{ record.category.name }}
                 </p>
-
+  
                 <p class="text-sm">
-                  <strong>Occurrences:</strong> {{ record.recurrenceDetails.occurrences }}
+                  <strong>Subcategory:</strong> {{ record.subcategory ? record.subcategory.name : '' }}
                 </p>
-
+  
+                <p 
+                  class="text-sm font-semibold" 
+                  [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}">
+                  <strong>Amount:</strong> 
+                  {{ 0 | currencySymbol: record.currency }} 
+                  {{ record.amount | formatThousandSeparators }}
+                </p>
+  
                 <p class="text-sm">
-                  <strong>End Date:</strong> {{ record.recurrenceDetails.endDate }}
+                  <strong>Notes:</strong> {{ record.notes }}
                 </p>
-
-              </section>
-
-            }
+  
+              </div>
+            
+              <!-- Detalles de recurrencia -->
+              @if(record.recurrenceDetails) {
+  
+                <section class="mb-4">
+  
+                  <h4 class="text-lg font-semibold mb-2">Recurrence</h4>
+  
+                  <p class="text-sm">
+                    {{ getRecurrenceMessage(record.recurrenceDetails.recurrenceType, record.recurrenceDetails.frequency) }}
+                  </p>
+  
+                  <p class="text-sm">
+                    <strong>Occurrences:</strong> {{ record.recurrenceDetails.occurrences }}
+                  </p>
+  
+                  <p class="text-sm">
+                    <strong>End Date:</strong> {{ record.recurrenceDetails.endDate }}
+                  </p>
+  
+                </section>
+  
+              }
+            
+              <!-- Actions -->
+              <footer class="flex justify-end space-x-2">
+  
+                <button 
+                  mat-button 
+                  class="delete flex items-center space-x-1"
+                  (click)="openDeleteDialog(record)">
+  
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+  
+                </button>
+            
+                <button 
+                  mat-button 
+                  (click)="openIncomeOrExpenseDialog(actionType.EDIT, record)" 
+                  class="flex items-center space-x-1">
+  
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+  
+                </button>
+  
+              </footer>
+  
+            </article>
           
-            <!-- Actions -->
-            <footer class="flex justify-end space-x-2">
-
-              <button 
-                mat-button 
-                class="delete flex items-center space-x-1"
-                (click)="openDeleteDialog(record)">
-
-                <mat-icon>delete</mat-icon>
-                <span>Delete</span>
-
-              </button>
-          
-              <button 
-                mat-button 
-                (click)="openIncomeOrExpenseDialog(actionType.EDIT, record)" 
-                class="flex items-center space-x-1">
-
-                <mat-icon>edit</mat-icon>
-                <span>Edit</span>
-
-              </button>
-
-            </footer>
-
-          </article>
-        
+          }
+  
         }
-
-      }
-    } @empty {
-
-      
-      <!-- Primera línea de separación -->
-      <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
-
-      <div class="text-center">Empty list</div>
-      
-      <!-- Segunda línea de separación -->
-      <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
+      } @empty {
+  
+        
+        <!-- Primera línea de separación -->
+        <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
+  
+        <div class="text-center">Empty list</div>
+        
+        <!-- Segunda línea de separación -->
+        <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
+  
+      }  
 
     }
 

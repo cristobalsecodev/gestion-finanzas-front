@@ -108,7 +108,19 @@
       </ng-container>
 
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell p-3 text-center" colspan="3">No categories in sight</td>
+
+        @if(tableLoader()) {
+
+          <td class="mat-cell p-3 place-items-center" colspan="3">
+            <mat-spinner [diameter]="40"></mat-spinner>
+          </td>
+
+        } @else {
+
+          <td class="mat-cell p-3 text-center" colspan="3">No categories in sight</td>
+
+        }
+
       </tr>
 
       <tr mat-header-row *matHeaderRowDef="columnsCategory; sticky: true"></tr>

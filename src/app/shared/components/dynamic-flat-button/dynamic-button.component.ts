@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-dynamic-button',
@@ -12,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
     // Angular material
     MatIconModule,
     MatButtonModule,
+    MatProgressSpinner
   ],
   host: { 
     // Flat
@@ -44,7 +46,9 @@ export class DynamicButtonComponent {
   @Input() shapePx: number = 10
   @Input() heightPx: number = 70
   @Input() buttonClass: string = ''
-  @Input() buttonType: 'flat' | 'basic' | 'raised' | 'stroked' = 'basic';
+  @Input() buttonType: 'flat' | 'basic' | 'raised' | 'stroked' = 'basic'
+  @Input() disabled: boolean = false
+  @Input() loader: boolean = false
 
   // Inputs de texto
   @Input() buttonText: string = ''
