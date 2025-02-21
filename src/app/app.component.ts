@@ -13,12 +13,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
-import { activateAccountRoute, incomeExpensesRoute, loginRoute, signUpRoute, webVersion } from './shared/constants/variables.constants';
+import { activateAccountRoute, incomeExpensesRoute, loginRoute, signUpRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
 import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service';
 import { TokenService } from './shared/services/token/token.service';
+import packageJson from '../../package.json'
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,7 @@ import { TokenService } from './shared/services/token/token.service';
 export class AppComponent implements OnInit {
 
   // Versión app
-  webVersion = webVersion
+  version = packageJson.version
 
   // Almacena la URL
   currentUrl = signal<string>('')

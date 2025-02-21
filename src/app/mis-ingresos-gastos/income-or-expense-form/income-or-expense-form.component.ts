@@ -221,7 +221,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type)
     this.incomeOrExpenseForm.get('amount')?.setValue(this.selectedType() === 'expense' ? -this.data.incomeOrExpense!.amount : this.data.incomeOrExpense?.amount)
     this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
-    this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.date)
+    this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.transactionDate)
     this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes ? this.data.incomeOrExpense?.notes : '')
 
     // Filtra categorías
@@ -330,7 +330,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           currency: this.incomeOrExpenseForm.get('currency')?.value,
           exchangeRateToUsd: this.currencyExchangeService.currencies()
             .find(currency => this.incomeOrExpenseForm.get('currency')?.value === currency.currencyCode)!.exchangeRateToUsd,
-          date: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
+          transactionDate: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
           subcategory: this.incomeOrExpenseForm.get('subcategory')?.value ? this.incomeOrExpenseForm.get('subcategory')?.value : undefined,

@@ -266,7 +266,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     this.recordsToShow.forEach(record => {
 
-      const year = new Date(record.date).getFullYear()
+      const year = new Date(record.transactionDate).getFullYear()
 
       if (!this.groupedRecords[year]) {
 
@@ -283,8 +283,8 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
       this.groupedRecords[year].sort((a, b) => {
 
-        const dateA = new Date(a.date)
-        const dateB = new Date(b.date)
+        const dateA = new Date(a.transactionDate)
+        const dateB = new Date(b.transactionDate)
 
         return dateB.getTime() - dateA.getTime()
 

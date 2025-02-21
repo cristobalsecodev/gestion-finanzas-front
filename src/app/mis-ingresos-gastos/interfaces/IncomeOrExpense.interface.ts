@@ -1,7 +1,7 @@
 export interface IncomeOrExpense {
 
   id?: number
-  date: string // Fecha de efecto
+  transactionDate: string // Fecha de efecto
   category: Categories // Categoría
   subcategory?: BaseCategory // Subcategoría
   amount: number // Cantidad
