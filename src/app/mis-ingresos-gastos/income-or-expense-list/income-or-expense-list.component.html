@@ -220,10 +220,19 @@
   <!-- Botón añadir ingreso / gasto -->
   <div class="text-center">
 
-    <button mat-button (click)="openIncomeOrExpenseDialog(actionType.CREATE)">
-    <mat-icon>add</mat-icon>
-    Add income / expense
-    </button>
+    <div
+    matTooltip="You have to add at least one category to create an income or expense"
+    [matTooltipDisabled]="categories.length > 0">
+
+      <button 
+      mat-button
+      [disabled]="categories.length === 0"
+      (click)="openIncomeOrExpenseDialog(actionType.CREATE)">
+      <mat-icon>add</mat-icon>
+      Add income / expense
+      </button>
+      
+    </div>
 
     <button mat-button (click)="openCategoriesDialog()">
       <mat-icon>settings</mat-icon>

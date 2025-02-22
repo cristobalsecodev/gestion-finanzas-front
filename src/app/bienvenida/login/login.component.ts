@@ -66,8 +66,9 @@ export class LoginComponent {
   // Rutas
   signUpRoute = signUpRoute
 
-  // Loader
+  // Loaders
   buttonLoader = signal<boolean>(false)
+  testButtonLoader = signal<boolean>(false)
 
   constructor(
     private authService: AuthService,
@@ -125,7 +126,22 @@ export class LoginComponent {
 
   testLogin(): void {
 
-    this.authService.testLogin().subscribe()
+    this.testButtonLoader.set(true)
+
+    this.authService.testLogin().subscribe({
+
+      next: () => {
+
+        this.testButtonLoader.set(false)
+        
+      },
+      error: () => {
+
+        this.testButtonLoader.set(false)
+
+      }
+
+    })
 
   }
 
