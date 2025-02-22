@@ -460,6 +460,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
       maxWidth: '90vw',
       minHeight: '10vh',
       maxHeight: '80vh',
+      disableClose: true
 
     }).afterClosed().subscribe(((incomeOrExpense: IncomeOrExpense) => {
 
@@ -504,6 +505,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
       maxWidth: '90vw',
       minHeight: '10vh',
       maxHeight: '80vh',
+      disableClose: true
 
     }).afterClosed().subscribe((() => {
 

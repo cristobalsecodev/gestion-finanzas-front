@@ -240,6 +240,8 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.categoryForm.reset()
     this.editingCategory = undefined
+    
+    this.dataSourceSubcategories.data = []
 
   }
 
@@ -260,7 +262,6 @@ export class CategoriesSubcategoriesFormComponent {
     
     this.editingCategory ? this.updateCategory() : this.addCategory()
 
-    this.dataSourceSubcategories.data = []
     this.updateSubcategoryTable()
 
     this.resetCategoryForm()
