@@ -1,6 +1,5 @@
 {
-  "redirects": [
-    { "source": "/new-password/:urlToken", "destination": "/index.html", "statusCode": 200 },
-    { "source": "/(.*)", "destination": "/index.html", "statusCode": 200 }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
