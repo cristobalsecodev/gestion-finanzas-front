@@ -1,34 +1,5 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "routes": [
-    {
-      "src": "/my-income-expenses",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/new-password/[^/]+",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/sign-up",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/activate-account",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/login",
-      "dest": "/index.html"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
   ]
 }
