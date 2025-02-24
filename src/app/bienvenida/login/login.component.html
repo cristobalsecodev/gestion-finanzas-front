@@ -113,17 +113,19 @@
       [disabled]="testButtonLoader()"
       (click)="testLogin()">
 
-        @if(testButtonLoader()) {
+        <mat-icon>
 
-          <mat-icon>
+          @if(testButtonLoader()) {
+
             <mat-spinner [diameter]="15"></mat-spinner>
-          </mat-icon>
-          
-        } @else {
 
-          <mat-icon> bug_report </mat-icon>
-          
-        }
+          } @else {
+
+            bug_report
+
+          }
+
+        </mat-icon>
 
         Try it with a test user
 
@@ -202,15 +204,19 @@
 
             <button mat-flat-button type="submit">
 
-              @if(buttonLoader()) {
+              <mat-icon>
 
-                <mat-spinner></mat-spinner>
+                @if(buttonLoader()) {
 
-              } @else {
+                  <mat-spinner [diameter]="15"></mat-spinner>
 
-                <mat-icon>key</mat-icon>
+                } @else {
 
-              }
+                  key
+
+                }
+
+              </mat-icon>
 
               <span> Reset </span>
 
