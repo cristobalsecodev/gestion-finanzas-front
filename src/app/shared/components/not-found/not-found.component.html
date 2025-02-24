@@ -1,9 +1,9 @@
-<div class="h-screen grid place-items-center mt-2">
-  <p class="text-base font-semibold">404</p>
-  <h1 class="text-3xl font-bold tracking-tight sm:text-5xl">Page not found</h1>
-  <p class="text-base leading-7">Sorry, this page doesn't exist</p>
-  <button mat-flat-button [routerLink]="['']"> 
+<div class="h-screen flex flex-col items-center justify-center gap-4 px-4 text-center">
+  <p class="text-xl font-semibold">404</p>
+  <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Page not found</h1>
+  <p class="text-lg">Sorry, this page doesn't exist</p>
+  <button mat-flat-button color="primary" [routerLink]="['']" class="mt-2 flex items-center gap-2">
     <mat-icon>keyboard_return</mat-icon>
-    <span> Go to main page </span>
+    <span>Go to main page</span>
   </button>
 </div>

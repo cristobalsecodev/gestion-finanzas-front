@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { incomeExpensesRoute } from '../../constants/variables.constants';
 
 @Component({
   selector: 'app-not-found',
@@ -17,5 +18,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './not-found.component.scss'
 })
 export class NotFoundComponent {
+
+  incomeExpensesRoute = incomeExpensesRoute
 
 }

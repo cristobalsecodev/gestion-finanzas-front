@@ -90,7 +90,7 @@ export class CategoriesSubcategoriesFormComponent {
   notificationsService = inject(NotificacionesService)
 
   // Tablas
-  columnsCategory: string[] = ['name', 'type', 'actions']
+  columnsCategory: string[] = ['name', 'type', 'color', 'actions']
   columnsSubcategory: string[] = ['name', 'actions']
   dataSourceCategories = new MatTableDataSource<Categories>([])
   dataSourceSubcategories = new MatTableDataSource<BaseCategory>([])
@@ -131,7 +131,6 @@ export class CategoriesSubcategoriesFormComponent {
       this.subcategoryForm.reset()
 
     })
-
 
   }
 

@@ -499,11 +499,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   openCategoriesDialog(): void {
 
+    const screenWidth = window.innerWidth
+
     this.dialog.open(CategoriesSubcategoriesFormComponent, {
 
-      minWidth: '50vh',
+      width: screenWidth < 600 ? '90vw' : '65vw',
       maxWidth: '90vw',
-      minHeight: '10vh',
+      height: screenWidth < 600 ? '70vh' : '60vh',
       maxHeight: '80vh',
       disableClose: true
 

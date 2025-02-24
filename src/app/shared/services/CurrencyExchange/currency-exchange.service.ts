@@ -46,12 +46,6 @@ export class CurrencyExchangeService {
     this.getCurrencies().subscribe({
       next: (currencies: CurrencyExchange[]) => {
 
-        // Recoge la divisa de conversión en caso de que esté
-        const convertCurrency: string | null = this.storageService.getLocal('convertCurrency')
-
-        // Comprueba la divisa favorita y la divisa de conversión
-        this.validateStorageCurrency(convertCurrency, 'convertCurrency')
-
         this.selectedCurrency.set(currencies.find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) || this.defaultCurrency)
 
         // Actualizamos las divisas
@@ -71,16 +65,6 @@ export class CurrencyExchangeService {
     } else {
 
       return of(this.currencies())
-
-    }
-
-  }
-
-  private validateStorageCurrency(currency: string | null, storageType: string): void {
-    
-    if(!currency) {
-
-      this.storageService.setLocal(storageType, this.defaultCurrency.currencyCode)
 
     }
 
