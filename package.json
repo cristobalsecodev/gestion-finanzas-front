@@ -6,8 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:gestion-finanzas-front": "node dist/gestion-finanzas-front/server/server.mjs"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
@@ -21,13 +20,10 @@
     "@angular/material-moment-adapter": "^18.2.12",
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
-    "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
-    "@angular/ssr": "^18.2.3",
     "class-variance-authority": "^0.6.0",
     "clsx": "^2.1.1",
     "embla-carousel-angular": "^14.0.0",
-    "express": "^4.18.2",
     "highcharts": "^12.1.2",
     "highcharts-angular": "^4.0.1",
     "jwt-decode": "^4.0.0",
