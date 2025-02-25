@@ -15,6 +15,8 @@ Gestión de Finanzas es una aplicación web diseñada para ayudar a los usuarios
 ## 🛠 Tecnologías Utilizadas
 - **Angular 18** (Framework principal del frontend)
 - **TypeScript** (Lenguaje de programación)
+- **Tailwind** (Estilización y diseño responsivo)
+- **Highcharts** (Librería dedicada a los gráficos)
 - **Vercel** (Plataforma de despliegue)
 
 ## 🚀 Instalación y Uso
