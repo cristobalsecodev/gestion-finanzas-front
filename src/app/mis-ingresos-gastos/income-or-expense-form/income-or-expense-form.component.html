@@ -162,11 +162,11 @@
 
         <mat-label>Currency</mat-label>
 
-        <mat-select formControlName="currency" required>
+        <mat-select formControlName="currency" required (selectionChange)="applyExchangeRate()">
 
           @for (currency of currencyExchangeService.currencies(); track $index) {
 
-            <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
+            <mat-option [value]="currency"> {{ currency.currencyName }} </mat-option>
 
           }
 
@@ -196,7 +196,7 @@
         required 
         (input)="onAmountInput($event)">
 
-        <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
+        <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value.currencyCode }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
 
         <mat-icon matIconSuffix
         matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
@@ -205,23 +205,65 @@
 
         @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
 
-          <mat-error> {{ amountRequired }} </mat-error>
+          <mat-error> Amount is required. </mat-error>
 
         }
 
         @if(incomeOrExpenseForm.get('amount')?.hasError('pattern')) {
 
-          <mat-error> {{ invalidAmount }} </mat-error>
+          <mat-error> Invalid amount. Max 13 digits and 2 decimals and only digits. </mat-error>
 
         }
 
       </mat-form-field>
 
-      <!-- Notas -->
+      <!-- Tipo de cambio -->
       <mat-form-field class="w-full">
 
+        <mat-label>Exchange rate</mat-label>
+
+        <input matInput placeholder="Exchange rate" formControlName="exchangeRate" required>
+
+        @if(incomeOrExpenseForm.get('exchangeRate')?.value !== incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd) {
+
+          <mat-icon matIconSuffix class="cursor-pointer"
+          (click)="incomeOrExpenseForm.get('exchangeRate')?.setValue(incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd)">
+            restart_alt
+          </mat-icon>
+
+        }
+
+        <mat-icon matIconSuffix
+        matTooltip="Exchange rate related to USD">
+          info
+        </mat-icon>
+
+        @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('required')) {
+
+          <mat-error> Exchange rate is required. </mat-error>
+
+        }
+
+        @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('pattern')) {
+
+          <mat-error> Invalid exchange rate. Max 4 decimals and only digits. </mat-error>
+
+        }
+
+        @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('min')) {
+
+          <mat-error> Minimum couldn't be less than 0.000001. </mat-error>
+
+        }
+
+      </mat-form-field>
+
+
+      <!-- Notas -->
+      <mat-form-field class="w-full col-span-1 md:col-span-2 lg:col-span-3">
+
         <mat-label>Notes</mat-label>
-        <input matInput placeholder="Description" formControlName="notes">
+        <textarea matInput placeholder="Description" formControlName="notes"></textarea>
 
         <mat-icon matIconSuffix
         matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">

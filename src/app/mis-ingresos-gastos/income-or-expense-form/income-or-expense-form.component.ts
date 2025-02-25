@@ -24,6 +24,7 @@ import moment from 'moment';
 import { objectSelectedValidator } from 'src/app/shared/functions/Validators';
 import { TypeCheckPipe } from 'src/app/shared/pipes/TypeCheck/type-check.pipe';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
+import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -103,10 +104,6 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   // Máximo de longitud para las notas
   maxNotesLength: number = 150
 
-  // Mensajes de validación
-  readonly invalidAmount = 'Invalid amount. Max 13 digits and 2 decimals.'
-  readonly amountRequired = 'Amount is required.'
-
   constructor(
     public currencyExchangeService: CurrencyExchangeService,
     public categoriesService: CategoriesAndSubCategoriesService
@@ -128,7 +125,13 @@ export class IncomeOrExpenseFormComponent implements OnInit {
         Validators.maxLength(18) 
       ]),
 
-      currency: new FormControl(this.currencyExchangeService.selectedCurrency().currencyCode, [Validators.required]),
+      currency: new FormControl(this.currencyExchangeService.selectedCurrency(), [Validators.required]),
+
+      exchangeRate: new FormControl(this.currencyExchangeService.selectedCurrency().exchangeRateToUsd, [
+        Validators.required,
+        Validators.pattern(/^\d+(\.\d{1,4})?$/), // Permite números con hasta 4 decimales
+        Validators.min(0.000001) // Valor mínimo positivo
+      ]),
 
       notes: new FormControl('', [Validators.maxLength(this.maxNotesLength)])
 
@@ -220,7 +223,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     // Formulario de ingreso / gasto
     this.incomeOrExpenseForm.get('type')?.setValue(this.data.incomeOrExpense?.type)
     this.incomeOrExpenseForm.get('amount')?.setValue(this.selectedType() === 'expense' ? -this.data.incomeOrExpense!.amount : this.data.incomeOrExpense?.amount)
-    this.incomeOrExpenseForm.get('currency')?.setValue(this.data.incomeOrExpense?.currency)
+    this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.currencies().find(currency => currency.currencyCode === this.data.incomeOrExpense?.currency))
     this.incomeOrExpenseForm.get('date')?.setValue(this.data.incomeOrExpense?.transactionDate)
     this.incomeOrExpenseForm.get('notes')?.setValue(this.data.incomeOrExpense?.notes ? this.data.incomeOrExpense?.notes : '')
 
@@ -241,6 +244,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
       this.recurrenceForm.get('occurrences')?.setValue(this.data.incomeOrExpense?.recurrenceDetails?.occurrences)
 
     }
+
+    // Comprueba la selección de divisa
+    this.checkCurrencySelection()
 
   }
 
@@ -327,9 +333,8 @@ export class IncomeOrExpenseFormComponent implements OnInit {
           id: this.data.incomeOrExpense ? this.data.incomeOrExpense.id : undefined,
           amount: this.selectedType() === 'expense' ? Number(-this.incomeOrExpenseForm.get('amount')?.value) : Number(this.incomeOrExpenseForm.get('amount')?.value),
           category: this.incomeOrExpenseForm.get('category')?.value,
-          currency: this.incomeOrExpenseForm.get('currency')?.value,
-          exchangeRateToUsd: this.currencyExchangeService.currencies()
-            .find(currency => this.incomeOrExpenseForm.get('currency')?.value === currency.currencyCode)!.exchangeRateToUsd,
+          currency: this.incomeOrExpenseForm.get('currency')?.value.currencyCode,
+          exchangeRateToUsd: this.incomeOrExpenseForm.get('exchangeRate')?.value,
           transactionDate: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
           type: this.incomeOrExpenseForm.get('type')?.value,
           notes: this.incomeOrExpenseForm.get('notes')?.value,
@@ -384,6 +389,38 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   
     // Actualiza el valor del control de formulario
     this.incomeOrExpenseForm.get('amount')?.setValue(correctedValue, { emitEvent: false })
+
+  }
+
+  applyExchangeRate(): void {
+
+    this.checkCurrencySelection()
+
+    this.incomeOrExpenseForm.get('exchangeRate')?.setValue(this.incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd)
+
+  }
+
+  private checkCurrencySelection(): void {
+
+    const currencyControl = this.incomeOrExpenseForm.get('currency')
+    const exchangeRateControl = this.incomeOrExpenseForm.get('exchangeRate')
+    const isUSD = currencyControl?.value?.currencyCode === this.currencyCode.USD
+    
+    if (isUSD) {
+
+      // tar si no está ya deshabilitado
+      if (exchangeRateControl?.enabled) {
+        exchangeRateControl.disable()
+      }
+
+    } else {
+
+      // Solo habilitar si no está ya habilitado
+      if (exchangeRateControl?.disabled) {
+        exchangeRateControl.enable()
+      }
+
+    }
 
   }
 
