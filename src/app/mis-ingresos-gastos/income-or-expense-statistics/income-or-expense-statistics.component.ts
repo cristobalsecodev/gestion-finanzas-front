@@ -149,24 +149,16 @@ export class IncomeOrExpenseStatisticsComponent {
             allowPointSelect: true,
             cursor: 'pointer',
             borderRadius: 0,
-            dataLabels: [{
-                enabled: true,
-                distance: 20,
-                format: '{point.name}',
-                style: {
-                  color: 'var(--sys-on-background)',
-                  fontSize: '0.9em',
-                  fontWeight: 'bold',
-                  textOutline: 'none'
-                }
-            }, {
-                enabled: true,
-                distance: -15,
-                format: '{point.percentage:.0f}%',
-                style: {
-                    fontSize: '0.9em'
-                }
-            }],
+            dataLabels: [
+              {
+                  enabled: true,
+                  distance: -15,
+                  format: '{point.percentage:.0f}%',
+                  style: {
+                      fontSize: '0.9em'
+                  }
+              }
+            ],
             showInLegend: true
         }
     },
@@ -215,24 +207,16 @@ export class IncomeOrExpenseStatisticsComponent {
             allowPointSelect: true,
             cursor: 'pointer',
             borderRadius: 0,
-            dataLabels: [{
-                enabled: true,
-                distance: 20,
-                format: '{point.name}',
-                style: {
-                  color: 'var(--sys-on-background)',
-                  fontSize: '0.9em',
-                  fontWeight: 'bold',
-                  textOutline: 'none'
-                }
-            }, {
-                enabled: true,
-                distance: -15,
-                format: '{point.percentage:.0f}%',
-                style: {
-                    fontSize: '0.9em'
-                }
-            }],
+            dataLabels: [
+              {
+                  enabled: true,
+                  distance: -15,
+                  format: '{point.percentage:.0f}%',
+                  style: {
+                      fontSize: '0.9em'
+                  }
+              }
+            ],
             showInLegend: true
         }
     },
