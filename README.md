@@ -51,7 +51,7 @@ Si deseas contribuir a este proyecto, sigue estos pasos:
 5. Abre un Pull Request en este repositorio.
 
 ## 📜 Licencia
-Este proyecto está bajo la licencia MIT. Para más información, consulta el archivo `LICENSE`.
+Este proyecto está bajo la licencia MIT.
 
 ---
 Cualquier sugerencia o mejora es bienvenida. ¡Gracias por contribuir! 🚀
