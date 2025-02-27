@@ -1,12 +1,48 @@
-.selected-button {
-  color: var(--sys-surface-tint) !important;
+// .selected-button {
+//   color: var(--sys-surface-tint) !important;
+// }
+
+// .border-color {
+//   border-color: var(--sys-on-background);
+// }
+
+// .modificar-esquinas {
+//   border-top-left-radius: 0% !important;
+//   border-bottom-left-radius: 0% !important;
+// }
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
 }
 
-.border-color {
-  border-color: var(--sys-on-background);
+/* Estilos para el menú desplegable con mat-icon */
+
+.show-dropdown-menu {
+  display: block;
 }
 
-.modificar-esquinas {
-  border-top-left-radius: 0% !important;
-  border-bottom-left-radius: 0% !important;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
