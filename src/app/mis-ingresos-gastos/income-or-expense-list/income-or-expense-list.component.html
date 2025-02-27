@@ -499,3 +499,49 @@
     }
 
   </mat-menu>
+
+
+
+
+
+
+<div>
+  <!-- Sección filtros -->
+  <div class="bg-[var(--component)] rounded-lg shadow-lg overflow-hidden">
+
+    <!-- Cabecera del filtro -->
+    <div class="flex justify-between items-center p-4 border-b border-[var(--hover)] cursor-pointer" (click)="toggleFilters()">
+
+      <h2 class="font-semibold text-lg">Filters</h2>
+
+      @if(filtersOpen()) {
+
+        <span class="material-symbols-outlined">keyboard_arrow_up</span>
+
+      } @else {
+
+        <span class="material-symbols-outlined">keyboard_arrow_down</span>
+
+      }
+
+    </div>
+
+    <!-- Cuerpo del filtro -->
+    @if(filtersOpen()) {
+
+      <div @fadeAnimation>
+    
+        <div class="p-4">
+
+          
+
+        </div>
+
+      </div>
+
+    }
+
+
+  </div>
+
+</div>

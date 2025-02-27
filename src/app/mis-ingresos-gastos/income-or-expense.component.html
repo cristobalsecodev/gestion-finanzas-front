@@ -1,15 +1,32 @@
-<div class="md:flex h-[calc(100vh-4rem)]">
+<!-- <div class="md:flex h-[calc(100vh-4rem)]"> -->
   <!-- Sección filtros y lista -->
-  <section class="md:w-2/5 m-3 overflow-y-auto max-h-full">
+  <!-- <section class="md:w-2/5 m-3 overflow-y-auto max-h-full">
     <mat-card appearance="outlined" class="p-4">
       <app-income-or-expense-list></app-income-or-expense-list>
     </mat-card>
-  </section>
+  </section> -->
 
   <!-- Sección de gráficos -->
-  <section class="md:w-3/5 m-3">
+  <!-- <section class="md:w-3/5 m-3">
     <mat-card appearance="outlined" class="p-4 sticky">
       <app-income-or-expense-statistics></app-income-or-expense-statistics>
     </mat-card>
   </section>
+</div> -->
+
+<div class="grid grid-cols-1 gap-6">
+
+  <!-- Sección filtro -->
+  <section>
+
+    <app-income-or-expense-list></app-income-or-expense-list>
+
+  </section>
+
+  <section>
+
+    <app-income-or-expense-statistics></app-income-or-expense-statistics>
+
+  </section>
+
 </div>

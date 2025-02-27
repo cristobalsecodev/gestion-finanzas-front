@@ -65,17 +65,23 @@ import { CategoriesSubcategoriesFormComponent } from '../categories-subcategorie
     FormatThousandSeparatorsPipe
   ],
   animations: [
-    // Animación para el componente de detalles
-    trigger('fadeInOut', [
-      state('void', style({ opacity: 0, transform: 'translateY(-30px)' })),
-      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
-      transition('void <=> *', animate('80ms ease-in-out')),
+    trigger('fadeAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
     ])
   ],
   templateUrl: './income-or-expense-list.component.html',
   styleUrl: './income-or-expense-list.component.scss'
 })
 export class IncomeOrExpenseListComponent implements OnInit {
+
+  // Despliega y contrae el filtro
+  filtersOpen = signal<boolean>(false)
 
   // Formulario de filtro
   filterForm!: FormGroup
@@ -603,6 +609,12 @@ export class IncomeOrExpenseListComponent implements OnInit {
     const unit = frequency === 1 ? recurrence.singular : recurrence.plural
 
     return `The recurrence occurs every ${frequency} ${unit}.`
+
+  }
+
+  toggleFilters(): void {
+
+    this.filtersOpen.update(value => !value)
 
   }
   

@@ -73,7 +73,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private elementRef: ElementRef,
-    iconRegistry: MatIconRegistry,
     private viewportScroller: ViewportScroller,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
@@ -88,9 +87,6 @@ export class AppComponent implements OnInit {
       )
 
     })
-
-    // Añade la clase necesaria para el funcionamiento de los material symbols (mat-icons)
-    iconRegistry.setDefaultFontSetClass('material-symbols-outlined')
 
   }
   

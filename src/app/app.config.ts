@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { authInterceptor } from './auth/interceptors/AuthInterceptor/auth.interceptor';
 import { errorInterceptor } from './shared/interceptors/error.interceptor';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { MatIconRegistry } from '@angular/material/icon';
 
 export const MY_FORMATS = {
   parse: {
@@ -26,6 +27,16 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes), 
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])), 
     provideAnimationsAsync(),
-    provideMomentDateAdapter(MY_FORMATS)
+    provideMomentDateAdapter(MY_FORMATS),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (iconRegistry: MatIconRegistry) => {
+        return () => {
+          iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
+        };
+      },
+      deps: [MatIconRegistry],
+      multi: true
+    }
   ]
 };
