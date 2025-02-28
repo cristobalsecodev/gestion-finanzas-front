@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -124,8 +124,12 @@ export class IncomeOrExpenseListComponent implements OnInit {
   // Loader
   filterLoader = signal<boolean>(false)
 
+  // Controla el menú desplegable de divisas
+  dropdownOpen = false
+
   constructor(
-    private storageService: StorageService
+    private storageService: StorageService,
+    private elementRef: ElementRef
   ) {
 
     // Filtro
@@ -617,5 +621,56 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.filtersOpen.update(value => !value)
 
   }
+
+  toggleDropdown(event: MouseEvent) {
+
+    this.dropdownOpen = !this.dropdownOpen
+
+    event.stopPropagation()
+
+    const dropdown = document.getElementById('size-dropdown-menu')
+
+    if (dropdown) {
+
+      if (this.dropdownOpen) {
+        dropdown.classList.add('show-dropdown-menu')
+      } else {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+
+    }
+
+  }
+
+  // Cierra el dropdown si se hace clic fuera
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+
+    // Si el dropdown no está abierto, no hace nada
+    if (!this.dropdownOpen) return
+    
+    const target = event.target as HTMLElement
   
+    // Referencia el dropdown
+    const dropdown = document.getElementById('size-dropdown-menu')
+    
+    // Verifica el botón que abre el dropdown
+    const dropdownButton = document.getElementById('button-dropdown')
+    
+    // Comprueba si el clic fue dentro del dropdown o en el botón
+    const clickedInDropdown = dropdown && dropdown.contains(target)
+    const clickedOnButton = dropdownButton && dropdownButton.contains(target)
+    
+    // Solo cierra si el clic fue fuera de ambos elementos
+    if (!clickedInDropdown && !clickedOnButton && this.dropdownOpen) {
+      this.dropdownOpen = false
+      
+      if (dropdown) {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+      
+      event.stopPropagation()
+    }
+  }
+
 }

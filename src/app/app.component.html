@@ -88,7 +88,9 @@
 
         <div class="relative inline-block">
 
-          <button class="flex items-center bg-[var(--component)] hover:bg-[var(--hover)] rounded-md px-3 py-1 gap-2 transition-colors duration-200" (click)="toggleDropdown()"
+          <button id="button-dropdown" 
+          class="flex items-center bg-[var(--component)] hover:bg-[var(--component-hover)] rounded-md px-3 py-1 gap-2 transition-colors duration-200"
+          (click)="toggleDropdown($event)"
           matTooltip="Favorite currency: {{ currencyExchangeService.selectedCurrency().currencyName }}">
 
             <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
@@ -96,11 +98,13 @@
 
           </button>
     
-          <div id="currency-dropdown-menu" class="absolute top-full left-0 min-w-60 max-h-72 overflow-y-auto bg-[var(--component)] rounded-sm shadow-md z-50 hidden mt-1">
+          <div id="currency-dropdown-menu" 
+          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm shadow-md z-[1000] hidden mt-1">
 
             @for(currency of currencyExchangeService.currencies(); track currency) {
 
-              <div class="flex hover:bg-[var(--hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
+              <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
+              (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
 
                 <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
                 <span class="flex-grow">{{ currency.currencyName }}</span>
@@ -133,7 +137,7 @@
             : themeModeService.themeModes.DARK
         )">
 
-          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none color-[var(--text)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--hover)] transition-colors duration-200">
+          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none color-[var(--text-primary)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--component-hover)] transition-colors duration-200">
             
             @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
               dark_mode
@@ -147,7 +151,7 @@
 
         <button (click)="logout()">
 
-          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none color-[var(--text)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--hover)] transition-colors duration-200">
+          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none color-[var(--text-primary)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--component-hover)] transition-colors duration-200">
             logout
           </span>
 

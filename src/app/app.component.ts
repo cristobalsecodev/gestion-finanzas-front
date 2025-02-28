@@ -1,5 +1,5 @@
 import { CommonModule, ViewportScroller } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -52,9 +52,7 @@ export class AppComponent implements OnInit {
   // Almacena la URL
   currentUrl = signal<string>('')
 
-  // Comprueba si el sidenav está abierto
-  sidenavOpened: boolean = false
-
+  // Controla el menú desplegable de divisas
   dropdownOpen = false
 
   // Rutas
@@ -72,7 +70,6 @@ export class AppComponent implements OnInit {
   private dialog = inject(MatDialog)
 
   constructor(
-    private elementRef: ElementRef,
     private viewportScroller: ViewportScroller,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
@@ -137,35 +134,53 @@ export class AppComponent implements OnInit {
   }
 
 
-  toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
-    const dropdown = document.getElementById('currency-dropdown-menu');
+  toggleDropdown(event: MouseEvent) {
+
+    this.dropdownOpen = !this.dropdownOpen
+
+    event.stopPropagation()
+
+    const dropdown = document.getElementById('currency-dropdown-menu')
+
     if (dropdown) {
       if (this.dropdownOpen) {
-        dropdown.classList.add('show-dropdown-menu');
+        dropdown.classList.add('show-dropdown-menu')
       } else {
-        dropdown.classList.remove('show-dropdown-menu');
+        dropdown.classList.remove('show-dropdown-menu')
       }
     }
+
   }
   
   // Cierra el dropdown si se hace clic fuera
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    const isInside = this.elementRef.nativeElement.contains(target);
+
+    // Si el dropdown no está abierto, no hace nada
+    if (!this.dropdownOpen) return
     
-    if (!isInside && this.dropdownOpen) {
-      this.dropdownOpen = false;
-      const dropdown = document.getElementById('currency-dropdown-menu');
+    const target = event.target as HTMLElement
+  
+    // Referencia el dropdown
+    const dropdown = document.getElementById('currency-dropdown-menu')
+    
+    // Verifica el botón que abre el dropdown
+    const dropdownButton = document.getElementById('button-dropdown')
+    
+    // Comprueba si el clic fue dentro del dropdown o en el botón
+    const clickedInDropdown = dropdown && dropdown.contains(target)
+    const clickedOnButton = dropdownButton && dropdownButton.contains(target)
+    
+    // Solo cierra si el clic fue fuera de ambos elementos
+    if (!clickedInDropdown && !clickedOnButton && this.dropdownOpen) {
+      this.dropdownOpen = false
+      
       if (dropdown) {
-        dropdown.classList.remove('show-dropdown-menu');
+        dropdown.classList.remove('show-dropdown-menu')
       }
+
+      event.stopPropagation()
     }
   }
-  
-  // Prevenir que el clic en el dropdown se propague al documento
-  onDropdownClick(event: MouseEvent) {
-    event.stopPropagation();
-  }
+
 }
