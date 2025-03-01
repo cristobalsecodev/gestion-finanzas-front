@@ -77,6 +77,8 @@ export class TokenService {
       this.storageService.removeSession('token')
       this.notificationsService.addNotification('Session expired', 'warning')
 
+      this.stopTokenCheck()
+
     }
 
     this.isTokenValid.set(isValid)

@@ -192,7 +192,9 @@ html {
   --text-primary: #f1f5f9;
   --text-secondary: #94A3B8;
   --positive: #4ade80;
+  --positive-hover: rgba(74, 222, 128, 0.1);
   --negative: #f87171;
+  --negative-hover: rgba(248, 113, 113, 0.1);
 
   --red: #f44336;
 
@@ -270,7 +272,40 @@ h1 {
 
 }
 
-/* Estilos botón compartidos */
+// Menús desplegables
+.show-dropdown-menu {
+  display: block;
+}
+
+.dropdown-shadow {
+  --tw-shadow: 0 25px 50px 20px rgb(0 0 0 / 0.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+// Clases de los badges de ingresos y gastos
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.badge-expense {
+  background-color: var(--negative-hover);
+  color: var(--negative);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.badge-income {
+  background-color: var(--positive-hover);
+  color: var(--positive);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+// Estilos botón compartidos
 .button-base {
   display: flex;
   align-items: center;
@@ -281,25 +316,26 @@ h1 {
   border: none;
 }
 
-/* Estilos específicos para botón principal y secundario */
+// Estilos específicos para botón principal y secundario
 .button {
   @extend .button-base;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
 }
 
-/* Estilos específicos para botón terciario */
+// Estilos específicos para botón terciario
 .tertiary-button {
   @extend .button-base;
 }
 
-// Menús desplegables
-.show-dropdown-menu {
-  display: block;
-}
-
-.dropdown-shadow {
-  --tw-shadow: 0 25px 50px 20px rgb(0 0 0 / 0.25);
-  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+// Botón de icono
+.button-icon {
+  @extend .button-base;
+  background-color: transparent;
+  border: 1px solid var(--component-hover);
+  color: var(--text-secondary);
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
+  transition: all 0.2s;
 }

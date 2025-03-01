@@ -1,6 +1,6 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,6 +20,8 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
 import { CommonModule } from '@angular/common';
 import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
+import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -28,6 +30,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     // Angular core
     ReactiveFormsModule,
     CommonModule,
+    RouterLink,
     // Angular material
     MatInputModule,
     MatFormFieldModule,
@@ -53,6 +56,9 @@ export class CategoriesSubcategoriesFormComponent {
   // Tipos de acción
   readonly actionTypes = ActionType
 
+  // Ruta a ingresos y gastos
+  incomeExpensesRoute = incomeExpensesRoute
+
   // Máximo de longitud para las notas
   maxNotesLength: number = 30
 
@@ -61,6 +67,8 @@ export class CategoriesSubcategoriesFormComponent {
 
   // Comprueba si el formulario de subcategoría está activo
   isFormSubcategory = signal<boolean>(false)
+
+  manageSubcategories = signal<boolean>(false)
 
   // Comprueba la acción el formulario de categoría
   actionTypeCategory = signal<ActionType | undefined>(undefined)
@@ -83,6 +91,7 @@ export class CategoriesSubcategoriesFormComponent {
   // Edición de categoría y subcategoría
   editingCategory: Categories | undefined
   editingSubcategory: BaseCategory | undefined
+  editType: string | undefined
 
   // Servicio
   categoriesService = inject(CategoriesAndSubCategoriesService)
@@ -142,6 +151,7 @@ export class CategoriesSubcategoriesFormComponent {
       next: (categories) => {
 
         this.categories = categories
+        this.filteredCategories = categories
         this.dataSourceCategories.data = categories
 
         this.tableLoader.set(false)
@@ -154,6 +164,22 @@ export class CategoriesSubcategoriesFormComponent {
       }
     })
 
+  }
+
+  filterSearch(): void {
+
+    const searchTerm = this.searchName.value?.trim().toLowerCase() || ''
+    const selectedType = this.searchType.value || ''
+  
+    // Filtrar por tipo
+    let categoriesFiltered = this.categories
+    
+    if (selectedType) {
+      categoriesFiltered = categoriesFiltered.filter(category => category.type === selectedType)
+    }
+  
+    // Aplicar filtro de búsqueda si hay un término
+    this.filteredCategories = searchTerm ? filterAutocomplete(categoriesFiltered, searchTerm, ['name']) : categoriesFiltered
   }
 
   applyFilter(): void {
@@ -202,11 +228,11 @@ export class CategoriesSubcategoriesFormComponent {
 
   setEditCategory(category: Categories): void {
 
-    this.isFormCategory.set(true)
     this.actionTypeCategory.set(this.actionTypes.EDIT)
 
     this.editingCategory = category
-
+    this.editType = category.type
+  
     this.categoryForm.get('name')?.setValue(category.name)
     this.categoryForm.get('type')?.setValue(category.type)
     this.categoryForm.get('color')?.setValue(category.color)
@@ -239,6 +265,7 @@ export class CategoriesSubcategoriesFormComponent {
 
     this.categoryForm.reset()
     this.editingCategory = undefined
+    this.editType = undefined
     
     this.dataSourceSubcategories.data = []
 

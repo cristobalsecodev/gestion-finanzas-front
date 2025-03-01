@@ -36,6 +36,8 @@ import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
 import { allRecordsSignal } from '../utils/SharedList';
 import { CategoriesSubcategoriesFormComponent } from '../categories-subcategories-form/categories-subcategories-form.component';
+import { Router } from '@angular/router';
+import { categoriesRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -103,6 +105,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   incomeOrExpenseService = inject(IncomeOrExpenseService)
   categoriesService = inject(CategoriesAndSubCategoriesService)
   notificationsService = inject(NotificacionesService)
+  router = inject(Router)
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -128,8 +131,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
   dropdownOpen = false
 
   constructor(
-    private storageService: StorageService,
-    private elementRef: ElementRef
+    private storageService: StorageService
   ) {
 
     // Filtro
@@ -517,25 +519,27 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  openCategoriesDialog(): void {
+  goToCategories(): void {
 
-    const screenWidth = window.innerWidth
+    this.router.navigate([categoriesRoute])
 
-    this.dialog.open(CategoriesSubcategoriesFormComponent, {
+    // const screenWidth = window.innerWidth
 
-      width: screenWidth < 600 ? '90vw' : '65vw',
-      maxWidth: '90vw',
-      height: screenWidth < 600 ? '70vh' : '60vh',
-      maxHeight: '80vh',
-      disableClose: true
+    // this.dialog.open(CategoriesSubcategoriesFormComponent, {
 
-    }).afterClosed().subscribe((() => {
+    //   width: screenWidth < 600 ? '90vw' : '65vw',
+    //   maxWidth: '90vw',
+    //   height: screenWidth < 600 ? '70vh' : '60vh',
+    //   maxHeight: '80vh',
+    //   disableClose: true
 
-      this.callServices()
+    // }).afterClosed().subscribe((() => {
 
-      this.filterList(this.pageSize())
+    //   this.callServices()
 
-    }))
+    //   this.filterList(this.pageSize())
+
+    // }))
 
   }
 

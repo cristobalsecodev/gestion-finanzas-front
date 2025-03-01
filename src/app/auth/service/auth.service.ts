@@ -62,10 +62,16 @@ export class AuthService {
     // Llama al servicio de divisas
     this.currencyExchangeService.manageCurrencyService()
 
+    
+
     // Empieza a comprobar el checkeo si no existe el intervalo
     if(!this.tokenService.intervalId) {
 
       this.tokenService.startTokenCheck()
+
+    } else {
+
+      this.tokenService.checkTokenValidity()
 
     }
 
@@ -99,7 +105,11 @@ export class AuthService {
           if(!this.tokenService.intervalId) {
 
             this.tokenService.startTokenCheck()
-
+      
+          } else {
+      
+            this.tokenService.checkTokenValidity()
+      
           }
 
           this.router.navigate([activateAccountRoute])
@@ -121,10 +131,7 @@ export class AuthService {
   // Cierre de sesión
   logout(): void {
 
-    this.tokenService.stopTokenCheck()
-
     this.storageService.removeSession('token')
-
     this.tokenService.checkTokenValidity()
 
   }

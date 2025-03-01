@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
-import { activateAccountRoute, incomeExpensesRoute, loginRoute, signUpRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, categoriesRoute, incomeExpensesFormRoute, incomeExpensesRoute, loginRoute, signUpRoute } from './shared/constants/variables.constants';
 import { NotificacionesComponent } from './shared/components/notificaciones/notificaciones.component';
 import { AuthService } from './auth/service/auth.service';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
@@ -132,6 +132,30 @@ export class AppComponent implements OnInit {
 
     });
     
+  }
+
+  showTitle(): string {
+
+    const actualRoute = this.router.url
+
+    if(actualRoute.includes(incomeExpensesRoute)) {
+
+      return 'Financial dashboard'
+
+    } else if(actualRoute.includes(categoriesRoute)) {
+
+      return 'Managing categories'
+
+    } else if(actualRoute.includes(incomeExpensesFormRoute)) {
+
+      return 'Transaction Form'
+
+    } else {
+
+      return ''
+
+    }
+
   }
 
   currencyChange(currency: CurrencyExchange): void {
