@@ -443,6 +443,16 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   filterList(size: number = 10): void {
 
+    // Cierra el dropdown
+    this.dropdownOpen = false
+    
+    // Actualiza la clase del dropdown
+    const dropdown = document.getElementById('size-dropdown-menu')
+
+    if (dropdown) {
+      dropdown.classList.remove('show-dropdown-menu')
+    } 
+
     // Resetea los valores de la lista y paginación
     this.pageSize.set(size)
 

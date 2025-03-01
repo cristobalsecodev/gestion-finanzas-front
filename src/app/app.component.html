@@ -73,14 +73,12 @@
 
   @if(tokenService.isTokenValid()) {
 
-
-
     <!-- Cabecera -->
     <header>
       <div class="flex gap-3 md:flex-row md:items-center items-start flex-col">
 
         <h1>Financial dashboard</h1>
-        <span class="text-xs bg-[var(--primary)] px-2 rounded">v{{ version }}</span>
+        <span class="text-xs bg-[var(--primary)] px-2 rounded cursor-default">v{{ version }}</span>
 
       </div>
 
@@ -94,7 +92,7 @@
           matTooltip="Favorite currency: {{ currencyExchangeService.selectedCurrency().currencyName }}">
 
             <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
-            <span>{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
+            <span class="text-sm">{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
 
           </button>
     
@@ -104,7 +102,7 @@
             @for(currency of currencyExchangeService.currencies(); track currency) {
 
               <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
-              (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
+              (click)="currencyChange(currency)">
 
                 <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
                 <span class="flex-grow">{{ currency.currencyName }}</span>
@@ -117,7 +115,7 @@
 
             } @empty {
 
-              <div class="color-[--red]" 
+              <div class="color-[var(--sys-error)]" 
               matTooltip="It is possible that the API has reached its maximum call limit">
 
                 <span class="material-symbols-outlined mr-2">report</span>

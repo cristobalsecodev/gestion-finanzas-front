@@ -9,6 +9,9 @@ $custom-theme: mat.define-theme((
     use-system-variables: true
 
   ),
+  density: (
+    scale: -1
+  )
 
 ));
 
@@ -103,8 +106,6 @@ html {
   --sys-surface-container: #1e2328;
   --sys-surface-container-high: #272c31;
   --sys-surface-container-highest: #32373c;
-  --sys-on-surface: #dce1e6;
-  --sys-surface-variant: #3c434a;
   --sys-on-surface-variant: #b3bac2;
   --sys-inverse-surface: #dadfe4;
   --sys-inverse-on-surface: #2c3136;
@@ -114,7 +115,6 @@ html {
   --sys-scrim: #000000;
   --sys-surface-tint: #78b7e3;
 
-  --sys-primary: #78b7e3;
   --sys-on-primary: #002a41;
   --sys-primary-container: #003d5c;
   --sys-on-primary-container: #bfe3ff;
@@ -130,7 +130,6 @@ html {
   --sys-tertiary-container: #423066;
   --sys-on-tertiary-container: #e7dbff;
 
-  --sys-error: #f28b82;
   --sys-on-error: #541b18;
   --sys-error-container: #692d2a;
   --sys-on-error-container: #ffdad5;
@@ -161,6 +160,25 @@ html {
   --sys-error-fixed-dim: #f28b82;
   --sys-on-error-fixed: #3b0907;
   --sys-on-error-fixed-variant: #692d2a;
+
+
+  // Angular material
+  --mat-full-pseudo-checkbox-selected-icon-color: #60a5fa;
+  --mdc-checkbox-selected-icon-color: #60a5fa;
+  --mdc-checkbox-selected-hover-icon-color: #60A5FA1A;
+
+  --mat-option-selected-state-layer-color: #60A5FA1A;
+  --mat-option-selected-state-label-text-color: #60a5fa;
+  --mat-select-panel-background-color: #1e293b;
+
+  --mat-select-trigger-text-size: 0.875rem;
+  --mat-form-field-container-text-size: 0.875rem;
+
+  --sys-surface-variant: #334155;
+  --sys-error: #f87171;
+  --sys-on-surface: #f1f5f9;
+
+  --sys-primary: #60a5fa;
 
   /* Custom */
   --background: #0f172a;

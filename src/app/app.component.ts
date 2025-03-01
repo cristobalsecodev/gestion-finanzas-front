@@ -22,6 +22,7 @@ import { TokenService } from './shared/services/token/token.service';
 import packageJson from '../../package.json'
 import { MatDialog } from '@angular/material/dialog';
 import { ActionDialogComponent } from './shared/components/dialogs/action-dialog/action-dialog.component';
+import { CurrencyExchange } from './shared/services/CurrencyExchange/CurrencyExchange.interface';
 
 @Component({
   selector: 'app-root',
@@ -131,6 +132,22 @@ export class AppComponent implements OnInit {
 
     });
     
+  }
+
+  currencyChange(currency: CurrencyExchange): void {
+
+    this.currencyExchangeService.selectFavoriteCurrency(currency)
+
+    // Cierra el dropdown
+    this.dropdownOpen = false
+    
+    // Actualiza la clase del dropdown
+    const dropdown = document.getElementById('currency-dropdown-menu')
+
+    if (dropdown) {
+      dropdown.classList.remove('show-dropdown-menu')
+    } 
+
   }
 
 

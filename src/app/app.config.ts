@@ -13,7 +13,7 @@ export const MY_FORMATS = {
     dateInput: 'YYYY-MM-DD', // Valor almacenado y parseado
   },
   display: {
-    dateInput: 'MMMM DD, YYYY', // Formato visual
+    dateInput: 'DD/MM/YYYY', // Formato visual
     monthYearLabel: 'MMM YYYY',
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'MMMM YYYY',

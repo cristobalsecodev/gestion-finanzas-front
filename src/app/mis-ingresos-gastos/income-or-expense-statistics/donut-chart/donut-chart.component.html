@@ -3,17 +3,19 @@
   <div #tooltip class="tooltip"></div>
   <svg #donutChart [attr.width]="width" [attr.height]="height"></svg>
 
-  <div class="mt-5 flex flex-wrap justify-center">
+  <div class="mt-5 flex flex-wrap justify-center gap-3">
 
     @for (item of data; track $index) {
-
-      <div class="flex items-center text-sm">
-        <div class="w-4 h-4 mr-1 rounded-sm" [style.background-color]="item.color"></div>
-        <span>{{ item.category }}: {{ calculatePercentage(item.amount) }}%</span>
+  
+      <div matTooltip="{{ item.amount | formatThousandSeparators }} {{ 0 | currencySymbol: currencyCode }}"
+      class="flex items-center text-sm p-2 rounded-lg transition-all duration-200 hover:bg-[var(--tertiary-hover)] hover:shadow-sm cursor-default">
+        <div class="w-5 h-5 mr-2 rounded-md shadow-sm" [style.background-color]="item.color"></div>
+        <span class="font-medium">{{ item.category }}:</span>
+        <span class="ml-1 color-[var(--text-secondary)]">{{ calculatePercentage(item.amount) }}%</span>
       </div>
-
+  
     }
-
+  
   </div>
 
 </div>

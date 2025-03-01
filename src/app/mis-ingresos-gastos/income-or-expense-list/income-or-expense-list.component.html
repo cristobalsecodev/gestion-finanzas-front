@@ -545,7 +545,7 @@
           <div class="grid grid-cols-2 gap-4">
 
             <!-- Fecha desde -->
-            <mat-form-field>
+            <mat-form-field density="compact">
 
               <mat-label class="flex">
 
@@ -806,7 +806,7 @@
                   <div matTooltip="{{ record.amount | formatThousandSeparators }}"
                   [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)"
                   [ngStyle]="{'color': record.type === 'income' ? 'var(--positive)' : 'var(--negative)'}"
-                  class="cursor-default">
+                  class="cursor-default whitespace-nowrap">
                     {{ record.amount | formatAmount }} {{ 0 | currencySymbol: record.currency }}
                   </div>
 
@@ -857,7 +857,7 @@
 
         } @else {
 
-          <span>All loaded</span>
+          <span class="cursor-default">All loaded</span>
 
         }
 
