@@ -77,18 +77,18 @@
 
     <!-- Cabecera -->
     <header>
-      <div class="flex items-center gap-3">
+      <div class="flex gap-3 md:flex-row md:items-center items-start flex-col">
 
         <h1>Financial dashboard</h1>
         <span class="text-xs bg-[var(--primary)] px-2 rounded">v{{ version }}</span>
 
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center md:gap-4 gap-2">
 
         <div class="relative inline-block">
 
-          <button id="button-dropdown" 
+          <button id="currency-button-dropdown" 
           class="flex items-center bg-[var(--component)] hover:bg-[var(--component-hover)] rounded-md px-3 py-1 gap-2 transition-colors duration-200"
           (click)="toggleDropdown($event)"
           matTooltip="Favorite currency: {{ currencyExchangeService.selectedCurrency().currencyName }}">
@@ -99,7 +99,7 @@
           </button>
     
           <div id="currency-dropdown-menu" 
-          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm shadow-md z-[1000] hidden mt-1">
+          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm dropdown-shadow z-[1000] hidden mt-1">
 
             @for(currency of currencyExchangeService.currencies(); track currency) {
 
@@ -156,6 +156,7 @@
           </span>
 
         </button>
+        
       </div>
     </header>
 

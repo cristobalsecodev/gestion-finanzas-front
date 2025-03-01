@@ -1,0 +1,19 @@
+<div class="relative flex flex-col items-center">
+
+  <div #tooltip class="tooltip"></div>
+  <svg #donutChart [attr.width]="width" [attr.height]="height"></svg>
+
+  <div class="mt-5 flex flex-wrap justify-center">
+
+    @for (item of data; track $index) {
+
+      <div class="flex items-center text-sm">
+        <div class="w-4 h-4 mr-1 rounded-sm" [style.background-color]="item.color"></div>
+        <span>{{ item.category }}: {{ calculatePercentage(item.amount) }}%</span>
+      </div>
+
+    }
+
+  </div>
+
+</div>

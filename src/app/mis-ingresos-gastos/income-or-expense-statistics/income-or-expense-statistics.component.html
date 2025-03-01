@@ -1,44 +1,44 @@
-<app-currency-selector 
+<!-- <app-currency-selector 
 (emitCurrency)="currencyChange($event)" 
 [buttonText]="'Viewing charts in this currency: '"
 [tooltip]="'Convert all the charts into the selected currency'"
-></app-currency-selector>
+></app-currency-selector> -->
 
-@if(recordsComputed().length > 0) {
+<!-- @if(recordsComputed().length > 0) {
 
-  <section class="flex flex-wrap justify-center gap-5">
+  <section class="flex flex-wrap justify-center gap-5"> -->
     <!-- Income graphic -->
-    <div class="w-full md:w-2/5">
+    <!-- <div class="w-full md:w-2/5">
       <highcharts-chart
         [Highcharts]="Highcharts"
         [options]="incomeChartOptions"
         class="w-full block">
       </highcharts-chart>
-    </div>
+    </div> -->
   
     <!-- Expense graphic -->
-    <div class="w-full md:w-2/5">
+    <!-- <div class="w-full md:w-2/5">
       <highcharts-chart
         [Highcharts]="Highcharts"
         [options]="expenseChartOptions"
         class="w-full block">
       </highcharts-chart>
     </div>
-  </section>
+  </section> -->
   
   <!-- Resume graphic -->
-  <section class="w-full mt-5">
+  <!-- <section class="w-full mt-5">
     <highcharts-chart
       [Highcharts]="Highcharts"
       [options]="resumeOptions"
       class="w-full block">
     </highcharts-chart>
-  </section>
+  </section> -->
   
-} @else {
+<!-- } @else { -->
 
   <!-- Mensaje cuando no hay datos -->
-  <div class="flex flex-col items-center justify-center text-center h-[50vh]">
+  <!-- <div class="flex flex-col items-center justify-center text-center h-[50vh]">
     <mat-icon class="animate-pulse">query_stats</mat-icon>
     <p class="text-xl mt-4 font-semibold">
       No data available to display charts
@@ -50,3 +50,132 @@
 
 
 }
+ -->
+
+
+
+
+
+
+
+
+<!-- Charts Section -->
+<div>
+  <div class="bg-[var(--component)] rounded-lg shadow-lg mb-6">
+    <div class="p-4">
+      <div class="relative inline-block">
+
+        <button id="graphics-button-dropdown" 
+        class="button bg-[var(--component-hover)] hover:bg-[var(--secondary-hover)] disabled:opacity-50 disabled:pointer-events-none text-base mb-4"
+        (click)="toggleDropdown($event)"
+        matTooltip="Converts all incomes and expenses into one currency">
+          <span>All graphs are displayed in:</span>
+          <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
+          <span>{{ selectedCurrency.currencyCode }}</span>
+
+        </button>
+  
+        <div id="graphics-currency-dropdown-menu" 
+        class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm dropdown-shadow z-[1000] hidden mt-1">
+
+          @for(currency of currencyExchangeService.currencies(); track currency) {
+
+            <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
+            (click)="currencyChange(currency)">
+
+              <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
+              <span class="flex-grow">{{ currency.currencyName }}</span>
+
+              @if(currency.currencyCode === selectedCurrency.currencyCode) {
+                <span class="material-symbols-outlined color-[var(--primary)]">check</span>
+              }
+
+            </div>
+
+          } @empty {
+
+            <div class="color-[--red]" 
+            matTooltip="It is possible that the API has reached its maximum call limit">
+
+              <span class="material-symbols-outlined mr-2">report</span>
+              <span>No currencies available</span>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="grid md:grid-cols-2 grid-cols-1 gap-6">
+
+        <!-- Income Overview -->
+        <div>
+          <h3 class="text-center font-semibold mb-4">Income overview</h3>
+          <div class="flex justify-center">
+            <app-donut-chart [data]="chartData"></app-donut-chart>
+          </div>
+        </div>
+
+        <!-- Expense Overview -->
+        <div>
+          <h3 class="text-center font-semibold mb-4">Expense overview</h3>
+          <div class="flex justify-center">
+            <app-donut-chart [data]="chartData"></app-donut-chart>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Income vs Expenses Bar Chart -->
+  <div class="card">
+    <div class="card-body">
+      <h3 class="chart-title">Comparación de ingresos y gastos</h3>
+      <div class="bar-chart">
+        <div class="chart-row">
+          <div class="chart-label">Resumen</div>
+          <div class="chart-bar-container">
+            <div class="chart-bar bar-green" style="width: 78%"></div>
+            <span class="chart-value">387</span>
+          </div>
+        </div>
+        <div class="chart-row" style="margin-top: 0.5rem;">
+          <div class="chart-label"></div>
+          <div class="chart-bar-container">
+            <div class="chart-bar bar-red" style="width: 19%"></div>
+            <span class="chart-value">97</span>
+          </div>
+        </div>
+        
+        <div class="chart-axis">
+          <div>0</div>
+          <div>40</div>
+          <div>80</div>
+          <div>120</div>
+          <div>160</div>
+          <div>200</div>
+          <div>240</div>
+          <div>280</div>
+          <div>320</div>
+          <div>360</div>
+          <div>400</div>
+          <div>440</div>
+        </div>
+
+        <div class="legend" style="margin-top: 1.5rem;">
+          <div class="legend-item">
+            <span class="legend-color color-red"></span>
+            <span>Gastos</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color color-green"></span>
+            <span>Ingresos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

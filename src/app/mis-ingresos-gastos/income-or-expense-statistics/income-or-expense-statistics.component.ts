@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, HostListener, inject } from '@angular/core';
 import { allRecordsSignal } from '../utils/SharedList';
 import { CommonModule } from '@angular/common';
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -9,8 +9,12 @@ import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchang
 import { TokenService } from 'src/app/shared/services/token/token.service';
 import { IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 import { convertAmountsIntoOneCurrency } from 'src/app/shared/functions/ConvertCurrencies';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { style } from '@angular/animations';
+import { FLAGS } from 'src/app/shared/constants/svg.constants';
+import { DomSanitizer } from '@angular/platform-browser';
+import { CurrencyCodeENUM, CurrencyNameENUM } from 'src/app/shared/enums/Currency.enum';
+import { DonutChartComponent } from './donut-chart/donut-chart.component';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -23,7 +27,8 @@ import { style } from '@angular/animations';
     // Librería
     HighchartsChartModule,
     // Componentes
-    CurrencySelectorComponent
+    CurrencySelectorComponent,
+    DonutChartComponent
   ],
   templateUrl: './income-or-expense-statistics.component.html',
   styleUrl: './income-or-expense-statistics.component.scss'
@@ -235,7 +240,17 @@ export class IncomeOrExpenseStatisticsComponent {
   currencyExchangeService = inject(CurrencyExchangeService)
   tokenService = inject(TokenService)
 
-  constructor() {
+  // Controla el menú desplegable de divisas
+  dropdownOpen = false
+
+  selectedCurrency: CurrencyExchange = this.currencyExchangeService.defaultCurrency
+
+  chartData: any
+  
+  constructor(
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
+  ) {
 
     // Suscribe los cambios del signal para actualizar los gráficos
     effect(() => {
@@ -246,6 +261,24 @@ export class IncomeOrExpenseStatisticsComponent {
       )
 
     })
+
+    // Añadimos los SVGs
+    FLAGS.forEach(flag => {
+
+      this.matIconRegistry.addSvgIconLiteral(
+        flag.currencyCode,
+        this.domSanitizer.bypassSecurityTrustHtml(flag.svg)
+      )
+
+    })
+
+    this.chartData = [
+      { category: "Test1", amount: 30, color: "#FF6384" },
+      { category: "Test2", amount: 50, color: "#36A2EB" },
+      { category: "Test3", amount: 20, color: "#FFCE56" },
+      { category: "Test4", amount: 40, color: "#4BC0C0" },
+      { category: "Test5", amount: 15, color: "#9966FF" }
+    ];
 
   }
 
@@ -326,8 +359,29 @@ export class IncomeOrExpenseStatisticsComponent {
       color: data.color
     }))
   }
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   currencyChange(currency: CurrencyExchange) {
+
+    // Asigna la divisa
+    this.selectedCurrency = currency
 
     // Convierte los registros a una divisa seleccionada
     this.convertedRecords = convertAmountsIntoOneCurrency(this.recordsComputed(), currency)
@@ -337,7 +391,54 @@ export class IncomeOrExpenseStatisticsComponent {
     this.updateExpenseChart()
     this.updateResumeChart()
 
+  }
+
+  toggleDropdown(event: MouseEvent) {
+
+    this.dropdownOpen = !this.dropdownOpen
+
+    const dropdown = document.getElementById('graphics-currency-dropdown-menu')
+
+    if (dropdown) {
+      if (this.dropdownOpen) {
+        dropdown.classList.add('show-dropdown-menu')
+      } else {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+    }
 
   }
+  
+  // Cierra el dropdown si se hace clic fuera
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+
+    // Si el dropdown no está abierto, no hace nada
+    if (!this.dropdownOpen) return
+    
+    const target = event.target as HTMLElement
+  
+    // Referencia el dropdown
+    const dropdown = document.getElementById('graphics-currency-dropdown-menu')
+    
+    // Verifica el botón que abre el dropdown
+    const dropdownButton = document.getElementById('graphics-button-dropdown')
+    
+    // Comprueba si el clic fue dentro del dropdown o en el botón
+    const clickedInDropdown = dropdown && dropdown.contains(target)
+    const clickedOnButton = dropdownButton && dropdownButton.contains(target)
+    
+    // Solo cierra si el clic fue fuera de ambos elementos
+    if (!clickedInDropdown && !clickedOnButton && this.dropdownOpen) {
+      this.dropdownOpen = false
+      
+      if (dropdown) {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+
+      event.stopPropagation()
+    }
+  }
+
 
 }

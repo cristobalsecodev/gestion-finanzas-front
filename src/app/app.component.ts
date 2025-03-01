@@ -138,8 +138,6 @@ export class AppComponent implements OnInit {
 
     this.dropdownOpen = !this.dropdownOpen
 
-    event.stopPropagation()
-
     const dropdown = document.getElementById('currency-dropdown-menu')
 
     if (dropdown) {
@@ -165,7 +163,7 @@ export class AppComponent implements OnInit {
     const dropdown = document.getElementById('currency-dropdown-menu')
     
     // Verifica el botón que abre el dropdown
-    const dropdownButton = document.getElementById('button-dropdown')
+    const dropdownButton = document.getElementById('currency-button-dropdown')
     
     // Comprueba si el clic fue dentro del dropdown o en el botón
     const clickedInDropdown = dropdown && dropdown.contains(target)
