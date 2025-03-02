@@ -1,18 +1,16 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { capitalizeString, markForms } from 'src/app/shared/functions/Utils';
+import { capitalizeString } from 'src/app/shared/functions/Utils';
 import { BaseCategory, Categories } from '../interfaces/IncomeOrExpense.interface';
 import { filterAutocomplete } from 'src/app/shared/functions/AutocompleteFilter';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
@@ -34,15 +32,10 @@ import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constant
     // Angular material
     MatInputModule,
     MatFormFieldModule,
-    MatDialogTitle, 
-    MatDialogContent, 
-    MatDialogActions, 
-    MatDialogClose, 
     MatTooltipModule,
     MatSelectModule,
     MatAutocompleteModule,
     MatIconModule,
-    MatTableModule,
     MatExpansionModule,
     MatButtonModule,
     MatDialogModule,
@@ -53,28 +46,23 @@ import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constant
 })
 export class CategoriesSubcategoriesFormComponent {
 
-  // Tipos de acción
-  readonly actionTypes = ActionType
-
   // Ruta a ingresos y gastos
   incomeExpensesRoute = incomeExpensesRoute
 
-  // Máximo de longitud para las notas
-  maxNotesLength: number = 30
-
-  // Comprueba si el formulario de categoría está activo
-  isFormCategory = signal<boolean>(false)
+  // Comprueba si el formulario de edición ed categoría está activo
+  isEditCategory = signal<boolean>(false)
 
   // Comprueba si el formulario de subcategoría está activo
   isFormSubcategory = signal<boolean>(false)
 
-  manageSubcategories = signal<boolean>(false)
+  // Comprueba si el desplegable de gestión de subcategorías está activo
+  isManageSubcategories = signal<boolean>(false)
 
-  // Comprueba la acción el formulario de categoría
-  actionTypeCategory = signal<ActionType | undefined>(undefined)
+  // Comprueba si el formulario de creación de categoría está activo
+  isCreateCategory = signal<boolean>(false)
 
-  // Comprueba la acción el formulario de subcategoría
-  actionTypeSubcategory = signal<ActionType | undefined>(undefined)
+  // Loader
+  tableLoader = signal<boolean>(false)
 
   // Formularios de filtro
   searchName = new FormControl('');
@@ -91,18 +79,12 @@ export class CategoriesSubcategoriesFormComponent {
   // Edición de categoría y subcategoría
   editingCategory: Categories | undefined
   editingSubcategory: BaseCategory | undefined
-  editType: string | undefined
+  selectedType: string | undefined
 
   // Servicio
   categoriesService = inject(CategoriesAndSubCategoriesService)
   readonly dialog = inject(MatDialog)
   notificationsService = inject(NotificacionesService)
-
-  // Tablas
-  columnsCategory: string[] = ['name', 'type', 'color', 'actions']
-  columnsSubcategory: string[] = ['name', 'actions']
-  dataSourceCategories = new MatTableDataSource<Categories>([])
-  dataSourceSubcategories = new MatTableDataSource<BaseCategory>([])
 
   // Avisos formulario
   typeMessage: string = 'Type is required.'
@@ -110,19 +92,17 @@ export class CategoriesSubcategoriesFormComponent {
   whiteSpaceMessage: string = 'Only whitespace is not allowed.'
   nameMessage: string = 'Name is required'
 
+  // Máximo de longitud para las notas
+  maxNotesLength: number = 30
+
   // Función para capitalizar strings
   capitalize = capitalizeString
-
-  // Loader
-  tableLoader = signal<boolean>(false)
 
   constructor() {
 
     this.categoryForm = new FormGroup({
 
       name: new FormControl('', [Validators.required, Validators.maxLength(30), whiteSpaceValidator]),
-      
-      type: new FormControl('', [Validators.required]),
 
       color: new FormControl('', [Validators.required]),
 
@@ -131,13 +111,6 @@ export class CategoriesSubcategoriesFormComponent {
     this.subcategoryForm = new FormGroup({
 
       name: new FormControl('', [Validators.required, Validators.maxLength(30), whiteSpaceValidator]),
-
-    })
-
-    effect(() => {
-
-      this.categoryForm.reset()
-      this.subcategoryForm.reset()
 
     })
 
@@ -152,7 +125,6 @@ export class CategoriesSubcategoriesFormComponent {
 
         this.categories = categories
         this.filteredCategories = categories
-        this.dataSourceCategories.data = categories
 
         this.tableLoader.set(false)
 
@@ -180,77 +152,21 @@ export class CategoriesSubcategoriesFormComponent {
   
     // Aplicar filtro de búsqueda si hay un término
     this.filteredCategories = searchTerm ? filterAutocomplete(categoriesFiltered, searchTerm, ['name']) : categoriesFiltered
-  }
-
-  applyFilter(): void {
-
-    let filterValue = this.searchName.value?.trim().toLowerCase() || ''
-    let selectedType = this.searchType.value || ''
-  
-    this.dataSourceCategories.filterPredicate = (data: Categories) => {
-
-      const matchesSearch = data.name.toLowerCase().includes(filterValue)
-      const matchesType = selectedType ? data.type === selectedType : true
-      
-      return matchesSearch && matchesType
-
-    }
-  
-    this.dataSourceCategories.filter = filterValue + selectedType
-    
-  }
-  
-  onCategorySearch(): void {
-
-    const searchTerm = this.subcategoryForm.get('category')?.value
-
-    this.filteredCategories = filterAutocomplete(this.categories.filter(category => category.type === this.subcategoryForm.get('type')?.value), searchTerm, ['name'])
-
-  }
-
-  filterCategories(): void {
-
-    const categoriesFiltered = this.categories.filter(category => category.type === this.subcategoryForm.get('type')?.value)
-
-    this.filteredCategories = categoriesFiltered ?? []
-
-  }
-
-  checkMandatoryFields(): void {
-
-    // Marca el formulario de categoría
-    markForms(this.categoryForm)
-
-    // Marca el formulario de subcategoría
-    markForms(this.subcategoryForm)
 
   }
 
   setEditCategory(category: Categories): void {
 
-    this.actionTypeCategory.set(this.actionTypes.EDIT)
-
     this.editingCategory = category
-    this.editType = category.type
-  
+
     this.categoryForm.get('name')?.setValue(category.name)
-    this.categoryForm.get('type')?.setValue(category.type)
     this.categoryForm.get('color')?.setValue(category.color)
-
-    if(category.linked) {
-
-      this.categoryForm.get('type')?.disable()
-
-    }
-
-    this.dataSourceSubcategories.data = category.subcategories
 
   }
 
   setEditSubcategory(subcategory: BaseCategory): void {
 
     this.isFormSubcategory.set(true)
-    this.actionTypeSubcategory.set(this.actionTypes.EDIT)
 
     this.editingSubcategory = subcategory
 
@@ -258,42 +174,53 @@ export class CategoriesSubcategoriesFormComponent {
 
   }
 
-  resetCategoryForm(): void {
+  resetCreateCategory(): void {
 
-    this.isFormCategory.set(false)
-    this.actionTypeCategory.set(undefined)
+    this.isCreateCategory.set(false)
+
+    this.categoryForm.reset()
+    this.selectedType = undefined
+
+  }
+
+
+  resetEditCategory(): void {
+
+    this.isEditCategory.set(false)
 
     this.categoryForm.reset()
     this.editingCategory = undefined
-    this.editType = undefined
-    
-    this.dataSourceSubcategories.data = []
 
   }
 
   resetSubcategoryForm(): void {
 
     this.isFormSubcategory.set(false)
-    this.actionTypeSubcategory.set(undefined)
 
     this.subcategoryForm.reset()
     this.editingSubcategory = undefined
 
   }
 
-
-  submitCategoryForm(): void {
+  submitCreateCategory(): void {
 
     if (!this.categoryForm.valid) return
+
+    this.addCategory()
+
+    this.resetCreateCategory()
+  }
+
+  submitEditCategory(): void {
+
+    if (!this.categoryForm.valid || !this.editingCategory) return
     
-    this.editingCategory ? this.updateCategory() : this.addCategory()
+    this.updateCategory()
 
-    this.updateSubcategoryTable()
-
-    this.resetCategoryForm()
+    this.resetEditCategory()
 
   }
-  
+
   private updateCategory(): void {
 
     if (!this.editingCategory) return
@@ -301,17 +228,17 @@ export class CategoriesSubcategoriesFormComponent {
     const editedCategory: Categories = {
       id: this.editingCategory.id,
       name: this.categoryForm.get('name')?.value,
-      type: this.categoryForm.get('type')?.value,
+      type: this.editingCategory.type,
       color: this.categoryForm.get('color')?.value,
       active: this.editingCategory.active,
       linked:this.editingCategory.linked,
-      subcategories: this.dataSourceSubcategories.data.map(subcategory => ({ ...subcategory, type: this.categoryForm.get('type')?.value })),
+      subcategories: this.editingCategory.subcategories
     }
-  
-    const index = this.dataSourceCategories.data.findIndex(
+
+    const index = this.filteredCategories.findIndex(
       (category) => category.id === this.editingCategory!.id
     )
-  
+
     if (index !== -1) {
 
       this.saveCategory(editedCategory, index)
@@ -327,9 +254,9 @@ export class CategoriesSubcategoriesFormComponent {
 
     const newCategory: Categories = {
       name: this.categoryForm.get('name')?.value,
-      type: this.categoryForm.get('type')?.value,
+      type: this.selectedType || '',
       color: this.categoryForm.get('color')?.value,
-      subcategories: this.dataSourceSubcategories.data.map(subcategory => ({ ...subcategory, type: this.categoryForm.get('type')?.value })),
+      subcategories: [],
     }
   
     this.saveCategory(newCategory)
@@ -343,15 +270,15 @@ export class CategoriesSubcategoriesFormComponent {
 
         if(index !== undefined) {
 
-          this.dataSourceCategories.data[index] = category
+          const indexCategories = this.categories.findIndex(category => category.id === categoryToSave.id)
+          this.categories[indexCategories] = category
+          this.filteredCategories[index] = category
 
         } else {
 
-          this.dataSourceCategories.data.push(category)
+          this.categories.push(category)
 
         }
-
-        this.updateCategoryTable()
 
         this.showNotificationMessage('Category updated')
 
@@ -377,16 +304,17 @@ export class CategoriesSubcategoriesFormComponent {
     const editedSubcategory: BaseCategory = {
       id: this.editingSubcategory.id,
       name: this.subcategoryForm.get('name')?.value,
-      type: this.editingSubcategory.type,
+      type: this.editingCategory.type,
     }
   
-    const index = this.dataSourceSubcategories.data.findIndex(
+    const index = this.editingCategory.subcategories.findIndex(
       (subcategory) => subcategory.id === this.editingSubcategory!.id || subcategory.name === this.editingSubcategory!.name
     )
   
     if (index !== -1) {
 
-      this.dataSourceSubcategories.data[index] = editedSubcategory
+      this.editingCategory.subcategories[index] = editedSubcategory
+      this.updateCategory()
 
     } else {
 
@@ -400,10 +328,11 @@ export class CategoriesSubcategoriesFormComponent {
 
     const newSubcategory: BaseCategory = {
       name: this.subcategoryForm.get('name')?.value,
-      type: '',
+      type: this.editingCategory!.type,
     }
-  
-    this.dataSourceSubcategories.data.push(newSubcategory)
+
+    this.editingCategory?.subcategories.push(newSubcategory)
+    this.updateCategory()
 
   }
 
@@ -467,15 +396,16 @@ export class CategoriesSubcategoriesFormComponent {
 
           this.showNotificationMessage(message)
 
-          this.dataSourceCategories.data = this.dataSourceCategories.data.filter(category => category.id !== id)
-          this.updateCategoryTable()
+          this.categories = this.categories.filter(category => category.id !== id)
+          this.filteredCategories = this.filteredCategories.filter(category => category.id !== id)
 
         }
       })
 
     } else {
 
-      this.dataSourceSubcategories.data = this.dataSourceSubcategories.data.filter(subcategory => subcategory.id !== id)
+      this.editingCategory?.subcategories.splice(this.editingCategory.subcategories.findIndex(subcategory => subcategory.id === id), 1)
+      this.updateCategory()
 
     }
 
@@ -486,12 +416,16 @@ export class CategoriesSubcategoriesFormComponent {
     this.categoriesService.disableCategory(id).subscribe({
       next: (message: string) => {
 
-        const category = this.dataSourceCategories.data.find(category => category.id === id)
+        const indexCategory = this.categories.findIndex(category => category.id === id)
+        const category = this.categories.find(category => category.id === id)
 
-        if (category) {
+        const indexFilteredCategory = this.filteredCategories.findIndex(category => category.id === id)
+
+        if (indexCategory && indexFilteredCategory && category) {
 
           category.active = false
-          this.updateCategoryTable()
+          this.categories[indexCategory] = category
+          this.filteredCategories[indexFilteredCategory] = category
 
           this.showNotificationMessage(message)
 
@@ -507,17 +441,20 @@ export class CategoriesSubcategoriesFormComponent {
     this.categoriesService.enableCategory(id).subscribe({
       next: (message: string) => {
 
-        const category = this.dataSourceCategories.data.find(category => category.id === id)
+        const indexCategory = this.categories.findIndex(category => category.id === id)
+        const category = this.categories.find(category => category.id === id)
 
-        if (category) {
+        const indexFilteredCategory = this.filteredCategories.findIndex(category => category.id === id)
+
+        if (indexCategory && indexFilteredCategory && category) {
 
           category.active = true
-          this.updateCategoryTable()
+          this.categories[indexCategory] = category
+          this.filteredCategories[indexFilteredCategory] = category
 
           this.showNotificationMessage(message)
 
         }
-
 
       }
     })
@@ -532,17 +469,5 @@ export class CategoriesSubcategoriesFormComponent {
     )
 
   }
-  
-  private updateCategoryTable(): void {
 
-    this.dataSourceCategories.data = [...this.dataSourceCategories.data]
-
-  }
-
-  private updateSubcategoryTable(): void {
-
-    this.dataSourceSubcategories.data = [...this.dataSourceSubcategories.data]
-
-  }
-  
 }
