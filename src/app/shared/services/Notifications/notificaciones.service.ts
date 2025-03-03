@@ -15,7 +15,7 @@ export class NotificacionesService {
 
   private counterId = 0
 
-  addNotification(mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning') {
+  addNotification(mensaje: string, tipo: 'success' | 'error' | 'info' | 'warning', manualClose?: boolean) {
     
     // Creamos el objeto de notificación
     const nuevaNotificacion: Notification = {
@@ -27,13 +27,16 @@ export class NotificacionesService {
     // Añadimos la notificación
     this.notifications.update((current => [...current, nuevaNotificacion]))
 
-    // Elimina la notificación tras X segundos
-    setTimeout(() => {
+    if(!manualClose) {
 
-      this.removeNotification(nuevaNotificacion.id)
+      // Elimina la notificación tras X segundos
+      setTimeout(() => {
 
-    }, 5000)
+        this.removeNotification(nuevaNotificacion.id)
 
+      }, 5000)
+
+    }
   }
 
   removeNotification(id: number) {

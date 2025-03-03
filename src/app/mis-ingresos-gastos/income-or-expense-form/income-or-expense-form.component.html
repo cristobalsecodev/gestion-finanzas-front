@@ -1,20 +1,20 @@
 
-<mat-dialog-content>
+<!-- <mat-dialog-content>
 
   <h1 mat-dialog-title class="flex items-center justify-center space-x-2 text-center">
     <span class="font-semibold">{{ data.actionType }} {{ selectedType() ? selectedType() : 'income or expense' }}</span>
-  </h1>
+  </h1> -->
 
   <!-- Primera línea de separación -->
-  <div class="mx-auto w-11/12 border-t my-2"></div>
+  <!-- <div class="mx-auto w-11/12 border-t my-2"></div>
 
-  <form [formGroup]="incomeOrExpenseForm">
+  <form [formGroup]="incomeOrExpenseForm"> -->
 
     <!-- Elección de tipo -->
-    <div class="flex flex-col space-y-2 mb-4 w-full items-center">
+    <!-- <div class="flex flex-col space-y-2 mb-4 w-full items-center"> -->
 
       <!-- Etiqueta de selección centrada y en la parte superior -->
-      <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
+      <!-- <label class="text-sm md:text-base font-medium">Choose a type (*):</label>
 
       <mat-chip-listbox #chipList class="flex justify-center overflow-x-auto space-x-2"
       formControlName="type"
@@ -30,15 +30,15 @@
 
       </mat-chip-listbox>
 
-    </div>
+    </div> -->
 
     <!-- Segunda línea de separación -->
-    <div class="mx-auto w-11/12 border-t mt-4"></div>
+    <!-- <div class="mx-auto w-11/12 border-t mt-4"></div>
 
-    <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> -->
 
       <!-- Fecha -->
-      <mat-form-field class="w-full">
+      <!-- <mat-form-field class="w-full">
 
         <mat-label>Date</mat-label>
 
@@ -63,9 +63,9 @@
         }
 
       </mat-form-field>
-    
+     -->
       <!-- Categoría -->
-      <mat-form-field class="w-full"
+      <!-- <mat-form-field class="w-full"
       [matTooltip]="categories.length === 0 ? 'No categories have been created yet' : 'Please select a type first'"
       [matTooltipDisabled]="incomeOrExpenseForm.get('category')?.enabled">
 
@@ -113,10 +113,10 @@
 
         }
 
-      </mat-form-field>
+      </mat-form-field> -->
 
       <!-- Subcategoría -->
-      <mat-form-field class="w-full"
+      <!-- <mat-form-field class="w-full"
       [matTooltip]="(filterSubcategories.length === 0 && incomeOrExpenseForm.get('category')?.value | typeCheck:'object') 
         ? 'The category doesn\'t have any subcategories'
         : 'Please select a category first'"
@@ -155,10 +155,10 @@
 
         }
 
-      </mat-form-field>
+      </mat-form-field> -->
 
       <!-- Divisa -->
-      <mat-form-field class="w-full">
+      <!-- <mat-form-field class="w-full">
 
         <mat-label>Currency</mat-label>
 
@@ -183,10 +183,10 @@
 
         }
 
-      </mat-form-field>
+      </mat-form-field> -->
 
       <!-- Cantidad -->
-      <mat-form-field class="w-full" floatLabel="always">
+      <!-- <mat-form-field class="w-full" floatLabel="always">
 
         <mat-label>Amount</mat-label>
         <input 
@@ -215,10 +215,10 @@
 
         }
 
-      </mat-form-field>
+      </mat-form-field> -->
 
       <!-- Tipo de cambio -->
-      <mat-form-field class="w-full">
+      <!-- <mat-form-field class="w-full">
 
         <mat-label>Exchange rate</mat-label>
 
@@ -256,11 +256,11 @@
 
         }
 
-      </mat-form-field>
+      </mat-form-field> -->
 
 
       <!-- Notas -->
-      <mat-form-field class="w-full col-span-1 md:col-span-2 lg:col-span-3">
+      <!-- <mat-form-field class="w-full col-span-1 md:col-span-2 lg:col-span-3">
 
         <mat-label>Notes</mat-label>
         <textarea matInput placeholder="Description" formControlName="notes"></textarea>
@@ -292,10 +292,10 @@
   matTooltip="You cannot edit the recurrence"
   [matTooltipDisabled]="data.actionType !== actionTypes.EDIT">
     In case your {{ selectedType() || 'income or expense' }} entry is recurring. (Note: The recurrence starts from the date selected above.)
-  </mat-slide-toggle>
+  </mat-slide-toggle> -->
 
   <!-- Recurrencia -->
-  <div matTooltip="Recurrence must be selected"
+  <!-- <div matTooltip="Recurrence must be selected"
   [matTooltipDisabled]="isRecurrence()">
 
     <mat-expansion-panel 
@@ -315,10 +315,10 @@
 
       </mat-expansion-panel-header>
 
-      <form [formGroup]="recurrenceForm" class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <form [formGroup]="recurrenceForm" class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> -->
 
         <!-- Tipo de recurrencia -->
-        <mat-form-field class="w-full">
+        <!-- <mat-form-field class="w-full">
 
           <mat-label>Recurrence type</mat-label>
 
@@ -343,10 +343,10 @@
     
           }
           
-        </mat-form-field>
+        </mat-form-field> -->
 
         <!-- Frecuencia -->
-        <mat-form-field class="w-full">
+        <!-- <mat-form-field class="w-full">
 
           <mat-label>Frequency</mat-label>
           <input matInput placeholder="1" formControlName="frequency" required>
@@ -374,10 +374,10 @@
     
           }
 
-        </mat-form-field>
+        </mat-form-field> -->
 
         <!-- Fecha de fin -->
-        <mat-form-field class="w-full">
+        <!-- <mat-form-field class="w-full">
 
           <mat-label class="flex">
 
@@ -409,10 +409,10 @@
 
           <mat-hint>The end date takes priority over occurrences.</mat-hint>
 
-        </mat-form-field>
+        </mat-form-field> -->
 
         <!-- Ocurrencias -->
-        <mat-form-field class="w-full">
+        <!-- <mat-form-field class="w-full">
 
           <mat-label>Ocurrences</mat-label>
           <input matInput placeholder="5" formControlName="occurrences">
@@ -442,9 +442,9 @@
 
   </div>
 
-</mat-dialog-content>
+</mat-dialog-content> -->
 
-<mat-dialog-actions>
+<!-- <mat-dialog-actions>
 
   <button mat-button mat-dialog-close class="mr-2">Cancel</button>
 
@@ -472,3 +472,503 @@
   </div>
 
 </mat-dialog-actions>
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="border-t border-[var(--component)] rounded-lg p-4 mt-40 bg-[var(--component)] shadow-lg place-self-center">
+
+  <!-- Cabecera -->
+  <div class="p-5 border-b border-[var(--component-hover)]">
+
+    <h1 class="text-2xl font-medium">{{ actionType }} {{ selectedType() ? selectedType() : 'income or expense' }}</h1>
+
+  </div>
+
+  <!-- Cuerpo del formulario -->
+  <div class="p-5">
+
+    <form [formGroup]="incomeOrExpenseForm">
+      
+      <!-- Selector de tipo -->
+      <div class="flex justify-center gap-4 mb-6">
+        <button 
+        class="button bg-transparent hover:bg-[var(--positive-hover)]"
+        (click)="selectedType.set('income')"
+        [ngClass]="{ 'badge-income': selectedType() === 'income' }">
+          Income
+        </button>
+  
+        <button
+        class="button bg-transparent hover:bg-[var(--negative-hover)]"
+        (click)="selectedType.set('expense')"
+        [ngClass]="{ 'badge-expense': selectedType() === 'expense' }">
+          Expense
+        </button>
+  
+      </div>
+  
+      <!-- Información general -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+  
+        <!-- Fecha -->
+        <mat-form-field>
+  
+          <mat-label>Date</mat-label>
+  
+          <input matInput 
+          [matDatepicker]="dp" 
+          formControlName="date" 
+          [max]="recurrenceForm.get('endDate')?.value"
+          required 
+          readonly>
+          <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp></mat-datepicker>
+  
+          @if(incomeOrExpenseForm.get('date')?.hasError('required')) {
+  
+            <mat-error> Date is required. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+      
+        <!-- Categoría -->
+        <mat-form-field
+        [matTooltip]="categories.length === 0 ? 'No categories have been created yet' : 'Please select a type first'"
+        [matTooltipDisabled]="incomeOrExpenseForm.get('category')?.enabled">
+  
+          <mat-label>Category</mat-label>
+  
+          <input
+          type="text"
+          matInput
+          formControlName="category"
+          [matAutocomplete]="autoCategory"
+          (keyup)="onCategorySearch()"
+          />
+          <mat-autocomplete #autoCategory="matAutocomplete"
+          [displayWith]="categoriesService.display"
+          (optionSelected)="filterSubcategories()">
+  
+            @for (option of filteredCategories; track $index) {
+  
+              <mat-option [value]="option">
+                {{ option.name }}
+              </mat-option>
+  
+            }
+  
+          </mat-autocomplete>
+  
+          @if(categories.length > 0) {
+  
+            <mat-icon matIconSuffix
+            matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
+              info
+            </mat-icon>
+  
+          }
+  
+          @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
+  
+            <mat-error> Category is required. </mat-error>
+  
+          }
+  
+          @if(incomeOrExpenseForm.get('category')?.hasError('objectSelected')) {
+  
+            <mat-error> You must select a category. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Subcategoría -->
+        <mat-form-field
+        [matTooltip]="(filterSubcategories.length === 0 && incomeOrExpenseForm.get('category')?.value | typeCheck:'object') 
+          ? 'The category doesn\'t have any subcategories'
+          : 'Please select a category first'"
+        [matTooltipDisabled]="incomeOrExpenseForm.get('subcategory')?.enabled">
+  
+          <mat-label>Subcategory</mat-label>
+  
+          <input
+          type="text"
+          matInput
+          formControlName="subcategory"
+          [matAutocomplete]="autoSubCategory"
+          (keyup)="onSubcategorySearch()"
+          />
+          <mat-autocomplete #autoSubCategory="matAutocomplete"
+          [displayWith]="categoriesService.display">
+  
+            @for (option of filteredSubcategories; track $index) {
+  
+              <mat-option [value]="option">
+                {{ option.name }}
+              </mat-option>
+  
+            }
+            
+          </mat-autocomplete>
+  
+          <mat-icon matIconSuffix
+          matTooltip="(Optional) Select a more specific category for the {{ selectedType() ? selectedType() : 'income or expense' }}">
+            info
+          </mat-icon>
+  
+          @if(incomeOrExpenseForm.get('subcategory')?.hasError('objectSelected')) {
+  
+            <mat-error> You must select a subcategory. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+      </div>
+  
+      <!-- Información sobre divisa -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+  
+        <!-- Divisa -->
+        <mat-form-field>
+  
+          <mat-label>Currency</mat-label>
+  
+          <mat-select formControlName="currency" required (selectionChange)="applyExchangeRate()">
+  
+            @for (currency of currencyExchangeService.currencies(); track $index) {
+  
+              <mat-option [value]="currency"> {{ currency.currencyName }} </mat-option>
+  
+            }
+  
+          </mat-select>
+  
+          <mat-icon matIconSuffix
+          matTooltip="Specify the currency for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., USD, EUR)">
+            info
+          </mat-icon>
+  
+          @if(incomeOrExpenseForm.get('currency')?.hasError('required')) {
+  
+            <mat-error> Currency is required. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Cantidad -->
+        <mat-form-field floatLabel="always">
+  
+          <mat-label>Amount</mat-label>
+          <input 
+          matInput 
+          placeholder="0" 
+          formControlName="amount" 
+          required 
+          (input)="onAmountInput($event)">
+  
+          <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value.currencyCode }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
+  
+          <mat-icon matIconSuffix
+          matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
+            info
+          </mat-icon>
+  
+          @if(incomeOrExpenseForm.get('amount')?.hasError('required')) {
+  
+            <mat-error> Amount is required. </mat-error>
+  
+          }
+  
+          @if(incomeOrExpenseForm.get('amount')?.hasError('pattern')) {
+  
+            <mat-error> Invalid amount. Max 13 digits and 2 decimals and only digits. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+        <!-- Tipo de cambio -->
+        <mat-form-field>
+  
+          <mat-label>Exchange rate</mat-label>
+  
+          <input matInput placeholder="Exchange rate" formControlName="exchangeRate" required>
+  
+          @if(incomeOrExpenseForm.get('exchangeRate')?.value !== incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd) {
+  
+            <mat-icon matIconSuffix class="cursor-pointer"
+            (click)="incomeOrExpenseForm.get('exchangeRate')?.setValue(incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd)">
+              restart_alt
+            </mat-icon>
+  
+          }
+  
+          <mat-icon matIconSuffix
+          matTooltip="Exchange rate related to USD">
+            info
+          </mat-icon>
+  
+          @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('required')) {
+  
+            <mat-error> Exchange rate is required. </mat-error>
+  
+          }
+  
+          @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('pattern')) {
+  
+            <mat-error> Invalid exchange rate. Max 4 decimals and only digits. </mat-error>
+  
+          }
+  
+          @if(incomeOrExpenseForm.get('exchangeRate')?.hasError('min')) {
+  
+            <mat-error> Minimum couldn't be less than 0.000001. </mat-error>
+  
+          }
+  
+        </mat-form-field>      
+  
+      </div>
+  
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+  
+        <!-- Notas -->
+        <mat-form-field class="w-full col-span-1 md:col-span-2 lg:col-span-3">
+  
+          <mat-label>Notes</mat-label>
+          <textarea matInput placeholder="Description" formControlName="notes"></textarea>
+  
+          <mat-icon matIconSuffix
+          matTooltip="(Optional) Add any additional details about the {{ selectedType() ? selectedType() : 'income or expense' }}">
+            info
+          </mat-icon>
+  
+          <mat-hint align="end">{{ incomeOrExpenseForm.get('notes')?.value.length }}/{{ maxNotesLength }}</mat-hint>
+  
+          @if(incomeOrExpenseForm.get('notes')?.hasError('maxlength')) {
+  
+            <mat-error> Max length reached. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+  
+      </div>
+  
+      <!-- Botón de recurrencia -->
+      <div class="bg-[var(--component-hover)] rounded-lg p-4 flex items-center cursor-pointer my-5">
+  
+        <mat-slide-toggle
+        [checked]="isRecurrence()"
+        (change)="isRecurrence.set(!isRecurrence())"
+        [disabled]="actionType === actionTypes.EDIT"
+        matTooltip="You cannot edit the recurrence"
+        [matTooltipDisabled]="actionType !== actionTypes.EDIT">
+          <span class="ml-2">In case your {{ selectedType() || 'income or expense' }} entry is recurring. (Note: The recurrence starts from the date selected above.)</span>
+        </mat-slide-toggle>
+      
+      </div>
+
+    </form>
+
+    <!-- Panel de recurrencia -->
+    @if(isRecurrence()) {
+
+      <div class="bg-[var(--component-hover)] rounded-lg p-4 mb-5 animate-slideDown">
+        
+        <!-- Cabecera -->
+        <div class="flex justify-between items-center mb-4">
+          Recurrence
+        </div>
+
+        <form [formGroup]="recurrenceForm">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+  
+            <!-- Tipo de recurrencia -->
+            <mat-form-field class="w-full">
+
+              <mat-label>Recurrence type</mat-label>
+
+              <mat-select formControlName="recurrenceType" placeholder="Monthly" required>
+
+                @for (type of recurrenceTypes; track $index) {
+      
+                  <mat-option [value]="type"> {{ capitalize(type) }} </mat-option>
+      
+                }
+      
+              </mat-select>
+
+              <mat-icon matIconSuffix
+              matTooltip="Enter the type of recurrence (e.g., daily, weekly, monthly or yearly)">
+                info
+              </mat-icon>
+
+              @if(recurrenceForm.get('recurrenceType')?.hasError('required')) {
+
+                <mat-error> Recurrence type is required. </mat-error>
+        
+              }
+              
+            </mat-form-field>
+
+            <!-- Frecuencia -->
+            <mat-form-field class="w-full">
+
+              <mat-label>Frequency</mat-label>
+              <input matInput placeholder="1" formControlName="frequency" required>
+
+              <mat-icon matIconSuffix
+              matTooltip="Specify how often the recurrence occurs (e.g., every 1 day, 2 weeks)">
+                info
+              </mat-icon>
+
+              @if(recurrenceForm.get('frequency')?.hasError('required')) {
+
+                <mat-error> Frequency is required. </mat-error>
+        
+              }
+
+              @if(recurrenceForm.get('frequency')?.hasError('pattern')) {
+
+                <mat-error> Invalid frequency. </mat-error>
+        
+              }
+
+              @if(recurrenceForm.get('frequency')?.hasError('maxlength')) {
+
+                <mat-error> Max 3 digits. </mat-error>
+        
+              }
+
+            </mat-form-field>
+
+            <!-- Fecha de fin -->
+            <mat-form-field class="w-full">
+
+              <mat-label class="flex">
+
+                <span>End date</span>
+
+                @if(recurrenceForm.get('endDate')?.value) {
+
+                  <mat-icon class="cursor-pointer ml-2 place-self-center"
+                  (click)="recurrenceForm.get('endDate')?.setValue(null)">
+                    close
+                  </mat-icon>
+      
+                }
+
+              </mat-label>
+
+              <input matInput 
+              [matDatepicker]="dp1" 
+              formControlName="endDate"
+              [min]="incomeOrExpenseForm.get('date')?.value"
+              readonly>
+              <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
+              <mat-datepicker #dp1></mat-datepicker>
+
+              <mat-icon matIconSuffix
+              matTooltip="(Optional) Set the end date for the recurrence">
+                info
+              </mat-icon>
+
+            </mat-form-field>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 mb-5">
+
+            <!-- Ocurrencias -->
+            <mat-form-field class="w-full">
+
+              <mat-label>Ocurrences</mat-label>
+              <input matInput placeholder="5" formControlName="occurrences">
+
+              <mat-icon matSuffix
+              matTooltip="(Optional) Enter the number of times the recurrence should happen">
+                info
+              </mat-icon>
+
+              @if(recurrenceForm.get('occurrences')?.hasError('pattern')) {
+
+                <mat-error> Invalid ocurrence. </mat-error>
+        
+              }
+
+              @if(recurrenceForm.get('occurrences')?.hasError('maxlength')) {
+
+                <mat-error> Max 3 digits. </mat-error>
+        
+              }
+              
+            </mat-form-field>
+
+          </div>
+
+          <!-- Tip -->
+          <div class="border-t border-[var(--tertiary-hover)] text-sm text-[var(--text-secondary)] py-1">
+            <span class="material-symbols-outlined">info</span>
+            The end date takes priority over occurrences.
+          </div>
+          
+        </form>
+
+      </div>
+
+    }
+
+    <!-- Botones de acción -->
+    <div class="flex justify-end mt-6 pt-4 border-t border-[var(--component-hover)]">
+  
+      <button class="button bg-transparent hover:border-[var(--negative)] hover:text-[var(--negative)] mr-2"
+      [routerLink]="['/' + incomeExpensesRoute]">
+        <span class="material-symbols-outlined">keyboard_return</span>
+        Cancel
+      </button>
+    
+      <div (mouseover)="checkMandatoryFields()">
+
+        <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:pointer-events-none"
+        type="submit"
+        (click)="submitForm()"
+        [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid) || categories.length === 0">
+  
+          <span class="material-symbols-outlined">
+  
+            @if(actionType === actionTypes.EDIT) {
+              edit
+            } @else {
+              add
+            }
+  
+          </span>
+          
+          {{ actionType }}    
+          
+        </button>
+        
+      </div>
+    
+    </div>
+  
+    
+  </div>
+
+</div>

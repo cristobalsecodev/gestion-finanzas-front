@@ -5,7 +5,6 @@ import { NotificacionesService } from '../Notifications/notificaciones.service';
 import { loginRoute } from '../../constants/variables.constants';
 import { Router } from '@angular/router';
 import { CurrencyCodeENUM } from '../../enums/Currency.enum';
-import { CurrencyExchangeService } from '../CurrencyExchange/currency-exchange.service';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +63,7 @@ export class TokenService {
 
   }
 
-  // Actualiza si el token sigue siendo válido
+  // Checkea el token
   checkTokenValidity(): void {
 
     const timeRemaining = this.calculateTokenTimeExp()
@@ -73,15 +72,24 @@ export class TokenService {
 
     if(!isValid) {
 
-      this.router.navigate([loginRoute])
-      this.storageService.removeSession('token')
-      this.notificationsService.addNotification('Session expired', 'warning')
+      this.closeSession()
 
-      this.stopTokenCheck()
+      this.notificationsService.addNotification('Session expired', 'warning', true)
 
     }
 
     this.isTokenValid.set(isValid)
+
+  }
+
+  // Cierra la sesión
+  closeSession(): void {
+
+    this.storageService.removeSession('token')
+    this.isTokenValid.set(false)
+    this.stopTokenCheck()
+    
+    this.router.navigate([loginRoute])
 
   }
 

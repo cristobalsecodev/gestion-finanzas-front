@@ -7,6 +7,7 @@ import { authInterceptor } from './auth/interceptors/AuthInterceptor/auth.interc
 import { errorInterceptor } from './shared/interceptors/error.interceptor';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatIconRegistry } from '@angular/material/icon';
+import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
 
 export const MY_FORMATS = {
   parse: {
@@ -18,8 +19,11 @@ export const MY_FORMATS = {
     dateA11yLabel: 'LL',
     monthYearA11yLabel: 'MMMM YYYY',
   },
-};
+}
 
+export function initCurrencyService(service: CurrencyExchangeService) {
+  return () => service.initialize()
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,6 +40,12 @@ export const appConfig: ApplicationConfig = {
         };
       },
       deps: [MatIconRegistry],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initCurrencyService,
+      deps: [CurrencyExchangeService],
       multi: true
     }
   ]

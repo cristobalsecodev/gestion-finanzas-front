@@ -1,5 +1,5 @@
 import { Component, computed, effect, HostListener, inject } from '@angular/core';
-import { allRecordsSignal } from '../utils/SharedList';
+import { allTransactions } from '../utils/SharedList';
 import { CommonModule } from '@angular/common';
 import { CurrencyExchange } from 'src/app/shared/services/CurrencyExchange/CurrencyExchange.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
@@ -36,7 +36,7 @@ export class IncomeOrExpenseStatisticsComponent {
   sumIncome: number = 0
   sumExpense: number = 0
 
-  recordsComputed = computed(() => allRecordsSignal())
+  recordsComputed = computed(() => allTransactions())
   convertedRecords: IncomeOrExpense[] = []
 
   // Servicios

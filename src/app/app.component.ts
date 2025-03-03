@@ -23,6 +23,7 @@ import packageJson from '../../package.json'
 import { MatDialog } from '@angular/material/dialog';
 import { ActionDialogComponent } from './shared/components/dialogs/action-dialog/action-dialog.component';
 import { CurrencyExchange } from './shared/services/CurrencyExchange/CurrencyExchange.interface';
+import { incomeToEdit } from './mis-ingresos-gastos/utils/SharedList';
 
 @Component({
   selector: 'app-root',
@@ -95,6 +96,12 @@ export class AppComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => {
 
+          if(incomeToEdit()) {
+
+            incomeToEdit.set(undefined)
+
+          }
+
           // Actualiza la URL actual
           this.currentUrl.set(this.router.url)
 
@@ -102,12 +109,6 @@ export class AppComponent implements OnInit {
           this.viewportScroller.scrollToPosition([0, 0])
 
     })
-
-    if(this.tokenService.isTokenValid()) {
-
-      this.currencyExchangeService.manageCurrencyService()
-
-    }
 
   }
 
@@ -126,7 +127,6 @@ export class AppComponent implements OnInit {
       if (isConfirmed) {
 
         this.authService.logout()
-        this.router.navigate([loginRoute])
 
       }
 
@@ -160,7 +160,7 @@ export class AppComponent implements OnInit {
 
   currencyChange(currency: CurrencyExchange): void {
 
-    this.currencyExchangeService.selectFavoriteCurrency(currency)
+    this.currencyExchangeService.changeFavoriteCurrency(currency)
 
     // Cierra el dropdown
     this.dropdownOpen = false

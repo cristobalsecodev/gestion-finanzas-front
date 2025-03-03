@@ -34,10 +34,9 @@ import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchang
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
 import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
-import { allRecordsSignal } from '../utils/SharedList';
-import { CategoriesSubcategoriesFormComponent } from '../categories-subcategories-form/categories-subcategories-form.component';
+import { allCategories, allTransactions, incomeToEdit } from '../utils/SharedList';
 import { Router } from '@angular/router';
-import { categoriesRoute } from 'src/app/shared/constants/variables.constants';
+import { categoriesRoute, incomeExpensesFormRoute } from 'src/app/shared/constants/variables.constants';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -177,6 +176,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.categoriesService.getCategories(true).subscribe({
       next: (categories) => {
 
+        allCategories.set(categories)
         this.categories = categories
         this.filteredCategories = categories
 
@@ -413,7 +413,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     }
 
     // Actualiza el signal
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -425,7 +425,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.recordsToShow = this.recordsToShow.filter(record => record.id !== id)
 
     // Actualiza el signal
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -463,7 +463,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.currentPage.set(0)
 
     this.recordsToShow = []
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     this.getFilteredIncomeOrExpenses(this.buildFilter())
 
@@ -471,75 +471,61 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   openIncomeOrExpenseDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
 
-    this.dialog.open(IncomeOrExpenseFormComponent, {
+    incomeToEdit.set(incomeOrExpense)
 
-      data: {
-        actionType: actionType,
-        incomeOrExpense: incomeOrExpense,
-        categories: this.categories
-      },
-      minWidth: '50vh',
-      maxWidth: '90vw',
-      minHeight: '10vh',
-      maxHeight: '80vh',
-      disableClose: true
+    this.router.navigate([incomeExpensesFormRoute])
 
-    }).afterClosed().subscribe(((incomeOrExpense: IncomeOrExpense) => {
+    // this.dialog.open(IncomeOrExpenseFormComponent, {
 
-      if(incomeOrExpense) {
+    //   data: {
+    //     actionType: actionType,
+    //     incomeOrExpense: incomeOrExpense,
+    //     categories: this.categories
+    //   },
+    //   minWidth: '50vh',
+    //   maxWidth: '90vw',
+    //   minHeight: '10vh',
+    //   maxHeight: '80vh',
+    //   disableClose: true
 
-        this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
+    // }).afterClosed().subscribe(((incomeOrExpense: IncomeOrExpense) => {
 
-          next: (id: number) => {
+    //   if(incomeOrExpense) {
 
-            this.notificationsService.addNotification(
-              `${capitalizeString(incomeOrExpense.type)} saved`, 
-              'success'
-            )
+        // this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
 
-            // En caso de creación de registro, asigna el ID creado y asigna un elemento más a la página
-            if(!incomeOrExpense.id) {
+        //   next: (id: number) => {
 
-              incomeOrExpense.id = id
+        //     this.notificationsService.addNotification(
+        //       `${capitalizeString(incomeOrExpense.type)} saved`, 
+        //       'success'
+        //     )
 
-              this.totalElements.set(this.totalElements() + 1)
+        //     // En caso de creación de registro, asigna el ID creado y asigna un elemento más a la página
+        //     if(!incomeOrExpense.id) {
 
-            }
+        //       incomeOrExpense.id = id
 
-            // Recalcula el listado
-            this.manageRecordsAndSort([incomeOrExpense])
+        //       this.totalElements.set(this.totalElements() + 1)
 
-          }
+        //     }
 
-        })
+        //     // Recalcula el listado
+        //     this.manageRecordsAndSort([incomeOrExpense])
 
-      }
+        //   }
 
-    }))
+        // })
+
+    //   }
+
+    // }))
 
   }
 
   goToCategories(): void {
 
     this.router.navigate([categoriesRoute])
-
-    // const screenWidth = window.innerWidth
-
-    // this.dialog.open(CategoriesSubcategoriesFormComponent, {
-
-    //   width: screenWidth < 600 ? '90vw' : '65vw',
-    //   maxWidth: '90vw',
-    //   height: screenWidth < 600 ? '70vh' : '60vh',
-    //   maxHeight: '80vh',
-    //   disableClose: true
-
-    // }).afterClosed().subscribe((() => {
-
-    //   this.callServices()
-
-    //   this.filterList(this.pageSize())
-
-    // }))
 
   }
 
