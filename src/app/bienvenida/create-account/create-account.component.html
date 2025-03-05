@@ -1,407 +1,153 @@
-<div class="h-screen md:grid place-items-center">
+<div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-md shadow-lg place-self-center animate-slideDown">
 
-  <mat-card class="p-8 max-w-3xl w-full !rounded-none md:!rounded-lg">
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold mb-3">Create account</h1>
+    <p class="text-base text-[var(--text-secondary)]">Complete the form to sign up</p>
+  </div>
 
-    <!-- Cabecera -->
-    <h1 class="mb-5 grid place-items-center">
+  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
 
-      Create account
+    <div class="mb-3">
 
-    </h1>
+      <mat-form-field>
 
-    <!-- Formulario en pantalla grande -->
-    <div class="hidden md:flex">
-  
-      <!-- Sección información -->
-      <section class="md:w-1/2 m-3 text-center md:text-left">
+        <mat-label>Email</mat-label>
 
-        <h2 class="text-xl font-bold text-primary-500 mb-4">
-          Manage your finances with ease!
-        </h2>
-
-        <p class="mb-2">
-          Sign up and keep track of your income and expenses all in one place. With our app, you can:
-        </p>
-
-        <ul class="list-disc list-inside space-y-2">
-          <li>Monitor your income and expenses.</li>
-          <li>Gain a complete view of your financial situation.</li>
-        </ul>
-
-        <p class="mt-4">
-          Start building a stronger financial future today. We’ll help you reach your goals!
-        </p>
-
-        <button mat-raised-button class="w-full mt-6" [routerLink]="['/' + loginRoute]">
-
-          <mat-icon> login </mat-icon>
-          <span> Log in </span>
-
-        </button>
-
-        <p class="mt-4 text-center">
-          You already have an account? Log in!
-        </p>
-
-      </section>
-
-      <!-- Sección formulario -->
-      <section class="md:w-1/2 m-3">
-
-        <mat-vertical-stepper #stepper animationDuration="250">
-
-          <!-- Paso 1: Email -->
-          <mat-step 
-            [stepControl]="formEmail"
-            [hasError]="formEmail.invalid" 
-            [errorMessage]="formError('EMAIL')">
-
-            <form [formGroup]="formEmail" class="text-center">
-
-              <ng-template matStepLabel>Fill out your email</ng-template>
-
-              <mat-form-field>
-
-                <mat-label>Email</mat-label>
-
-                <input matInput placeholder="example@gmail.com" formControlName="email" required>
-                
-              </mat-form-field>
-
-              <button mat-button matStepperNext>Next</button>
-
-            </form>
-
-          </mat-step>
-
-          <!-- Paso 2: Nombre y apellidos -->
-          <mat-step 
-            [stepControl]="formName" 
-            [optional]="true">
-
-            <form [formGroup]="formName" class="text-center">
-
-              <ng-template matStepLabel>Fill out your name and surnames</ng-template>
-
-              <mat-form-field appearance="fill">
-
-                <mat-label> Enter your name </mat-label>
-
-                <input matInput formControlName="name" placeholder="John" />
-
-              </mat-form-field>
-              
-              <mat-form-field appearance="fill">
-
-                <mat-label> Enter your surnames </mat-label>
-                
-                <input matInput formControlName="surnames" placeholder="Doe" />
-
-              </mat-form-field>
-
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
+        <input matInput placeholder="example@gmail.com" formControlName="email" required>
         
-            </form>
+        @if(signUpForm.get('email')?.hasError('required')) {
 
-          </mat-step>
+          <mat-error> Email is required. </mat-error>
 
-          <!-- Paso 3: Contraseña -->
-          <mat-step 
-            [stepControl]="formPassword" 
-            [hasError]="formPassword.invalid" 
-            [errorMessage]="formError('PASSWORD')">
-            
-            <form [formGroup]="formPassword" class="text-center">
+        }
 
-              <ng-template matStepLabel>Fill out your password</ng-template>
+        @if(signUpForm.get('email')?.hasError('pattern')) {
 
-              <mat-form-field appearance="fill">
+          <mat-error> Email is invalid. </mat-error>
 
-                <mat-label> Enter your password </mat-label>
+        }
 
-                <input 
-                  matInput 
-                  formControlName="password" 
-                  [type]="hidePassword() ? 'password' : 'text'" 
-                  placeholder="supersecurepassword" />
+      </mat-form-field>
 
-                <button
-                  mat-icon-button
-                  matSuffix
-                  type="button"
-                  (click)="hidePassword.set(!hidePassword())">
-                  <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-
-                <mat-label> Confirm your password </mat-label>
-
-                <input 
-                  matInput 
-                  formControlName="passwordConfirm" 
-                  [type]="hidePassword() ? 'password' : 'text'" 
-                  placeholder="supersecurepassword"/>
-
-                <button
-                  mat-icon-button
-                  matSuffix
-                  type="button"
-                  (click)="hidePassword.set(!hidePassword())">
-                  <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                </button>
-
-              </mat-form-field>
-
-              <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext>Next</button>
-
-            </form>
-
-          </mat-step>
-
-          <!-- Paso 4: Crear cuenta -->
-          <mat-step>
-
-            <ng-template matStepLabel>Create account</ng-template>
-
-            <div 
-              class="flex flex-col items-center mt-4"
-              matTooltip="There are mandatory fields not filled"
-              [matTooltipDisabled]="formEmail.valid && formPassword.valid">
-
-              <div class="mb-5">
-
-                <app-dynamic-button
-                type="button"
-                buttonText="Create account"
-                matIcon="person_add"
-                [shapePx]="10"
-                [heightPx]="70"
-                [disabled]="buttonLoader() || formEmail.invalid || formPassword.invalid"
-                [loader]="buttonLoader()"
-                buttonType="flat"
-                buttonClass="w-full"
-                (click)="onSubmit()">     
-                </app-dynamic-button>        
-
-              </div>
-
-              <div>
-
-                <button mat-button matStepperPrevious>Back</button>
-
-              </div>
-
-
-            </div>
-
-          </mat-step>
-
-          <!-- Sobreescribimos los iconos -->
-
-          <ng-template matStepperIcon="number" let-index="index">
-
-            @switch (index) {
-              @case (0) {
-                <mat-icon>alternate_email</mat-icon>
-              }
-              @case (1) {
-                <mat-icon>badge</mat-icon>
-              }
-              @case (2) {
-                <mat-icon>key</mat-icon>
-              }
-              @case (3) {
-                <mat-icon>person_add</mat-icon>
-              }
-            }
-            
-          </ng-template>
-
-          <ng-template matStepperIcon="edit" let-index="index">
-
-            @switch (index) {
-              @case (0) {
-                <mat-icon>alternate_email</mat-icon>
-              }
-              @case (1) {
-                <mat-icon>badge</mat-icon>
-              }
-              @case (2) {
-                <mat-icon>key</mat-icon>
-              }
-              @case (3) {
-                <mat-icon>person_add</mat-icon>
-              }
-            }
-            
-          </ng-template>
-
-        </mat-vertical-stepper>
-    
-      </section>
-  
     </div>
 
-    <!-- Contenedor del formulario para pantalla pequeña -->
+    <div class="mb-3">
 
-    <section class="flex flex-col md:hidden">
+      <mat-form-field>
 
-      <!-- Sección formulario completo -->
-      <section class="space-y-6">
+        <mat-label> Enter your name </mat-label>
 
-        <!-- Email -->
-        <form [formGroup]="formEmail">
+        <input matInput formControlName="name" placeholder="John" />
 
-          <legend class="sr-only">Email</legend>
+        @if(signUpForm.get('name')?.hasError('required')) {
 
-          <mat-form-field>
+          <mat-error> Name is required. </mat-error>
 
-            <mat-label>Email</mat-label>
+        }
 
-            <input matInput placeholder="example@domain.com" formControlName="email" required>
+      </mat-form-field>
 
-            @if(formEmail.get('email')?.hasError('required')) {
+    </div>
 
-              <mat-error> Email is required. </mat-error>
-  
-            }
+    <div class="mb-3">
 
-            @if(formEmail.get('email')?.hasError('pattern')) {
+      <mat-form-field>
 
-              <mat-error> Email is invalid. </mat-error>
-  
-            }
-       
-          </mat-form-field>
+        <mat-label> Enter your surnames </mat-label>
+        
+        <input matInput formControlName="surnames" placeholder="Doe" />
 
-        </form>
+      </mat-form-field>
 
-        <!-- Nombre y apellidos -->
-        <form [formGroup]="formName">
+    </div>
 
-          <legend class="sr-only">Name and Surnames</legend>
+    <div class="mb-3">
 
-          <mat-form-field appearance="fill">
+      <mat-form-field>
 
-            <mat-label> Enter your name </mat-label>
+        <mat-label> Enter your password </mat-label>
 
-            <input matInput formControlName="name" placeholder="John" />
+        <input 
+          matInput 
+          formControlName="password"
+          [type]="hidePassword() ? 'password' : 'text'"
+          (keyup)="passwordStrength()"
+          placeholder="Type your password" />
 
-          </mat-form-field>
-          
-          <mat-form-field appearance="fill">
-
-            <mat-label> Enter your surnames </mat-label>
-
-            <input matInput formControlName="surnames" placeholder="Doe" />
-
-          </mat-form-field>
-
-        </form>
-
-        <!-- Contraseña -->
-        <form [formGroup]="formPassword">
-
-          <legend class="sr-only">Password</legend>
-
-          <mat-form-field appearance="fill">
-
-            <mat-label> Enter your password </mat-label>
-
-            <input 
-              matInput 
-              formControlName="password" 
-              [type]="hidePassword() ? 'password' : 'text'" 
-              placeholder="epic password" />
-
-            <button
-              mat-icon-button
-              matSuffix
-              (click)="hidePassword.set(!hidePassword())">
-              <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-
-            @if(formPassword.get('password')?.hasError('required')) {
-
-              <mat-error> Password is required. </mat-error>
-  
-            }
-
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-
-            <mat-label> Confirm your password </mat-label>
-
-            <input 
-              matInput 
-              formControlName="passwordConfirm" 
-              [type]="hidePassword() ? 'password' : 'text'" 
-              placeholder="epic password"/>
-
-            <button
-              mat-icon-button
-              matSuffix
-              (click)="hidePassword.set(!hidePassword())">
-              <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-
-            @if(formPassword.get('passwordConfirm')?.hasError('mismatch')) {
-
-              <mat-error> Passwords don’t match. </mat-error>
-  
-            }
-
-          </mat-form-field>
-
-        </form>
-
-      </section>
-
-      <!-- Botonera -->
-      <section class="flex justify-center mt-6">
-
-        <div class="flex flex-col items-center space-y-2">
-
-          <app-dynamic-button
+        <button
+          mat-icon-button
+          matSuffix
           type="button"
-          buttonText="Create account"
-          matIcon="person_add"
-          [shapePx]="10"
-          [heightPx]="70"
-          [disabled]="buttonLoader() || formEmail.invalid || formPassword.invalid"
-          [loader]="buttonLoader()"
-          buttonType="flat"
-          buttonClass="w-full"
-          (click)="onSubmit()">     
-          </app-dynamic-button>        
+          (click)="hidePassword.set(!hidePassword())">
+            <mat-icon>
+              {{hidePassword() ? 'visibility_off' : 'visibility'}}
+            </mat-icon>
+        </button>
 
-          <button 
-          mat-button 
-          [routerLink]="['/' + loginRoute]"
-          class="w-full max-w-xs">
+        @if(signUpForm.get('password')?.hasError('required')) {
 
-            <mat-icon> login </mat-icon>
-            <span> Log in </span>
-  
-          </button>
-  
-          <p class="mt-4 text-center">
-            You already have an account? Log in!
-          </p>
-          
-        </div>
+          <mat-error> Password is required. </mat-error>
 
-      </section>
+        }
 
-    </section>
-  
-  </mat-card>
+      </mat-form-field>
+
+      <div class="h-1 mt-2">
+        <div id="passwordStrength" class="h-full rounded-md w-0 transition-[width,background-color] duration-300 ease"></div>
+      </div>
+
+    </div>
+
+    <div class="mb-3">
+
+      <mat-form-field>
+
+        <mat-label> Confirm your password </mat-label>
+
+        <input 
+          matInput 
+          formControlName="passwordConfirm" 
+          [type]="hidePassword() ? 'password' : 'text'" 
+          placeholder="Confirm your password"/>
+
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword.set(!hidePassword())">
+          <mat-icon>
+            {{hidePassword() ? 'visibility_off' : 'visibility'}}
+          </mat-icon>
+        </button>
+
+        @if(signUpForm.get('passwordConfirm')?.hasError('mismatch')) {
+
+          <mat-error> Passwords don’t match. </mat-error>
+
+        }
+
+      </mat-form-field>
+
+    </div>
+
+    <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
+    type="submit"
+    [disabled]="buttonLoader()">
+
+      @if(buttonLoader()) {
+        <span class="material-symbols-outlined"> 
+          <mat-spinner [diameter]="15"></mat-spinner> 
+        </span>
+      } @else {
+        Create account
+      }
+        
+    </button>
+
+    <div class="text-center mt-6 text-sm">
+      ¿Already have an account? <a class="text-[var(--secondary)] hover:text-[var(--secondary-hover)]" [routerLink]="['/' + loginRoute]">Log in!</a>
+    </div>
+
+  </form>
 
 </div>
-

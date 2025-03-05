@@ -1,6 +1,6 @@
 <div class="max-w-6xl mx-auto p-4">
 
-  @if(tokenService.isTokenValid()) {
+  @if(tokenService.isTokenValid() && tokenService.isAccountActivated()) {
 
     <!-- Cabecera -->
     <header>
@@ -26,7 +26,7 @@
           </button>
     
           <div id="currency-dropdown-menu" 
-          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm dropdown-shadow z-[1000] hidden mt-1">
+          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-lg dropdown-shadow z-[1000] hidden mt-1">
 
             @for(currency of currencyExchangeService.currencies(); track currency) {
 

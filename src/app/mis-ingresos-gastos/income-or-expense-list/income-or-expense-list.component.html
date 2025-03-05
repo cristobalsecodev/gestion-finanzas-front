@@ -211,7 +211,7 @@
           </div>
 
           <div class="flex justify-between pt-4">
-            <button class="button bg-transparent hover:bg-[var(--secondary-hover)] text-[var(--secondary)] disabled:opacity-50 disabled:pointer-events-none"
+            <button class="button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] disabled:opacity-50 disabled:pointer-events-none"
             [disabled]="filterLoader()"
             (click)="resetFilter()">
               <span class="material-symbols-outlined">restart_alt</span>
@@ -234,18 +234,22 @@
     <!-- Botones de acción -->
     <div class="flex flex-col gap-3 border-t border-[var(--component-hover)] p-4">
 
-      <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
-      (click)="openIncomeOrExpenseDialog(actionType.CREATE)"
-      [disabled]="categories.length === 0"
-      matTooltip="You have to add at least one category to create an income or expense"
-      [matTooltipDisabled]="categories.length > 0">
+      <div 
+      matTooltip="Add a category first"
+      [matTooltipDisabled]="categories.length !== 0">
+        <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
+        (click)="openIncomeOrExpenseDialog(actionType.CREATE)"
+        [disabled]="categories.length === 0"
+        matTooltip="You have to add at least one category to create an income or expense"
+        [matTooltipDisabled]="categories.length > 0">
+  
+          <span class="material-symbols-outlined">add</span>
+          <span>New transaction</span>
+  
+        </button>
+      </div>
 
-        <span class="material-symbols-outlined">add</span>
-        <span>New transaction</span>
-
-      </button>
-
-      <button class="button bg-transparent hover:bg-[var(--secondary-hover)] text-[var(--secondary)]"
+      <button class="button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)]"
       (click)="goToCategories()">
 
         <span class="material-symbols-outlined">settings</span>
@@ -327,12 +331,12 @@
 
           <div class="flex gap-1">
 
-            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm cursor-pointer"
+            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
             (click)="getFilteredIncomeOrExpenses(buildFilter())">
               <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span> Load more
             </button>
   
-            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm cursor-pointer"
+            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
             (click)="getFilteredIncomeOrExpenses(buildFilter(true))">
               <span class="material-symbols-outlined text-sm">keyboard_double_arrow_down</span> Load all
             </button>  
@@ -348,7 +352,7 @@
         <div class="relative inline-block">
 
           <button id="button-dropdown" 
-          class="tertiary-button bg-transparent hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm cursor-pointer"
+          class="tertiary-button bg-transparent hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
           matTooltip="Change how many records you want to load"
           (click)="toggleDropdown($event)">
             Size: {{ pageSize() }}
@@ -358,7 +362,7 @@
   
             @for(size of [5,10,20,30]; track size) {
   
-              <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
+              <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 transition-colors duration-200 gap-3" 
               (click)="filterList(size)">
   
                 <span>{{ size }}</span>

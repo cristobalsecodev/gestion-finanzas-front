@@ -165,13 +165,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.callServices()
+    this.getCategories()
 
     this.getFilteredIncomeOrExpenses(this.buildFilter())
     
   }
 
-  callServices(): void {
+  getCategories(): void {
 
     this.categoriesService.getCategories(true).subscribe({
       next: (categories) => {

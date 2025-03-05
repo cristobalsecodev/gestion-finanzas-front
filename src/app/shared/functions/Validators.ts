@@ -6,6 +6,10 @@ export function passwordMatchValidator(control: AbstractControl) {
   const password = control.get('password')?.value
   const passwordConfirm = control.get('passwordConfirm')?.value
 
+  if(!password || !passwordConfirm) {
+    return null
+  }
+
   return password === passwordConfirm ? null : { mismatch: true }
 
 }

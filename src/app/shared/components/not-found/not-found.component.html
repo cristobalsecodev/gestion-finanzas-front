@@ -1,9 +1,14 @@
-<div class="h-screen flex flex-col items-center justify-center gap-4 px-4 text-center">
-  <p class="text-xl font-semibold">404</p>
-  <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Page not found</h1>
-  <p class="text-lg">Sorry, this page doesn't exist</p>
-  <button mat-flat-button color="primary" [routerLink]="['']" class="mt-2 flex items-center gap-2">
-    <mat-icon>keyboard_return</mat-icon>
-    <span>Go to main page</span>
-  </button>
+<div class="flex flex-col items-center justify-center gap-6 px-4 md:mt-24 text-center">
+  <div class="max-w-md w-full p-8 rounded-lg">
+    <p class="text-xl font-semibold text-[var(--text-primary)] mb-2">404</p>
+    <h1 class="text-4xl font-bold tracking-tight text-[var(--text-primary)] sm:text-5xl mb-4">Page not found</h1>
+    <p class="text-lg text-[var(--text-secondary)] mb-6">Sorry, we couldn't find the page you're looking for.</p>
+
+    <button
+      [routerLink]="['']"
+      class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center place-self-center mt-3">
+      <span class="material-symbols-outlined">keyboard_return</span>
+      Back to home
+    </button>
+  </div>
 </div>

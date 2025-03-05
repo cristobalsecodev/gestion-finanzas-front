@@ -5,7 +5,7 @@
       <div class="relative inline-block">
 
         <button id="graphics-button-dropdown" 
-        class="button bg-[var(--component-hover)] hover:bg-[var(--secondary-hover)] disabled:opacity-50 disabled:pointer-events-none text-base mb-4"
+        class="button bg-[var(--component-hover)] hover:bg-[var(--secondary-component-hover)] disabled:opacity-50 disabled:pointer-events-none text-base mb-4"
         (click)="toggleDropdown($event)"
         matTooltip="Converts all incomes and expenses into one currency">
           <span>All graphs are displayed in:</span>
@@ -15,7 +15,7 @@
         </button>
   
         <div id="graphics-currency-dropdown-menu" 
-        class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-sm dropdown-shadow z-[1000] hidden mt-1">
+        class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-lg dropdown-shadow z-[1000] hidden mt-1">
 
           @for(currency of currencyExchangeService.currencies(); track currency) {
 
