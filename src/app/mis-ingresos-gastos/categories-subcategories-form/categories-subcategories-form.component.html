@@ -45,14 +45,14 @@
       <div class="flex gap-2 mt-1">
 
         <button 
-        class="button bg-transparent hover:bg-[var(--positive-hover)]"
+        class="secondary-button bg-transparent hover:bg-[var(--positive-hover)]"
         (click)="selectedType = 'income'"
         [ngClass]="{ 'badge-income': selectedType === 'income' }">
           Income
         </button>
 
         <button
-        class="button bg-transparent hover:bg-[var(--negative-hover)]"
+        class="secondary-button bg-transparent hover:bg-[var(--negative-hover)]"
         (click)="selectedType = 'expense'"
         [ngClass]="{ 'badge-expense': selectedType === 'expense' }">
           Expense
@@ -70,7 +70,7 @@
         <span class="material-symbols-outlined">close</span>
       </button>
       <button 
-        class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] justify-center disabled:opacity-50 disabled:pointer-events-none"
+        class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] justify-center disabled:opacity-50 disabled:pointer-events-none"
         [disabled]="categoryForm.invalid || !selectedType"
         (click)="submitCreateCategory()">
         Save
@@ -237,14 +237,14 @@
                   @if(category.type === 'income') {
     
                     <button 
-                    class="button justify-center badge-income">
+                    class="secondary-button justify-center badge-income">
                       Income
                     </button>
     
                   } @else {
     
                     <button 
-                    class="button justify-center badge-expense">
+                    class="secondary-button justify-center badge-expense">
                       Expense
                     </button>
     
@@ -262,7 +262,7 @@
                   <span class="material-symbols-outlined">close</span>
                 </button>
                 <button 
-                  class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] justify-center disabled:opacity-50 disabled:pointer-events-none"
+                  class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] justify-center disabled:opacity-50 disabled:pointer-events-none"
                   [disabled]="categoryForm.invalid"
                   (click)="submitEditCategory()">
                   Save
@@ -424,7 +424,7 @@
           No categories found. Try different search criteria or create a new category.
         </p>
   
-        <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center"
+        <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center"
         (click)="isCreateCategory.set(true); categoryForm.get('name')?.setValue(this.searchName.value)">
           <span class="material-symbols-outlined">add</span>
             New category
@@ -438,7 +438,7 @@
   
   <div class="flex justify-end mt-6 pt-4 border-t border-[var(--component-hover)]">
   
-    <button class="button bg-transparent hover:bg-[var(--secondary-component-hover)] mr-2"
+    <button class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] mr-2"
     [routerLink]="['/' + incomeExpensesRoute]">
       <span class="material-symbols-outlined">keyboard_return</span>
       Back
@@ -446,7 +446,7 @@
   
     @if(filteredCategories.length !== 0) {
   
-      <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
+      <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)]"
       (click)="isCreateCategory.set(true); categoryForm.get('name')?.setValue(this.searchName.value)">
         <span class="material-symbols-outlined">add</span>
         New category

@@ -16,147 +16,50 @@ $custom-theme: mat.define-theme((
 ));
 
 html {
-  /* PALETA EN HEX */
-  --sys-background: #f8f9fa;
-  --sys-on-background: #181c20;
-  --sys-surface: #ffffff;
-  --sys-surface-dim: #e8ecef;
-  --sys-surface-bright: #ffffff;
-  --sys-surface-container-lowest: #ffffff;
-  --sys-surface-container-low: #f5f6f8;
-  --sys-surface-container: #edeff1;
-  --sys-surface-container-high: #e6e8eb;
-  --sys-surface-container-highest: #e0e2e5;
-  --sys-on-surface: #181c20;
-  --sys-surface-variant: #dcdfe3;
-  --sys-on-surface-variant: #41474d;
-  --sys-inverse-surface: #2d3135;
-  --sys-inverse-on-surface: #f1f3f6;
-  --sys-outline: #8a8f96;
-  --sys-outline-variant: #c1c7ce;
-  --sys-shadow: #000000;
-  --sys-scrim: #000000;
-  --sys-surface-tint: #2d6a93;
+  /* Angular material */
+  --mat-full-pseudo-checkbox-selected-icon-color: #2563eb;
+  --mdc-checkbox-selected-icon-color: #2563eb;
+  --mdc-checkbox-selected-hover-icon-color: #2563EB1A;
 
-  --sys-primary: #2d6a93;
-  --sys-on-primary: #ffffff;
-  --sys-primary-container: #d0e8ff;
-  --sys-on-primary-container: #00334d;
-  --sys-inverse-primary: #85bde3;
+  --mat-option-selected-state-layer-color: #2563EB1A;
+  --mat-option-selected-state-label-text-color: #2563eb;
+  --mat-select-panel-background-color: #f8fafc;
 
-  --sys-secondary: #2d6a93;
-  --sys-on-secondary: #ffffff;
-  --sys-secondary-container: #d0e8ff;
-  --sys-on-secondary-container: #00334d;
+  --mat-select-trigger-text-size: 0.875rem;
+  --mat-form-field-container-text-size: 0.875rem;
 
-  --sys-tertiary: #6c5b91;
-  --sys-on-tertiary: #ffffff;
-  --sys-tertiary-container: #e7dbff;
-  --sys-on-tertiary-container: #4d3a70;
+  --sys-surface-variant: #e2e8f0;
+  --sys-on-error-container: #b91c1c;
+  --sys-on-secondary-container: #1e293b;
+  --sys-error: #ef4444;
+  --sys-on-surface: #1e293b;
 
-  --sys-error: #c62828;
-  --sys-on-error: #ffffff;
-  --sys-error-container: #ffdad5;
-  --sys-on-error-container: #7a2a2a;
+  --sys-surface-container: #f8fafc;
+  --sys-surface-container-high: #f1f5f9;
+  --sys-on-surface-variant: #64748b;
+  --sys-on-primary-container: #ffffff;
+  --sys-primary-container: #60a5fa;
+  --sys-primary: #2563eb;
 
-  --sys-neutral: #6f7378;
-  --sys-neutral-variant: #767c82;
-
-  --sys-primary-fixed: #d0e8ff;
-  --sys-primary-fixed-dim: #85bde3;
-  --sys-on-primary-fixed: #001e2f;
-  --sys-on-primary-fixed-variant: #00334d;
-
-  --sys-secondary-fixed: #d0e8ff;
-  --sys-secondary-fixed-dim: #85bde3;
-  --sys-on-secondary-fixed: #001e2f;
-  --sys-on-secondary-fixed-variant: #00334d;
-
-  --sys-tertiary-fixed: #e7dbff;
-  --sys-tertiary-fixed-dim: #c1a7e7;
-  --sys-on-tertiary-fixed: #220f46;
-  --sys-on-tertiary-fixed-variant: #4d3a70;
-
-  --sys-inverse-secondary: #85bde3;
-  --sys-inverse-tertiary: #c1a7e7;
-  --sys-inverse-error: #ffb4ab;
-
-  --sys-error-fixed: #ffdad5;
-  --sys-error-fixed-dim: #ffb4ab;
-  --sys-on-error-fixed: #3b0907;
-  --sys-on-error-fixed-variant: #7a2a2a;
-
-  /* Custom */
-  --sys-action-green: #4caf50;
-  --sys-action-red: #d32f2f;
-  --sys-action-yellow: #e3af09;
-  --sys-action-blue: #2d6a93;
-  --sys-hover-component: #e0e4e9;
+  /* Custom - Modo día */
+  --background: #ffffff;
+  --component: #f8fafc;
+  --component-hover: #f1f5f9;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #3b82f6;
+  --secondary-hover: #2563eb;
+  --secondary-component-hover: #2563EB1A;
+  --tertiary-hover: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --positive: #22c55e;
+  --positive-hover: rgba(34, 197, 94, 0.1);
+  --negative: #ef4444;
+  --negative-hover: rgba(239, 68, 68, 0.1);
 }
 
 .dark {
-  /* PALETA EN HEX */
-  // --sys-background: #1a2127;
-  // --sys-on-background: #dadfe4;
-  // --sys-surface: #12171b;
-  // --sys-surface-dim: #101417;
-  // --sys-surface-bright: #3c4248;
-  // --sys-surface-container-lowest: #0c1013;
-  // --sys-surface-container-low: #181d22;
-  // --sys-surface-container-highest: #32373c;
-  // --sys-inverse-surface: #dadfe4;
-  // --sys-inverse-on-surface: #2c3136;
-  // --sys-outline: #8c939b;
-  // --sys-outline-variant: #3c434a;
-  // --sys-shadow: #000000;
-  // --sys-scrim: #000000;
-  // --sys-surface-tint: #78b7e3;
-
-  // --sys-on-primary: #002a41;
-  // --sys-inverse-primary: #1f5b85;
-
-  // --sys-secondary: #77b5e1;
-  // --sys-on-secondary: #00273f;
-  // --sys-secondary-container: #00415c;
-  // --sys-on-secondary-container: #bfe3ff;
-
-  // --sys-tertiary: #bba1ef;
-  // --sys-on-tertiary: #2b194d;
-  // --sys-tertiary-container: #423066;
-  // --sys-on-tertiary-container: #e7dbff;
-
-  // --sys-on-error: #541b18;
-  // --sys-error-container: #692d2a;
-  // --sys-on-error-container: #ffdad5;
-
-  // --sys-neutral: #74777c;
-  // --sys-neutral-variant: #72787e;
-
-  // --sys-primary-fixed: #bfe3ff;
-  // --sys-primary-fixed-dim: #78b7e3;
-  // --sys-on-primary-fixed: #001a2d;
-  // --sys-on-primary-fixed-variant: #003d5c;
-
-  // --sys-secondary-fixed: #bfe3ff;
-  // --sys-secondary-fixed-dim: #77b5e1;
-  // --sys-on-secondary-fixed: #001a2d;
-  // --sys-on-secondary-fixed-variant: #00415c;
-
-  // --sys-tertiary-fixed: #e7dbff;
-  // --sys-tertiary-fixed-dim: #bba1ef;
-  // --sys-on-tertiary-fixed: #220f46;
-  // --sys-on-tertiary-fixed-variant: #423066;
-
-  // --sys-inverse-secondary: #1e5b7f;
-  // --sys-inverse-tertiary: #65508a;
-  // --sys-inverse-error: #b02a2a;
-
-  // --sys-error-fixed: #ffdad5;
-  // --sys-error-fixed-dim: #f28b82;
-  // --sys-on-error-fixed: #3b0907;
-  // --sys-on-error-fixed-variant: #692d2a;
-
-
   // Angular material
   --mat-full-pseudo-checkbox-selected-icon-color: #60a5fa;
   --mdc-checkbox-selected-icon-color: #60a5fa;
@@ -198,14 +101,6 @@ html {
   --positive-hover: rgba(74, 222, 128, 0.1);
   --negative: #f87171;
   --negative-hover: rgba(248, 113, 113, 0.1);
-
-  --red: #f44336;
-
-  --sys-action-green: #60ad68;
-  --sys-action-red: #e57373;
-  --sys-action-yellow: #f5da6c;
-  --sys-action-blue: #78b7e3;
-  --sys-hover-component: #2b333a;
 }
 
 html {
@@ -323,11 +218,19 @@ h1 {
 }
 
 // Estilos específicos para botón principal y secundario
-.button {
+.secondary-button {
   @extend .button-base;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
 }
+
+.primary-button {
+  color: #f1f5f9;
+  @extend .button-base;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
 
 // Estilos específicos para botón terciario
 .tertiary-button {

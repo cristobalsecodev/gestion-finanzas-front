@@ -211,13 +211,13 @@
           </div>
 
           <div class="flex justify-between pt-4">
-            <button class="button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] disabled:opacity-50 disabled:pointer-events-none"
+            <button class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] disabled:opacity-50 disabled:pointer-events-none"
             [disabled]="filterLoader()"
             (click)="resetFilter()">
               <span class="material-symbols-outlined">restart_alt</span>
               <span>Reset filter</span>
             </button>
-            <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:pointer-events-none"
+            <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:pointer-events-none"
             [disabled]="filterLoader()"
             type="submit">
               <span class="material-symbols-outlined">filter_alt</span>
@@ -237,7 +237,7 @@
       <div 
       matTooltip="Add a category first"
       [matTooltipDisabled]="categories.length !== 0">
-        <button class="button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
+        <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
         (click)="openIncomeOrExpenseDialog(actionType.CREATE)"
         [disabled]="categories.length === 0"
         matTooltip="You have to add at least one category to create an income or expense"
@@ -249,7 +249,7 @@
         </button>
       </div>
 
-      <button class="button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)]"
+      <button class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)]"
       (click)="goToCategories()">
 
         <span class="material-symbols-outlined">settings</span>

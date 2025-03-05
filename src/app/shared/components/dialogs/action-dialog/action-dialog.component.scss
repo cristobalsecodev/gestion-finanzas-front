@@ -1,17 +1,179 @@
-.warning {
+// Modal overlay
+// .modal-overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   z-index: 1000;
+//   opacity: 0;
+//   visibility: hidden;
+//   transition: all var(--transition-speed);
+//   backdrop-filter: blur(3px);
+  
+//   &.active {
+//     opacity: 1;
+//     visibility: visible;
+    
+//     .modal {
+//       transform: translateY(0);
+//     }
+//   }
+// }
 
-  color: var(--sys-action-yellow);
-
+// Modal container
+.modal {
+  background-color: white;
+  border-radius: var(--border-radius);
+  width: 95%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: transform var(--transition-speed);
+  overflow: hidden;
 }
 
-.delete {
-
-  color: var(--sys-action-red)
-
+// Modal header
+.modal-header {
+  display: flex;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid #eee;
 }
 
-.info {
+.modal-icon {
+  font-size: 24px;
+  margin-right: 15px;
+}
 
-  color: var(--sys-action-blue)
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  flex-grow: 1;
+}
 
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Modal body
+.modal-body {
+  padding: 20px;
+}
+
+.modal-message {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #444;
+}
+
+// Modal footer
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+  gap: 10px;
+}
+
+// Buttons
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-speed);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-info {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.btn-warning {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.btn-delete {
+  background-color: var(--delete-color);
+  color: white;
+}
+
+// Specific modal styles
+.modal-info .modal-header {
+  border-top: 4px solid var(--info-color);
+}
+
+.modal-warning .modal-header {
+  border-top: 4px solid var(--warning-color);
+}
+
+.modal-delete .modal-header {
+  border-top: 4px solid var(--delete-color);
+}
+
+// Animation for delete button
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.btn-confirm-delete {
+  animation: pulse 1.5s infinite;
+}
+
+// Responsive styles
+@media (max-width: 480px) {
+  .modal {
+    width: 95%;
+  }
+  
+  .modal-header {
+    padding: 15px;
+  }
+  
+  .modal-body, .modal-footer {
+    padding: 15px;
+  }
+  
+  .btn {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
 }

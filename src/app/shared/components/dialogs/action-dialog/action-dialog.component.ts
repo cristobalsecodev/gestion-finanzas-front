@@ -4,8 +4,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
+
+export enum ModalType {
+  INFO = 'info',
+  WARNING = 'warning',
+  DELETE = 'delete'
+}
+
 interface DialogData {
-  type: 'warning' | 'info' | 'delete';
+  type: ModalType;
   message: string;
   confirmButtonText: string;
   cancelButtonText: string;
@@ -26,6 +33,8 @@ interface DialogData {
   styleUrl: './action-dialog.component.scss'
 })
 export class ActionDialogComponent {
+
+  ModalType = ModalType
 
   constructor(
     public dialogRef: MatDialogRef<ActionDialogComponent>,
