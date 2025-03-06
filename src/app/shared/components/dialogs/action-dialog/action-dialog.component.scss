@@ -1,179 +1,197 @@
-// Modal overlay
-// .modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   z-index: 1000;
-//   opacity: 0;
-//   visibility: hidden;
-//   transition: all var(--transition-speed);
-//   backdrop-filter: blur(3px);
-  
-//   &.active {
-//     opacity: 1;
-//     visibility: visible;
-    
-//     .modal {
-//       transform: translateY(0);
-//     }
-//   }
-// }
-
-// Modal container
-.modal {
-  background-color: white;
-  border-radius: var(--border-radius);
-  width: 95%;
-  max-width: 450px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transform: translateY(20px);
-  transition: transform var(--transition-speed);
-  overflow: hidden;
+:host {
+  display: contents;
 }
 
-// Modal header
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  width: 90%;
+  max-width: 400px;
+  background-color: var(--component);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(0.8);
+  opacity: 0;
+  transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.2s;
+}
+
+.modal-overlay.active .modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
 .modal-header {
+  padding: 15px 20px;
   display: flex;
   align-items: center;
-  padding: 18px 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .modal-icon {
-  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-right: 15px;
 }
 
+.modal-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
 .modal-title {
-  font-size: 18px;
+  font-size: 1.2rem;
   font-weight: 600;
-  flex-grow: 1;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: #666;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  transition: all 0.2s;
-  
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-}
-
-// Modal body
-.modal-body {
+.modal-content {
   padding: 20px;
-}
-
-.modal-message {
-  font-size: 15px;
+  color: var(--text-primary);
   line-height: 1.5;
-  color: #444;
 }
 
-// Modal footer
-.modal-footer {
+.modal-actions {
+  padding: 15px 20px;
   display: flex;
   justify-content: flex-end;
-  padding: 16px 20px;
-  border-top: 1px solid #eee;
   gap: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-// Buttons
-.btn {
-  padding: 12px 20px;
+.modal-btn {
+  padding: 10px 15px;
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: 5px;
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all var(--transition-speed);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
+  transition: background-color 0.2s, transform 0.2s;
 }
 
-.btn-info {
-  background-color: var(--info-color);
+.modal-btn:hover {
+  transform: translateY(-2px);
+}
+
+.modal-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.modal-btn.cancel {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.modal-btn.confirm {
   color: white;
 }
 
-.btn-warning {
-  background-color: var(--warning-color);
-  color: white;
-}
-
-.btn-delete {
+/* Estilos específicos para cada tipo de modal */
+.modal.delete .modal-icon {
   background-color: var(--delete-color);
-  color: white;
 }
 
-// Specific modal styles
-.modal-info .modal-header {
-  border-top: 4px solid var(--info-color);
+.modal.delete .modal-btn.confirm {
+  background-color: var(--delete-color);
 }
 
-.modal-warning .modal-header {
-  border-top: 4px solid var(--warning-color);
+.modal.warning .modal-icon {
+  background-color: var(--warning-color);
 }
 
-.modal-delete .modal-header {
-  border-top: 4px solid var(--delete-color);
+.modal.warning .modal-btn.confirm {
+  background-color: var(--warning-color);
 }
 
-// Animation for delete button
+.modal.info .modal-icon {
+  background-color: var(--info-color);
+}
+
+.modal.info .modal-btn.confirm {
+  background-color: var(--info-color);
+}
+
+/* Animación de shake para el modal de delete */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.modal.delete.shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Animación de pulse para el modal de warning */
 @keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.02); }
   100% { transform: scale(1); }
 }
 
-.btn-confirm-delete {
-  animation: pulse 1.5s infinite;
+.modal.warning.pulse {
+  animation: pulse 0.5s ease-in-out;
 }
 
-// Responsive styles
-@media (max-width: 480px) {
+/* Animación de bounce para el modal de info */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.modal.info.bounce {
+  animation: bounce 0.8s;
+}
+
+/* Animación para el botón de confirmación */
+@keyframes buttonPulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+
+.modal-btn.confirm.pulse {
+  animation: buttonPulse 1.5s infinite;
+}
+
+/* Estilos responsivos */
+@media (max-width: 500px) {
   .modal {
     width: 95%;
   }
   
-  .modal-header {
-    padding: 15px;
+  .modal-actions {
+    flex-direction: column;
   }
   
-  .modal-body, .modal-footer {
-    padding: 15px;
-  }
-  
-  .btn {
-    padding: 10px 15px;
-    font-size: 13px;
+  .modal-btn {
+    width: 100%;
+    text-align: center;
   }
 }

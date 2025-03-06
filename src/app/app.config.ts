@@ -8,6 +8,7 @@ import { errorInterceptor } from './shared/interceptors/error.interceptor';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatIconRegistry } from '@angular/material/icon';
 import { CurrencyExchangeService } from './shared/services/CurrencyExchange/currency-exchange.service';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const MY_FORMATS = {
   parse: {
@@ -29,7 +30,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])), 
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
+    provideAnimations(), 
     provideAnimationsAsync(),
     provideMomentDateAdapter(MY_FORMATS),
     {

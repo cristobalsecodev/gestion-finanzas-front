@@ -1,4 +1,3 @@
-/* Layout */
 .grid-dashboard {
   display: grid;
   grid-template-columns: 1fr;
@@ -9,4 +8,41 @@
   .grid-dashboard {
     grid-template-columns: 1fr 2fr;
   }
+  app-income-or-expense-list {
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+// Lista con scroll independeinte
+app-income-or-expense-list {
+  overflow-y: auto;
+  max-height: 100vh;
+  padding-right: 5px;
+}
+
+// Estadísticas debe estar estático
+app-income-or-expense-statistics {
+  position: sticky;
+  top: 0;
+}
+
+// Personaliza las barras de desplazamiento
+
+app-income-or-expense-list::-webkit-scrollbar {
+  width: 8px;
+  
+}
+
+app-income-or-expense-list::-webkit-scrollbar-track {
+  background: var(--component);
+  border-radius: 10px;
+}
+
+app-income-or-expense-list::-webkit-scrollbar-thumb {
+  background: var(--component-hover);
+  border-radius: 10px;
+}
+
+app-income-or-expense-list::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-component-hover);
 }

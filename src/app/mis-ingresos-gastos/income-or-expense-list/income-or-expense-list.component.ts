@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,7 +10,6 @@ import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousan
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
@@ -18,7 +17,6 @@ import { FilterIncomeOrExpense } from '../interfaces/FilterIncomeOrExpense.inter
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 import { compareObjects } from 'src/app/shared/functions/CompareObjects';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
-import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,10 +31,10 @@ import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
-import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
-import { allCategories, allTransactions, incomeToEdit } from '../utils/SharedList';
+import { allCategories, allTransactions, incomeOrExpenseToEdit } from '../utils/SharedList';
 import { Router } from '@angular/router';
 import { categoriesRoute, incomeExpensesFormRoute } from 'src/app/shared/constants/variables.constants';
+import { ActionDialogService } from 'src/app/shared/services/Dialogs/action-dialog.service';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -66,6 +64,21 @@ import { categoriesRoute, incomeExpensesFormRoute } from 'src/app/shared/constan
     FormatThousandSeparatorsPipe
   ],
   animations: [
+    trigger('slideInOut', [
+      state('void', style({
+        height: '0',
+        overflow: 'hidden',
+        padding: '0 20px',
+        opacity: '0'
+      })),
+      state('*', style({
+        height: '*',
+        overflow: 'hidden',
+        padding: '15px 20px',
+        opacity: '1'
+      })),
+      transition('void <=> *', animate('300ms ease-in-out'))
+    ]),
     trigger('fadeAnimation', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(-10px)' }),
@@ -96,15 +109,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
   // Tipos de acciones
   readonly actionType = ActionType
 
-  // Modal
-  readonly dialog = inject(MatDialog)
-
   // Servicios
   currencyExchangeService = inject(CurrencyExchangeService)
   incomeOrExpenseService = inject(IncomeOrExpenseService)
   categoriesService = inject(CategoriesAndSubCategoriesService)
   notificationsService = inject(NotificacionesService)
   router = inject(Router)
+  dialog = inject(ActionDialogService)
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -469,57 +480,16 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  openIncomeOrExpenseDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
-
-    incomeToEdit.set(incomeOrExpense)
+  newTransaction(): void {
 
     this.router.navigate([incomeExpensesFormRoute])
 
-    // this.dialog.open(IncomeOrExpenseFormComponent, {
+  }
 
-    //   data: {
-    //     actionType: actionType,
-    //     incomeOrExpense: incomeOrExpense,
-    //     categories: this.categories
-    //   },
-    //   minWidth: '50vh',
-    //   maxWidth: '90vw',
-    //   minHeight: '10vh',
-    //   maxHeight: '80vh',
-    //   disableClose: true
+  editTransaction(incomeOrExpense: IncomeOrExpense): void {
 
-    // }).afterClosed().subscribe(((incomeOrExpense: IncomeOrExpense) => {
-
-    //   if(incomeOrExpense) {
-
-        // this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
-
-        //   next: (id: number) => {
-
-        //     this.notificationsService.addNotification(
-        //       `${capitalizeString(incomeOrExpense.type)} saved`, 
-        //       'success'
-        //     )
-
-        //     // En caso de creación de registro, asigna el ID creado y asigna un elemento más a la página
-        //     if(!incomeOrExpense.id) {
-
-        //       incomeOrExpense.id = id
-
-        //       this.totalElements.set(this.totalElements() + 1)
-
-        //     }
-
-        //     // Recalcula el listado
-        //     this.manageRecordsAndSort([incomeOrExpense])
-
-        //   }
-
-        // })
-
-    //   }
-
-    // }))
+    incomeOrExpenseToEdit.set(incomeOrExpense)
+    this.router.navigate([incomeExpensesFormRoute])
 
   }
 
@@ -529,25 +499,16 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   }
 
-  openDeleteDialog(incomeOrExpense: IncomeOrExpense): void {
+  deleteTransaction(incomeOrExpense: IncomeOrExpense): void {
 
     const recurrenceMessage = incomeOrExpense.recurrenceDetails 
       ? `. If this is the only ${incomeOrExpense.type} registered, the recurrence will be deleted too.` 
       : ''
 
-    this.dialog.open(ActionDialogComponent, {
-
-      data: {
-        type: 'delete',
-        message: `Are you sure you want to delete this ${incomeOrExpense.type}?${recurrenceMessage}`,
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Go back'
-      },
-      maxWidth: '30vw'
-
-    }).afterClosed().subscribe(((isConfirmed: boolean) => {
-
-      if(isConfirmed) {
+    this.dialog.openDeleteModal(
+      'Delete',
+      `Are you sure you want to delete this ${incomeOrExpense.type}?${recurrenceMessage}`,
+      () => {
 
         this.incomeOrExpenseService.deleteIncomeOrExpense(incomeOrExpense.id!).subscribe({
   
@@ -564,8 +525,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
         })
 
       }
-
-    }))
+    )
 
   }
 
@@ -612,7 +572,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     const unit = frequency === 1 ? recurrence.singular : recurrence.plural
 
-    return `The recurrence occurs every ${frequency} ${unit}.`
+    return `Every ${frequency} ${unit}.`
 
   }
 

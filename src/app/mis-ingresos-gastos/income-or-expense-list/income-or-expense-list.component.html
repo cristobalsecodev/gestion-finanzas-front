@@ -24,7 +24,7 @@
 
       <div @fadeAnimation>
     
-        <form class="p-4" [formGroup]="filterForm" (ngSubmit)="filterList(pageSize())">
+        <form [formGroup]="filterForm" class="p-4" (ngSubmit)="filterList(pageSize())">
 
           <div class="grid grid-cols-2 gap-4">
 
@@ -238,7 +238,7 @@
       matTooltip="Add a category first"
       [matTooltipDisabled]="categories.length !== 0">
         <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
-        (click)="openIncomeOrExpenseDialog(actionType.CREATE)"
+        (click)="newTransaction()"
         [disabled]="categories.length === 0"
         matTooltip="You have to add at least one category to create an income or expense"
         [matTooltipDisabled]="categories.length > 0">
@@ -276,10 +276,12 @@
     
           <ul class="list-none">
             
-            @for (record of groupedRecords[year]; track $index) {
+            @for (record of groupedRecords[year]; track record.id) {
 
-              <li class="border-b border-[var(--component-hover)] hover:bg-[var(--component-hover)] transition-colors duration-200 py-3 px-4">
+              <li (click)="toggleDetails(record.id!)"
+              class="border-b border-[var(--component-hover)] hover:bg-[var(--component-hover)] transition-colors duration-200 py-3 px-4 cursor-pointer">
 
+                <!-- Información escueta -->
                 <div class="flex justify-between items-center">
 
                   <div>
@@ -297,6 +299,142 @@
                   class="cursor-default whitespace-nowrap">
                     {{ record.amount | formatAmount }} {{ 0 | currencySymbol: record.currency }}
                   </div>
+
+                </div>
+
+                <!-- Información detallada -->
+                <div [@slideInOut]="selectedRecordId === record.id ? '*' : 'void'">
+
+                  <div class="flex gap-2 mb-2 place-self-center">
+
+                    <button (click)="deleteTransaction(record)"
+                    matTooltip="Delete"
+                    class="button-icon hover:text-[var(--negative)] hover:border-[var(--negative)]">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>  
+
+                    <button class="button-icon hover:text-[var(--text-primary)] hover:border-[var(--primary)]"
+                    matTooltip="Edit"
+                    (click)="editTransaction(record)">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+
+                  </div>
+
+                  @if(record.subcategory) {
+
+                    <!-- Subcategoría -->
+                    <div class="mb-3">
+                      <div class="text-[var(--text-secondary)] text-xs mb-1">
+                        Subcategory
+                      </div>
+                      <div class="text-sm">
+                        {{ record.subcategory.name }}
+                      </div>
+                    </div>
+
+                  }
+
+                  <!-- Tipo de cambio de divisa -->
+                  <div class="mb-3">
+                    <div class="text-[var(--text-secondary)] text-xs mb-1">
+                      Exchange currency rate
+                    </div>
+                    <div class="text-sm">
+                      1$ = {{ record.exchangeRateToUsd }} {{ 0 | currencySymbol: record.currency }}
+                    </div>
+                  </div>
+
+                  <!-- Tipo de transacción -->
+                  <div class="mb-3">
+                    <div class="text-[var(--text-secondary)] text-xs mb-1">
+                      Transaction type
+                    </div>
+                    <div class="text-sm badge" 
+                    [ngClass]="{ 'badge-income': record.type === 'income', 'badge-expense': record.type === 'expense' }">
+                      {{ capitalize(record.type) }}
+                    </div>
+                  </div>
+
+                  <!-- Notas -->
+                  @if(record.notes) {
+
+                    <div class="mb-3">
+                      <div class="text-[var(--text-secondary)] text-xs mb-1">
+                        Notes
+                      </div>
+                      <div class="text-sm">
+                        {{ record.notes }}
+                      </div>
+                    </div>
+
+                  }
+
+                  @if(record.recurrenceDetails) {
+
+                    <!-- Detalles de recurrencia -->
+                    <div class="border-t border-[var(--secondary-component-hover)] mt-4 pt-4">
+  
+                      <div class="text-[var(--text-secondary)] text-xs mb-3">
+                        Recurrence details
+                      </div>
+  
+                      <!-- Tipo de recurrencia -->
+                      <div class="mb-3">
+                        <div class="text-[var(--text-secondary)] text-xs mb-1">
+                          Recurrence type
+                        </div>
+                        <div class="text-sm">
+                          {{ record.recurrenceDetails.recurrenceType }}
+                        </div>
+                      </div>
+    
+                      <!-- Frecuencia -->
+                      <div class="mb-3">
+                        <div class="text-[var(--text-secondary)] text-xs mb-1">
+                          Frequency
+                        </div>
+                        <div class="text-sm">
+                          {{ getRecurrenceMessage(
+                            record.recurrenceDetails.recurrenceType, 
+                            record.recurrenceDetails.frequency
+                            ) 
+                          }}
+                        </div>
+                      </div>
+    
+                      @if(record.recurrenceDetails.endDate) {
+
+                        <!-- Fecha fin -->
+                        <div class="mb-3">
+                          <div class="text-[var(--text-secondary)] text-xs mb-1">
+                            End date
+                          </div>
+                          <div class="text-sm">
+                            {{ record.recurrenceDetails.endDate | date: 'dd/MM/yyyy' }}
+                          </div>
+                        </div>
+
+                      }
+    
+                      @if(record.recurrenceDetails.occurrences) {
+
+                        <!-- Ocurrencias -->
+                        <div class="mb-3">
+                          <div class="text-[var(--text-secondary)] text-xs mb-1">
+                            Ocurrences
+                          </div>
+                          <div class="text-sm">
+                            {{ record.recurrenceDetails.occurrences }}
+                          </div>
+                        </div>
+
+                      }
+  
+                    </div>
+
+                  }
+                  
 
                 </div>
 

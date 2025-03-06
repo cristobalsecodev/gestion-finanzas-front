@@ -212,7 +212,7 @@
             required 
             (input)="onAmountInput($event)">
     
-            <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value.currencyCode }} {{ selectedType() === 'expense' ? ' -' : '' }}</span>
+            <span matTextPrefix>{{ 0 | currencySymbol: incomeOrExpenseForm.get('currency')?.value.currencyCode }}</span>
     
             <mat-icon matIconSuffix
             matTooltip="Enter the amount for the {{ selectedType() ? selectedType() : 'income or expense' }} (e.g., 100.00)">
@@ -242,7 +242,8 @@
     
             @if(incomeOrExpenseForm.get('exchangeRate')?.value !== incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd) {
     
-              <mat-icon matIconSuffix class="cursor-pointer"
+              <mat-icon matIconPrefix class="cursor-pointer"
+              matTooltip="Return to initial exchange rate"
               (click)="incomeOrExpenseForm.get('exchangeRate')?.setValue(incomeOrExpenseForm.get('currency')?.value.exchangeRateToUsd)">
                 restart_alt
               </mat-icon>
@@ -320,7 +321,7 @@
       <!-- Panel de recurrencia -->
       @if(isRecurrence()) {
   
-        <div class="bg-[var(--component-hover)] rounded-lg p-4 mb-5 animate-slideDown">
+        <div class="bg-[var(--secondary-component-hover)] rounded-lg p-4 mb-5 animate-slideDown">
           
           <!-- Cabecera -->
           <div class="flex justify-between items-center mb-4">

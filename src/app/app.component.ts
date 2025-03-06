@@ -4,9 +4,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatToolbar } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -20,10 +18,9 @@ import { CurrencyExchangeService } from './shared/services/CurrencyExchange/curr
 import { ThemeModeService } from './shared/services/ThemeMode/theme-mode.service';
 import { TokenService } from './shared/services/token/token.service';
 import packageJson from '../../package.json'
-import { MatDialog } from '@angular/material/dialog';
-import { ActionDialogComponent } from './shared/components/dialogs/action-dialog/action-dialog.component';
 import { CurrencyExchange } from './shared/services/CurrencyExchange/CurrencyExchange.interface';
-import { incomeToEdit } from './mis-ingresos-gastos/utils/SharedList';
+import { ActionDialogService } from './shared/services/Dialogs/action-dialog.service';
+import { incomeOrExpenseToEdit } from './mis-ingresos-gastos/utils/SharedList';
 
 @Component({
   selector: 'app-root',
@@ -33,8 +30,6 @@ import { incomeToEdit } from './mis-ingresos-gastos/utils/SharedList';
     RouterOutlet,
     CommonModule,
     // Angular Material
-    MatToolbar,
-    MatButtonModule,
     MatIconModule,
     MatSidenavModule,
     MatListModule,
@@ -69,7 +64,7 @@ export class AppComponent implements OnInit {
   public tokenService = inject(TokenService)
   public currencyExchangeService = inject(CurrencyExchangeService)
   public themeModeService = inject(ThemeModeService)
-  private dialog = inject(MatDialog)
+  private dialog = inject(ActionDialogService)
 
   constructor(
     private viewportScroller: ViewportScroller,
@@ -96,14 +91,15 @@ export class AppComponent implements OnInit {
       .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => {
 
-          if(incomeToEdit()) {
-
-            incomeToEdit.set(undefined)
-
-          }
-
           // Actualiza la URL actual
           this.currentUrl.set(this.router.url)
+
+          // Si la url es diferente al formulario, borramos la posible edición de una transacción
+          if(!this.currentUrl().includes(incomeExpensesFormRoute)) {
+
+            incomeOrExpenseToEdit.set(undefined)
+
+          }
 
           // Desplaza el scroll al inicio
           this.viewportScroller.scrollToPosition([0, 0])
@@ -114,24 +110,16 @@ export class AppComponent implements OnInit {
 
   logout(): void {
 
-    this.dialog.open(ActionDialogComponent, {
-      data: {
-        type: 'info',
-        message: 'Are you sure you want to log out?',
-        confirmButtonText: 'Log out',
-        cancelButtonText: 'Go back'
-      },
-      maxWidth: '30vw'
-    }).afterClosed().subscribe((isConfirmed: boolean) => {
-      
-      if (isConfirmed) {
+    this.dialog.openWarningModal(
+      'Warning',
+      'Are you sure you want to log out?',
+      () => {
 
         this.authService.logout()
 
       }
+    )
 
-    });
-    
   }
 
   showTitle(): string {

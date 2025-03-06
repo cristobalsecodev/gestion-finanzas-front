@@ -141,47 +141,78 @@ export class DonutChartComponent {
       this.svg.appendChild(g)
       
       let startAngle = 0
+
+      if(this.data.length === 1) {
+
+        const item = this.data[0]
       
-      this.data.forEach((item, index) => {
-  
-        const angle = (item.amount / this.total) * Math.PI * 2
-        const endAngle = startAngle + angle
-        
-        // Calculate points for the path
-        const x1 = this.radius * Math.sin(startAngle)
-        const y1 = -this.radius * Math.cos(startAngle)
-        const x2 = this.radius * Math.sin(endAngle)
-        const y2 = -this.radius * Math.cos(endAngle)
-        
-        const x1Inner = this.innerRadius * Math.sin(startAngle)
-        const y1Inner = -this.innerRadius * Math.cos(startAngle)
-        const x2Inner = this.innerRadius * Math.sin(endAngle)
-        const y2Inner = -this.innerRadius * Math.cos(endAngle)
-        
-        const largeArcFlag = angle > Math.PI ? 1 : 0
-        
-        // Create path for slice
+        // Crea un path para el anillo completo
         const path = document.createElementNS(svgns, 'path')
-  
+        
+        // Crea un anillo completo usando dos arcos (uno exterior y otro interior)
         path.setAttribute('d', `
-          M ${x1Inner} ${y1Inner}
-          L ${x1} ${y1}
-          A ${this.radius} ${this.radius} 0 ${largeArcFlag} 1 ${x2} ${y2}
-          L ${x2Inner} ${y2Inner}
-          A ${this.innerRadius} ${this.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner}
+          M ${this.innerRadius} 0
+          A ${this.innerRadius} ${this.innerRadius} 0 1 0 ${-this.innerRadius} 0
+          A ${this.innerRadius} ${this.innerRadius} 0 1 0 ${this.innerRadius} 0
+          Z
+          M ${this.radius} 0
+          A ${this.radius} ${this.radius} 0 1 1 ${-this.radius} 0
+          A ${this.radius} ${this.radius} 0 1 1 ${this.radius} 0
+          Z
         `)
-  
+        
         path.setAttribute('fill', item.color)
         path.classList.add('slice')
-        path.setAttribute('data-index', index.toString())
+        path.setAttribute('data-index', '0')
         
-        // Add event listeners for tooltip
+        // Añadir eventos para el tooltip
         this.addTooltipEvents(path, item)
         
         g.appendChild(path)
-        startAngle = endAngle
-  
-      })
+
+      } else {
+
+        this.data.forEach((item, index) => {
+    
+          const angle = (item.amount / this.total) * Math.PI * 2
+          const endAngle = startAngle + angle
+          
+          // Calculate points for the path
+          const x1 = this.radius * Math.sin(startAngle)
+          const y1 = -this.radius * Math.cos(startAngle)
+          const x2 = this.radius * Math.sin(endAngle)
+          const y2 = -this.radius * Math.cos(endAngle)
+          
+          const x1Inner = this.innerRadius * Math.sin(startAngle)
+          const y1Inner = -this.innerRadius * Math.cos(startAngle)
+          const x2Inner = this.innerRadius * Math.sin(endAngle)
+          const y2Inner = -this.innerRadius * Math.cos(endAngle)
+          
+          const largeArcFlag = angle > Math.PI ? 1 : 0
+
+          // Create el path por trozo
+          const path = document.createElementNS(svgns, 'path')
+    
+          path.setAttribute('d', `
+            M ${x1Inner} ${y1Inner}
+            L ${x1} ${y1}
+            A ${this.radius} ${this.radius} 0 ${largeArcFlag} 1 ${x2} ${y2}
+            L ${x2Inner} ${y2Inner}
+            A ${this.innerRadius} ${this.innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner}
+          `)
+    
+          path.setAttribute('fill', item.color)
+          path.classList.add('slice')
+          path.setAttribute('data-index', index.toString())
+          
+          this.addTooltipEvents(path, item)
+          
+          g.appendChild(path)
+          startAngle = endAngle
+    
+        })
+
+      }
       
       // Texto del centro
       const centerText = document.createElementNS(svgns, 'text')

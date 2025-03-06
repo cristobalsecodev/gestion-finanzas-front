@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,6 +19,7 @@ import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
+import { ActionDialogService, ActionType } from 'src/app/shared/services/Dialogs/action-dialog.service';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -36,9 +36,7 @@ import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constant
     MatSelectModule,
     MatAutocompleteModule,
     MatIconModule,
-    MatExpansionModule,
     MatButtonModule,
-    MatDialogModule,
     MatProgressSpinnerModule
   ],
   templateUrl: './categories-subcategories-form.component.html',
@@ -83,7 +81,7 @@ export class CategoriesSubcategoriesFormComponent {
 
   // Servicio
   categoriesService = inject(CategoriesAndSubCategoriesService)
-  readonly dialog = inject(MatDialog)
+  private dialog = inject(ActionDialogService)
   notificationsService = inject(NotificacionesService)
 
   // Avisos formulario
@@ -94,6 +92,9 @@ export class CategoriesSubcategoriesFormComponent {
 
   // Máximo de longitud para las notas
   maxNotesLength: number = 30
+
+  // Acciones de modal
+  actionType = ActionType
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -336,57 +337,52 @@ export class CategoriesSubcategoriesFormComponent {
 
   }
 
-  openActionDialog(entity: { id: number, name: string }, entityType: 'category' | 'subcategory', actionType: 'delete' | 'warning' | 'info'): void {
+  openActionDialog(entity: { id: number, name: string }, entityType: 'category' | 'subcategory', actionType: ActionType): void {
 
-    let message: string = ''
     switch(actionType) {
 
       case 'delete':
-        message = `Are you sure you want to delete the ${entityType}: ${entity.name}?`
+        this.dialog.openDeleteModal(
+          'Delete',
+          `Are you sure you want to delete permanently the ${entityType}: ${entity.name}?`,
+          () => {
+    
+            this.handleDeletion(entity.id, entityType)
+    
+          }
+        )
         break
+
       case 'warning':
-        message = `This action will not permanently delete the ${entityType}, but it will remove it from the selectors when managing income or expenses`
+        this.dialog.openWarningModal(
+          'Warning',
+          `This action will not permanently delete the ${entityType}, but it will remove it from the selectors when managing income or expenses`,
+          () => {
+    
+            this.handleDisable(entity.id)
+    
+          }
+        )
         break
+
       case 'info':
-        message = `This action will restore the ${entityType}, making it available again in the selectors when managing income or expenses`
+        this.dialog.openInfoModal(
+          'Information',
+          `This action will restore the ${entityType}, making it available again in the selectors when managing income or expenses`,
+          () => {
+    
+            this.handleEnable(entity.id)
+    
+          }
+        )
         break
+
       default:
         throw new Error('Action type not specified')
     }
-  
-    this.dialog.open(ActionDialogComponent, {
-      data: {
-        type: actionType,
-        message,
-        confirmButtonText: actionType === 'delete' ? 'Delete' : 'Continue',
-        cancelButtonText: 'Go back'
-      },
-      maxWidth: '30vw'
-    }).afterClosed().subscribe((isConfirmed: boolean) => {
-      
-      if (isConfirmed) {
 
-        switch(actionType) {
-
-          case 'delete':
-            this.handleDeletion(entity.id, entityType)
-            break
-          case 'warning':
-            this.handleDisable(entity.id)
-            break
-          case 'info':
-            this.handleEnable(entity.id)
-            break
-          default:
-            throw new Error('Action type not specified')
-        }
-        
-
-      }
-
-    });
   }
-  
+
   private handleDeletion(id: number, entityType: 'category' | 'subcategory'): void {
 
     if (entityType === 'category') {

@@ -23,7 +23,7 @@ import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCat
 import { CommonModule } from '@angular/common';
 import { categoriesRoute, incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
 import { Router, RouterLink } from '@angular/router';
-import { allCategories, incomeToEdit } from '../utils/SharedList';
+import { allCategories, incomeOrExpenseToEdit } from '../utils/SharedList';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 
@@ -84,6 +84,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   // Tamaño del texto del botón dinámico
   textSizeRem: number = 1.5
+
+  // Transacción a editar
+  incomeOrExpenseToEdit = computed(() => incomeOrExpenseToEdit())
 
   // Categorías y subCategorías
   categories = computed(() => allCategories())
@@ -163,26 +166,21 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if(incomeToEdit()) {
-      
-      this.actionType = 'Edit'
-
-    } else {
-
-      this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.selectedCurrency())
-      this.incomeOrExpenseForm.get('exchangeRate')?.setValue(this.currencyExchangeService.selectedCurrency().exchangeRateToUsd)
-
-    }
-
     if(allCategories().length === 0) {
 
       this.getCategories()
 
     }
 
-    if(incomeToEdit()) {
+    if(this.incomeOrExpenseToEdit()) {
 
-      this.loadForm()
+      this.actionType = 'Edit'
+      this.loadForm(this.incomeOrExpenseToEdit()!)
+
+    } else {
+
+      this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.selectedCurrency())
+      this.incomeOrExpenseForm.get('exchangeRate')?.setValue(this.currencyExchangeService.selectedCurrency().exchangeRateToUsd)
 
     }
 
@@ -237,33 +235,33 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
-  loadForm(): void {
+  loadForm(incomeOrExpense: IncomeOrExpense): void {
 
     // Setea los signals
-    this.selectedType.set(incomeToEdit()!.type)
-    this.isRecurrence.set(!!incomeToEdit()!.recurrenceDetails)
+    this.selectedType.set(incomeOrExpense.type)
+    this.isRecurrence.set(!!incomeOrExpense.recurrenceDetails)
 
     // Formulario de ingreso / gasto
-    this.incomeOrExpenseForm.get('amount')?.setValue(incomeToEdit()!.amount)
-    this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.currencies().find(currency => currency.currencyCode === incomeToEdit()!.currency))
-    this.incomeOrExpenseForm.get('date')?.setValue(incomeToEdit()!.transactionDate)
-    this.incomeOrExpenseForm.get('notes')?.setValue(incomeToEdit()!.notes ? incomeToEdit()!.notes : '')
+    this.incomeOrExpenseForm.get('amount')?.setValue(incomeOrExpense.amount)
+    this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.currencies().find(currency => currency.currencyCode === incomeOrExpense.currency))
+    this.incomeOrExpenseForm.get('date')?.setValue(incomeOrExpense.transactionDate)
+    this.incomeOrExpenseForm.get('notes')?.setValue(incomeOrExpense.notes ? incomeOrExpense.notes : '')
 
     // Filtra categorías
     this.filterCategories()
-    this.incomeOrExpenseForm.get('category')?.setValue(incomeToEdit()!.category)
+    this.incomeOrExpenseForm.get('category')?.setValue(incomeOrExpense.category)
 
     // Filtra subcategorías
     this.filterSubcategories()
-    this.incomeOrExpenseForm.get('subcategory')?.setValue(incomeToEdit()!.subcategory)   
+    this.incomeOrExpenseForm.get('subcategory')?.setValue(incomeOrExpense.subcategory)   
 
     if(this.isRecurrence()) {
 
       // Formulario de recurrencia
-      this.recurrenceForm.get('frequency')?.setValue(incomeToEdit()!.recurrenceDetails?.frequency)
-      this.recurrenceForm.get('recurrenceType')?.setValue(incomeToEdit()!.recurrenceDetails?.recurrenceType)
-      this.recurrenceForm.get('endDate')?.setValue(incomeToEdit()!.recurrenceDetails?.endDate)
-      this.recurrenceForm.get('occurrences')?.setValue(incomeToEdit()!.recurrenceDetails?.occurrences)
+      this.recurrenceForm.get('frequency')?.setValue(incomeOrExpense.recurrenceDetails?.frequency)
+      this.recurrenceForm.get('recurrenceType')?.setValue(incomeOrExpense.recurrenceDetails?.recurrenceType)
+      this.recurrenceForm.get('endDate')?.setValue(incomeOrExpense.recurrenceDetails?.endDate)
+      this.recurrenceForm.get('occurrences')?.setValue(incomeOrExpense.recurrenceDetails?.occurrences)
 
     }
 
@@ -352,7 +350,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
         let saveIncomeOrExpense: IncomeOrExpense = {
 
-          id: incomeToEdit() ? incomeToEdit()!.id : undefined,
+          id: this.incomeOrExpenseToEdit() ? this.incomeOrExpenseToEdit()!.id : undefined,
           amount: this.selectedType() === 'expense' ? Number(-this.incomeOrExpenseForm.get('amount')?.value) : Number(this.incomeOrExpenseForm.get('amount')?.value),
           category: this.incomeOrExpenseForm.get('category')?.value,
           currency: this.incomeOrExpenseForm.get('currency')?.value.currencyCode,
@@ -396,8 +394,8 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   private buildRecurrenceDetails(): RecurrenceDetails {
 
-    const id = (incomeToEdit() && incomeToEdit()?.recurrenceDetails) 
-      ? incomeToEdit()?.recurrenceDetails?.id ?? undefined
+    const id = (this.incomeOrExpenseToEdit() && this.incomeOrExpenseToEdit()?.recurrenceDetails) 
+      ? this.incomeOrExpenseToEdit()?.recurrenceDetails?.id ?? undefined
       : undefined 
 
     const endDate = moment(this.recurrenceForm.get('endDate')?.value).isValid() 
