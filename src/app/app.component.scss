@@ -1,12 +1,25 @@
-.selected-button {
-  color: var(--sys-surface-tint) !important;
+// Cabecera
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
 }
 
-.border-color {
-  border-color: var(--sys-on-background);
-}
 
-.modificar-esquinas {
-  border-top-left-radius: 0% !important;
-  border-bottom-left-radius: 0% !important;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

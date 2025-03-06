@@ -59,13 +59,16 @@ export class AuthService {
 
     this.storageService.setSession('token', response.token)
 
-    // Llama al servicio de divisas
-    this.currencyExchangeService.manageCurrencyService()
+    this.currencyExchangeService.setFavoriteCurrency()
 
     // Empieza a comprobar el checkeo si no existe el intervalo
     if(!this.tokenService.intervalId) {
 
       this.tokenService.startTokenCheck()
+
+    } else {
+
+      this.tokenService.checkTokenValidity()
 
     }
 
@@ -90,16 +93,17 @@ export class AuthService {
 
           this.storageService.setSession('token', response.token)
 
-          // Llama al servicio de divisas
-          this.currencyExchangeService.manageCurrencyService()
-
           this.notificationsService.addNotification('Account created', 'success')
 
           // Empieza a comprobar el checkeo si no existe el intervalo
           if(!this.tokenService.intervalId) {
 
             this.tokenService.startTokenCheck()
-
+      
+          } else {
+      
+            this.tokenService.checkTokenValidity()
+      
           }
 
           this.router.navigate([activateAccountRoute])
@@ -121,11 +125,7 @@ export class AuthService {
   // Cierre de sesión
   logout(): void {
 
-    this.tokenService.stopTokenCheck()
-
-    this.storageService.removeSession('token')
-
-    this.tokenService.checkTokenValidity()
+    this.tokenService.closeSession()
 
   }
 

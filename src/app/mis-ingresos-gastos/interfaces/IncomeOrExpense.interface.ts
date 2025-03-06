@@ -28,13 +28,13 @@ export interface BaseCategory {
   id?: number
   name: string
   type: string
-  active?: boolean
+  linked?: boolean
 
 }
 
 export interface Categories extends BaseCategory {
 
-  linked?: boolean
+  active?: boolean
   color: string
   subcategories: BaseCategory[]
 

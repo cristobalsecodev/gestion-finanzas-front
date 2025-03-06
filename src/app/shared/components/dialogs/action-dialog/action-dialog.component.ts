@@ -1,15 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogContent, MatDialogRef } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-
-interface DialogData {
-  type: 'warning' | 'info' | 'delete';
-  message: string;
-  confirmButtonText: string;
-  cancelButtonText: string;
-}
+import { ActionType, DialogConfig } from 'src/app/shared/services/Dialogs/action-dialog.service';
 
 @Component({
   selector: 'app-action-dialog',
@@ -18,57 +10,79 @@ interface DialogData {
     // Angular core
     CommonModule,
     // Angular material
-    MatIconModule,
-    MatButtonModule,
-    MatDialogContent
+    MatIconModule
   ],
   templateUrl: './action-dialog.component.html',
   styleUrl: './action-dialog.component.scss'
 })
 export class ActionDialogComponent {
 
-  constructor(
-    public dialogRef: MatDialogRef<ActionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  @Input() config!: DialogConfig
+  @Output() close = new EventEmitter<void>()
 
-  onCancel(): void {
-    this.dialogRef.close(false)
+  isActive = false
+  actionType = ActionType
+
+  // Ejecuta la animación según el tipo
+  animationClass = ''
+
+  setActive(active: boolean): void {
+
+    this.isActive = active
+
+    if(active) {
+
+      setTimeout(() => {
+
+        // Aplica la animación
+        switch(this.config.type) {
+
+          case ActionType.DELETE:
+            this.animationClass = 'shake'
+            break
+          case ActionType.WARNING:
+            this.animationClass = 'pulse'
+            break
+          case ActionType.INFO:
+            this.animationClass = 'bounce'
+            break
+          default:
+            throw new Error('Action type not found')
+        }
+
+      }, 300)
+
+      // Elimina la animación después de la aplicación
+      setTimeout(() => {
+        
+        this.animationClass = ''
+
+      }, 1100)
+
+    }
+
   }
 
   onConfirm(): void {
-    this.dialogRef.close(true)
+
+    if(this.config.onConfirm) {
+
+      this.config.onConfirm()
+
+    } 
+    this.close.emit()
+
   }
 
-  // Obtener iconos según el tipo de diálogo
-  getIcon(): string {
+  onCancel(): void {
 
-    switch (this.data.type) {
+    if(this.config.onCancel) {
 
-      case 'warning': return 'warning'
-
-      case 'info': return 'info';
-
-      case 'delete': return 'delete_forever'
-
-      default: return 'question_mark'
+      this.config.onCancel()
 
     }
+    this.close.emit()
 
   }
 
-  getTitle(type: string): string {
-
-    switch (type) {
-
-      case 'warning': return 'Warning'
-
-      case 'info': return 'Info'
-
-      case 'delete': return 'Delete'
-
-      default: return 'Message'
-
-    }
-  }
 }

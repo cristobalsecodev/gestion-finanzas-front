@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,7 +10,6 @@ import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousan
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
 import { ActionType } from 'src/app/shared/enums/ActionType.enum';
-import { MatDialog } from '@angular/material/dialog';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
@@ -18,7 +17,6 @@ import { FilterIncomeOrExpense } from '../interfaces/FilterIncomeOrExpense.inter
 import { PaginationData } from 'src/app/shared/interfaces/PaginationData.interface';
 import { compareObjects } from 'src/app/shared/functions/CompareObjects';
 import { capitalizeString } from 'src/app/shared/functions/Utils';
-import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,9 +31,10 @@ import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import moment from 'moment';
-import { IncomeOrExpenseFormComponent } from '../income-or-expense-form/income-or-expense-form.component';
-import { allRecordsSignal } from '../utils/SharedList';
-import { CategoriesSubcategoriesFormComponent } from '../categories-subcategories-form/categories-subcategories-form.component';
+import { allCategories, allTransactions, incomeOrExpenseToEdit } from '../utils/SharedList';
+import { Router } from '@angular/router';
+import { categoriesRoute, incomeExpensesFormRoute } from 'src/app/shared/constants/variables.constants';
+import { ActionDialogService } from 'src/app/shared/services/Dialogs/action-dialog.service';
 
 @Component({
   selector: 'app-income-or-expense-list',
@@ -65,17 +64,38 @@ import { CategoriesSubcategoriesFormComponent } from '../categories-subcategorie
     FormatThousandSeparatorsPipe
   ],
   animations: [
-    // Animación para el componente de detalles
-    trigger('fadeInOut', [
-      state('void', style({ opacity: 0, transform: 'translateY(-30px)' })),
-      state('*', style({ opacity: 1, transform: 'translateY(0)' })),
-      transition('void <=> *', animate('80ms ease-in-out')),
+    trigger('slideInOut', [
+      state('void', style({
+        height: '0',
+        overflow: 'hidden',
+        padding: '0 20px',
+        opacity: '0'
+      })),
+      state('*', style({
+        height: '*',
+        overflow: 'hidden',
+        padding: '15px 20px',
+        opacity: '1'
+      })),
+      transition('void <=> *', animate('300ms ease-in-out'))
+    ]),
+    trigger('fadeAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, transform: 'translateY(-10px)' }))
+      ])
     ])
   ],
   templateUrl: './income-or-expense-list.component.html',
   styleUrl: './income-or-expense-list.component.scss'
 })
 export class IncomeOrExpenseListComponent implements OnInit {
+
+  // Despliega y contrae el filtro
+  filtersOpen = signal<boolean>(false)
 
   // Formulario de filtro
   filterForm!: FormGroup
@@ -89,14 +109,13 @@ export class IncomeOrExpenseListComponent implements OnInit {
   // Tipos de acciones
   readonly actionType = ActionType
 
-  // Modal
-  readonly dialog = inject(MatDialog)
-
   // Servicios
   currencyExchangeService = inject(CurrencyExchangeService)
   incomeOrExpenseService = inject(IncomeOrExpenseService)
   categoriesService = inject(CategoriesAndSubCategoriesService)
   notificationsService = inject(NotificacionesService)
+  router = inject(Router)
+  dialog = inject(ActionDialogService)
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -117,6 +136,9 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   // Loader
   filterLoader = signal<boolean>(false)
+
+  // Controla el menú desplegable de divisas
+  dropdownOpen = false
 
   constructor(
     private storageService: StorageService
@@ -154,17 +176,18 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.callServices()
+    this.getCategories()
 
     this.getFilteredIncomeOrExpenses(this.buildFilter())
     
   }
 
-  callServices(): void {
+  getCategories(): void {
 
     this.categoriesService.getCategories(true).subscribe({
       next: (categories) => {
 
+        allCategories.set(categories)
         this.categories = categories
         this.filteredCategories = categories
 
@@ -401,7 +424,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     }
 
     // Actualiza el signal
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -413,7 +436,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.recordsToShow = this.recordsToShow.filter(record => record.id !== id)
 
     // Actualiza el signal
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     // Ordena los registros
     this.groupByYear()
@@ -433,6 +456,16 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   filterList(size: number = 10): void {
 
+    // Cierra el dropdown
+    this.dropdownOpen = false
+    
+    // Actualiza la clase del dropdown
+    const dropdown = document.getElementById('size-dropdown-menu')
+
+    if (dropdown) {
+      dropdown.classList.remove('show-dropdown-menu')
+    } 
+
     // Resetea los valores de la lista y paginación
     this.pageSize.set(size)
 
@@ -441,103 +474,41 @@ export class IncomeOrExpenseListComponent implements OnInit {
     this.currentPage.set(0)
 
     this.recordsToShow = []
-    allRecordsSignal.set(this.recordsToShow)
+    allTransactions.set(this.recordsToShow)
 
     this.getFilteredIncomeOrExpenses(this.buildFilter())
 
   }
 
-  openIncomeOrExpenseDialog(actionType: string, incomeOrExpense?: IncomeOrExpense): void {
+  newTransaction(): void {
 
-    this.dialog.open(IncomeOrExpenseFormComponent, {
-
-      data: {
-        actionType: actionType,
-        incomeOrExpense: incomeOrExpense,
-        categories: this.categories
-      },
-      minWidth: '50vh',
-      maxWidth: '90vw',
-      minHeight: '10vh',
-      maxHeight: '80vh',
-      disableClose: true
-
-    }).afterClosed().subscribe(((incomeOrExpense: IncomeOrExpense) => {
-
-      if(incomeOrExpense) {
-
-        this.incomeOrExpenseService.saveIncomeOrExpense(incomeOrExpense).subscribe({
-
-          next: (id: number) => {
-
-            this.notificationsService.addNotification(
-              `${capitalizeString(incomeOrExpense.type)} saved`, 
-              'success'
-            )
-
-            // En caso de creación de registro, asigna el ID creado y asigna un elemento más a la página
-            if(!incomeOrExpense.id) {
-
-              incomeOrExpense.id = id
-
-              this.totalElements.set(this.totalElements() + 1)
-
-            }
-
-            // Recalcula el listado
-            this.manageRecordsAndSort([incomeOrExpense])
-
-          }
-
-        })
-
-      }
-
-    }))
+    this.router.navigate([incomeExpensesFormRoute])
 
   }
 
-  openCategoriesDialog(): void {
+  editTransaction(incomeOrExpense: IncomeOrExpense): void {
 
-    const screenWidth = window.innerWidth
-
-    this.dialog.open(CategoriesSubcategoriesFormComponent, {
-
-      width: screenWidth < 600 ? '90vw' : '65vw',
-      maxWidth: '90vw',
-      height: screenWidth < 600 ? '70vh' : '60vh',
-      maxHeight: '80vh',
-      disableClose: true
-
-    }).afterClosed().subscribe((() => {
-
-      this.callServices()
-
-      this.filterList(this.pageSize())
-
-    }))
+    incomeOrExpenseToEdit.set(incomeOrExpense)
+    this.router.navigate([incomeExpensesFormRoute])
 
   }
 
-  openDeleteDialog(incomeOrExpense: IncomeOrExpense): void {
+  goToCategories(): void {
+
+    this.router.navigate([categoriesRoute])
+
+  }
+
+  deleteTransaction(incomeOrExpense: IncomeOrExpense): void {
 
     const recurrenceMessage = incomeOrExpense.recurrenceDetails 
       ? `. If this is the only ${incomeOrExpense.type} registered, the recurrence will be deleted too.` 
       : ''
 
-    this.dialog.open(ActionDialogComponent, {
-
-      data: {
-        type: 'delete',
-        message: `Are you sure you want to delete this ${incomeOrExpense.type}?${recurrenceMessage}`,
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Go back'
-      },
-      maxWidth: '30vw'
-
-    }).afterClosed().subscribe(((isConfirmed: boolean) => {
-
-      if(isConfirmed) {
+    this.dialog.openDeleteModal(
+      'Delete',
+      `Are you sure you want to delete this ${incomeOrExpense.type}?${recurrenceMessage}`,
+      () => {
 
         this.incomeOrExpenseService.deleteIncomeOrExpense(incomeOrExpense.id!).subscribe({
   
@@ -554,8 +525,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
         })
 
       }
-
-    }))
+    )
 
   }
 
@@ -602,8 +572,65 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     const unit = frequency === 1 ? recurrence.singular : recurrence.plural
 
-    return `The recurrence occurs every ${frequency} ${unit}.`
+    return `Every ${frequency} ${unit}.`
 
   }
+
+  toggleFilters(): void {
+
+    this.filtersOpen.update(value => !value)
+
+  }
+
+  toggleDropdown(event: MouseEvent) {
+
+    this.dropdownOpen = !this.dropdownOpen
+
+    event.stopPropagation()
+
+    const dropdown = document.getElementById('size-dropdown-menu')
+
+    if (dropdown) {
+
+      if (this.dropdownOpen) {
+        dropdown.classList.add('show-dropdown-menu')
+      } else {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+
+    }
+
+  }
+
+  // Cierra el dropdown si se hace clic fuera
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+
+    // Si el dropdown no está abierto, no hace nada
+    if (!this.dropdownOpen) return
+    
+    const target = event.target as HTMLElement
   
+    // Referencia el dropdown
+    const dropdown = document.getElementById('size-dropdown-menu')
+    
+    // Verifica el botón que abre el dropdown
+    const dropdownButton = document.getElementById('button-dropdown')
+    
+    // Comprueba si el clic fue dentro del dropdown o en el botón
+    const clickedInDropdown = dropdown && dropdown.contains(target)
+    const clickedOnButton = dropdownButton && dropdownButton.contains(target)
+    
+    // Solo cierra si el clic fue fuera de ambos elementos
+    if (!clickedInDropdown && !clickedOnButton && this.dropdownOpen) {
+      this.dropdownOpen = false
+      
+      if (dropdown) {
+        dropdown.classList.remove('show-dropdown-menu')
+      }
+      
+      event.stopPropagation()
+    }
+  }
+
 }

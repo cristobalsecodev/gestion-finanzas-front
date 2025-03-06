@@ -3,7 +3,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CurrencyExchange } from './CurrencyExchange.interface';
 import { CurrencyCodeENUM, CurrencyNameENUM } from '../../enums/Currency.enum';
-import { StorageService } from '../Storage/storage.service';
 import { UserService } from '../Users/user.service';
 import { TokenService } from '../token/token.service';
 import { environment } from 'src/environments/environment';
@@ -33,7 +32,6 @@ export class CurrencyExchangeService {
   currencies = signal<CurrencyExchange[]>([])
 
   // Servicios
-  private storageService = inject(StorageService)
   private tokenService = inject(TokenService)
   private userService = inject(UserService)
 
@@ -41,17 +39,30 @@ export class CurrencyExchangeService {
     private http: HttpClient
   ) { }
 
-  manageCurrencyService(): void {
+  initialize(): Promise<boolean> {
 
-    this.getCurrencies().subscribe({
-      next: (currencies: CurrencyExchange[]) => {
+    return new Promise((resolve, reject) => {
 
-        this.selectedCurrency.set(currencies.find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) || this.defaultCurrency)
+      this.getCurrencies().subscribe({
+        next: (currencies: CurrencyExchange[]) => {
+  
+          // Actualiza las divisas
+          this.currencies.set(currencies)
 
-        // Actualizamos las divisas
-        this.currencies.set(currencies)
+          if(this.tokenService.isTokenValid()) {
 
-      }
+            this.setFavoriteCurrency()
+            
+          }
+
+          resolve(true)
+        },
+        error: () => {
+          reject(false)
+        }
+
+      })
+
     })
 
   }
@@ -70,11 +81,17 @@ export class CurrencyExchangeService {
 
   }
 
-  selectFavoriteCurrency(currency: CurrencyExchange): void {
+  changeFavoriteCurrency(currency: CurrencyExchange): void {
 
     this.userService.saveFavoriteCurrency(currency.currencyCode).subscribe()
 
     this.selectedCurrency.set(currency)
+
+  }
+
+  setFavoriteCurrency(): void {
+
+    this.selectedCurrency.set(this.currencies().find(currency => currency.currencyCode === this.tokenService.favoriteCurrency()) || this.defaultCurrency)
 
   }
 

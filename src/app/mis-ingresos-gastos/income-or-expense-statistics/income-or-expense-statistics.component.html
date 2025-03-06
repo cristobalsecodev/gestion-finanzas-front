@@ -1,52 +1,117 @@
-<app-currency-selector 
-(emitCurrency)="currencyChange($event)" 
-[buttonText]="'Viewing charts in this currency: '"
-[tooltip]="'Convert all the charts into the selected currency'"
-></app-currency-selector>
+<!-- Charts Section -->
+<div>
+  <div class="bg-[var(--component)] rounded-lg shadow-lg mb-6">
+    <div class="p-4">
+      <div class="relative inline-block">
 
-@if(recordsComputed().length > 0) {
+        <button id="graphics-button-dropdown" 
+        class="secondary-button bg-[var(--component-hover)] hover:bg-[var(--secondary-component-hover)] disabled:opacity-50 disabled:pointer-events-none text-base mb-4"
+        (click)="toggleDropdown($event)"
+        matTooltip="Converts all incomes and expenses into one currency">
+          <span>All graphs are displayed in:</span>
+          <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
+          <span>{{ selectedCurrency.currencyCode }}</span>
 
-  <section class="flex flex-wrap justify-center gap-5">
-    <!-- Income graphic -->
-    <div class="w-full md:w-2/5">
-      <highcharts-chart
-        [Highcharts]="Highcharts"
-        [options]="incomeChartOptions"
-        class="w-full block">
-      </highcharts-chart>
+        </button>
+  
+        <div id="graphics-currency-dropdown-menu" 
+        class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-lg dropdown-shadow z-[1000] hidden mt-1">
+
+          @for(currency of currencyExchangeService.currencies(); track currency) {
+
+            <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
+            (click)="currencyChange(currency)">
+
+              <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
+              <span class="flex-grow">{{ currency.currencyName }}</span>
+
+              @if(currency.currencyCode === selectedCurrency.currencyCode) {
+                <span class="material-symbols-outlined text-[var(--primary)]">check</span>
+              }
+
+            </div>
+
+          } @empty {
+
+            <div class="text-[var(--sys-error)]" 
+            matTooltip="It is possible that the API has reached its maximum call limit">
+
+              <span class="material-symbols-outlined mr-2">report</span>
+              <span>No currencies available</span>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="grid md:grid-cols-2 grid-cols-1 gap-6">
+
+        <!-- Gráfico de ingresos -->
+        <div>
+          <h3 class="text-center font-semibold mb-4">Income overview</h3>
+          <div class="flex justify-center">
+            <app-donut-chart 
+            [data]="incomeChartData" 
+            [currencyCode]="selectedCurrency.currencyCode">
+            </app-donut-chart>
+          </div>
+        </div>
+
+        <!-- Gráfico de gastos -->
+        <div>
+          <h3 class="text-center font-semibold mb-4">Expense overview</h3>
+          <div class="flex justify-center">
+            <app-donut-chart 
+            [data]="expenseChartData" 
+            [currencyCode]="selectedCurrency.currencyCode">
+            </app-donut-chart>
+          </div>
+        </div>
+
+      </div>
     </div>
-  
-    <!-- Expense graphic -->
-    <div class="w-full md:w-2/5">
-      <highcharts-chart
-        [Highcharts]="Highcharts"
-        [options]="expenseChartOptions"
-        class="w-full block">
-      </highcharts-chart>
-    </div>
-  </section>
-  
-  <!-- Resume graphic -->
-  <section class="w-full mt-5">
-    <highcharts-chart
-      [Highcharts]="Highcharts"
-      [options]="resumeOptions"
-      class="w-full block">
-    </highcharts-chart>
-  </section>
-  
-} @else {
-
-  <!-- Mensaje cuando no hay datos -->
-  <div class="flex flex-col items-center justify-center text-center h-[50vh]">
-    <mat-icon class="animate-pulse">query_stats</mat-icon>
-    <p class="text-xl mt-4 font-semibold">
-      No data available to display charts
-    </p>
-    <p class="text-sm">
-      Try adjusting filters or adding more records.
-    </p>
   </div>
 
+  <!-- Gráfico comparador de ingresos y gastos -->
+  <div class="bg-[var(--component)] rounded-lg shadow-lg mb-6">
+    <div class="p-4">
 
-}
+      <h3 class="text-center font-semibold mb-4">Income and expenses comparator</h3>
+      <div class="h-32 mt-6">
+
+        <div class="h-8 flex items-center mx-10">
+          <div class="flex-1 flex items-center gap-2 h-6">
+            <div class="h-6 bg-[var(--positive)]" [ngStyle]="{ width: incomeWidth }"></div>
+            <span class="text-xs whitespace-nowrap cursor-default">
+              +{{ sumIncome | formatThousandSeparators }} {{ 0 | currencySymbol: selectedCurrency.currencyCode }}
+            </span>
+          </div>
+        </div>
+
+        <div class="h-8 flex items-center mt-2 mx-10">
+          <div class="flex-1 flex items-center gap-2 h-6">
+            <div class="h-6 bg-[var(--negative)]" [ngStyle]="{ width: expenseWidth }"></div>
+            <span class="text-xs whitespace-nowrap cursor-default">
+              -{{ sumExpense | formatThousandSeparators }} {{ 0 | currencySymbol: selectedCurrency.currencyCode }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="flex justify-center gap-4 mt-4">
+          <div class="flex items-center">
+            <span class="w-3 h-3 rounded-md mr-2 bg-[var(--positive)]"></span>
+            <span>Income</span>
+          </div>
+          <div class="flex items-center">
+            <span class="w-3 h-3 rounded-md mr-2 bg-[var(--negative)]"></span>
+            <span>Expense</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

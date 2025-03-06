@@ -1,78 +1,98 @@
-<header>
-  
-  <mat-toolbar class="border-solid border-b border-color">
+<div class="max-w-6xl mx-auto p-4">
 
-    <!-- Versión -->
-    <span class="text-xs">Version {{ version }}</span>
+  @if(tokenService.isTokenValid() && tokenService.isAccountActivated()) {
 
-    <!-- Espaciador -->
-    <span class="flex-auto"></span>
+    <!-- Cabecera -->
+    <header>
+      <div class="flex gap-3 md:flex-row md:items-center items-start flex-col">
 
-    @if(tokenService.isTokenValid()) {
-      <!-- Selector de divisa -->
-      <button mat-button [matMenuTriggerFor]="currencyMenu" 
-        aria-label="Currency exchange menu"
-        matTooltip="Currently selected: {{ currencyExchangeService.selectedCurrency().currencyName }}"
-        class="ms-3 me-3">
-        <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
-        <span>{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
-      </button>
+        <h1>{{ showTitle() }}</h1>
+        <span class="text-xs text-[#f1f5f9] bg-[var(--primary)] px-2 rounded cursor-default">v{{ version }}</span>
 
-      <mat-menu #currencyMenu="matMenu">
-        @for(currency of currencyExchangeService.currencies(); track currency) {
-          <button mat-menu-item (click)="currencyExchangeService.selectFavoriteCurrency(currency)">
-            <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
-            @if(currency.currencyCode === currencyExchangeService.selectedCurrency().currencyCode) {
-              <mat-icon>check</mat-icon>
+      </div>
+
+      <div class="flex items-center md:gap-4 gap-2">
+
+        <div class="relative inline-block">
+
+          <button id="currency-button-dropdown" 
+          class="flex items-center bg-[var(--component)] hover:bg-[var(--component-hover)] rounded-md px-3 py-1 gap-2 transition-colors duration-200"
+          (click)="toggleDropdown($event)"
+          matTooltip="Favorite currency: {{ currencyExchangeService.selectedCurrency().currencyName }}">
+
+            <mat-icon [svgIcon]="currencyExchangeService.selectedCurrency().currencyCode"></mat-icon>
+            <span class="text-sm">{{ currencyExchangeService.selectedCurrency().currencyCode }}</span>
+
+          </button>
+    
+          <div id="currency-dropdown-menu" 
+          class="absolute top-full left-0 min-w-60 overflow-y-auto bg-[var(--component)] rounded-lg dropdown-shadow z-[1000] hidden mt-1">
+
+            @for(currency of currencyExchangeService.currencies(); track currency) {
+
+              <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 cursor-pointer transition-colors duration-200 gap-3" 
+              (click)="currencyChange(currency)">
+
+                <mat-icon [svgIcon]="currency.currencyCode"></mat-icon>
+                <span class="flex-grow">{{ currency.currencyName }}</span>
+
+                @if(currency.currencyCode === currencyExchangeService.selectedCurrency().currencyCode) {
+                  <span class="material-symbols-outlined text-[var(--primary)]">check</span>
+                }
+
+              </div>
+
+            } @empty {
+
+              <div class="text-[var(--sys-error)]" 
+              matTooltip="It is possible that the API has reached its maximum call limit">
+
+                <span class="material-symbols-outlined mr-2">report</span>
+                <span>No currencies available</span>
+
+              </div>
+
             }
-            <span>{{ currency.currencyName }}</span>
-          </button>
-        } @empty {
-          <button mat-menu-item matTooltip="It is possible that the API has reached its maximum call limit">
-            <mat-icon>report</mat-icon>
-            <span>No currencies available</span>
-          </button>
-        }
-      </mat-menu>
-    }
 
-    <!-- Modo oscuro -->
-    <button mat-icon-button 
-      (click)="themeModeService.setMode(
-        themeModeService.themeMode() === themeModeService.themeModes.DARK 
-          ? themeModeService.themeModes.LIGHT 
-          : themeModeService.themeModes.DARK
-      )">
-      <mat-icon>
-        @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
-          dark_mode
-        } @else {
-          light_mode
-        }
-      </mat-icon>
-    </button>
+          </div>
 
-    <!-- Cuenta -->
-    @if(tokenService.isTokenValid()) {
-      <button mat-icon-button [matMenuTriggerFor]="accountMenu">
-        <mat-icon>account_circle</mat-icon>
-      </button>
+        </div>
 
-      <mat-menu #accountMenu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Logout</span>
+        <button (click)="themeModeService.setMode(
+          themeModeService.themeMode() === themeModeService.themeModes.DARK 
+            ? themeModeService.themeModes.LIGHT 
+            : themeModeService.themeModes.DARK
+        )">
+
+          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none text-[var(--text-primary)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--component-hover)] transition-colors duration-200">
+            
+            @if(themeModeService.themeMode() === themeModeService.themeModes.DARK) {
+              dark_mode
+            } @else {
+              light_mode
+            }
+
+          </span>
+
         </button>
-      </mat-menu>
-    }
 
-  </mat-toolbar>
-</header>
+        <button (click)="logout()">
 
-<main class="h-[95%]">
-  <section>
+          <span class="material-symbols-outlined text-base bg-[var(--component)] border-none text-[var(--text-primary)] w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-[var(--component-hover)] transition-colors duration-200">
+            logout
+          </span>
+
+        </button>
+        
+      </div>
+    </header>
+
+  }
+  
+  <main>
     <router-outlet></router-outlet>
-  </section>
-</main>
+  </main>  
+
+</div>
 
 <app-notificaciones></app-notificaciones>

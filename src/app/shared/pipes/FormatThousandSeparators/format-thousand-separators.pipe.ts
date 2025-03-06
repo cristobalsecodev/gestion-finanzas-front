@@ -1,8 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'formatThousandSeparators',
   standalone: true
+})
+@Injectable({
+  providedIn: 'root', // Hace que sea un servicio inyectable globalmente
 })
 export class FormatThousandSeparatorsPipe implements PipeTransform {
 

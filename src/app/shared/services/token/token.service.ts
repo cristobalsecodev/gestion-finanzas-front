@@ -63,14 +63,33 @@ export class TokenService {
 
   }
 
-  // Actualiza si el token sigue siendo válido
+  // Checkea el token
   checkTokenValidity(): void {
 
     const timeRemaining = this.calculateTokenTimeExp()
 
     const isValid = timeRemaining > 0
 
+    if(!isValid) {
+
+      this.closeSession()
+
+      this.notificationsService.addNotification('Session expired', 'warning', true)
+
+    }
+
     this.isTokenValid.set(isValid)
+
+  }
+
+  // Cierra la sesión
+  closeSession(): void {
+
+    this.storageService.removeSession('token')
+    this.isTokenValid.set(false)
+    this.stopTokenCheck()
+    
+    this.router.navigate([loginRoute])
 
   }
 

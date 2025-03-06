@@ -18,8 +18,6 @@ import { UserService } from 'src/app/shared/services/Users/user.service';
     // Componentes
     InputCodeComponent,
     // Angular material
-    MatButtonModule,
-    MatIconModule,
     MatTooltipModule
   ],
   templateUrl: './activate-account.component.html',

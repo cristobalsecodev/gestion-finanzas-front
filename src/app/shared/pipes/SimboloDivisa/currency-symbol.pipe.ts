@@ -1,10 +1,13 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { CurrencyCodeENUM } from '../../enums/Currency.enum';
 import { noValue } from '../../constants/variables.constants';
 
 @Pipe({
   name: 'currencySymbol',
   standalone: true
+})
+@Injectable({
+  providedIn: 'root', // Hace que sea un servicio inyectable globalmente
 })
 export class CurrencySymbolPipe implements PipeTransform {
 

@@ -1,18 +1,14 @@
 import { Component, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { WantResetPassword } from 'src/app/auth/interfaces/WantResetPassword.interface';
 import { AuthService } from 'src/app/auth/service/auth.service';
-import { DynamicButtonComponent } from 'src/app/shared/components/dynamic-flat-button/dynamic-button.component';
 import { newPasswordRoute, signUpRoute } from 'src/app/shared/constants/variables.constants';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
 
@@ -20,18 +16,13 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
   selector: 'app-login',
   standalone: true,
   imports: [
-    // Components
-    DynamicButtonComponent,
     // Angular core
     RouterLink,
     ReactiveFormsModule,
     // Angular material
     MatFormFieldModule,
-    MatCardModule,
     MatIconModule,
-    MatButtonModule,
     MatInputModule,
-    MatStepperModule,
     MatTooltipModule,
     MatProgressSpinner
   ],
@@ -41,7 +32,7 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
 export class LoginComponent {
 
   // Signal que cambia entre la el formulario de login y el reseteo de contraseña
-  changeForm = signal(false)
+  isResetPassword = signal(false)
 
   // Signal que confirma que el servicio ha ido bien
   serviceCalled = signal(false)
@@ -50,7 +41,7 @@ export class LoginComponent {
   hidePassword = signal(true)
 
   // Muestra el texto de pasos a seguir al resetear la contraseña
-  resetPasswordSteps = computed( () => this.changeForm() && this.serviceCalled())
+  resetPasswordSteps = computed( () => this.isResetPassword() && this.serviceCalled())
 
   // Confirma que la vida es dura
 

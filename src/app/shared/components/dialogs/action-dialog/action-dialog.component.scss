@@ -1,17 +1,197 @@
-.warning {
-
-  color: var(--sys-action-yellow);
-
+:host {
+  display: contents;
 }
 
-.delete {
-
-  color: var(--sys-action-red)
-
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
 }
 
-.info {
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
 
-  color: var(--sys-action-blue)
+.modal {
+  width: 90%;
+  max-width: 400px;
+  background-color: var(--component);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(0.8);
+  opacity: 0;
+  transition: transform 0.2s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.2s;
+}
 
+.modal-overlay.active .modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-header {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.modal-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-content {
+  padding: 20px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.modal-btn:hover {
+  transform: translateY(-2px);
+}
+
+.modal-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.modal-btn.cancel {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.modal-btn.confirm {
+  color: white;
+}
+
+/* Estilos específicos para cada tipo de modal */
+.modal.delete .modal-icon {
+  background-color: var(--delete-color);
+}
+
+.modal.delete .modal-btn.confirm {
+  background-color: var(--delete-color);
+}
+
+.modal.warning .modal-icon {
+  background-color: var(--warning-color);
+}
+
+.modal.warning .modal-btn.confirm {
+  background-color: var(--warning-color);
+}
+
+.modal.info .modal-icon {
+  background-color: var(--info-color);
+}
+
+.modal.info .modal-btn.confirm {
+  background-color: var(--info-color);
+}
+
+/* Animación de shake para el modal de delete */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.modal.delete.shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Animación de pulse para el modal de warning */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.modal.warning.pulse {
+  animation: pulse 0.5s ease-in-out;
+}
+
+/* Animación de bounce para el modal de info */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.modal.info.bounce {
+  animation: bounce 0.8s;
+}
+
+/* Animación para el botón de confirmación */
+@keyframes buttonPulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+
+.modal-btn.confirm.pulse {
+  animation: buttonPulse 1.5s infinite;
+}
+
+/* Estilos responsivos */
+@media (max-width: 500px) {
+  .modal {
+    width: 95%;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-btn {
+    width: 100%;
+    text-align: center;
+  }
 }

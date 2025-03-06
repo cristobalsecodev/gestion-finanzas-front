@@ -1,501 +1,522 @@
-  <!-- Filtros -->
-  <mat-expansion-panel class="!mb-4">
+<div>
+  <!-- Sección filtros y tabla -->
+  <div class="bg-[var(--component)] rounded-lg shadow-lg">
 
-    <mat-expansion-panel-header>
+    <!-- Cabecera del filtro -->
+    <div class="flex justify-between items-center p-4 border-b border-[var(--component-hover)] cursor-pointer" (click)="toggleFilters()">
 
-      <mat-panel-title> Filters </mat-panel-title>
+      <h2 class="font-semibold text-lg">Filters</h2>
 
-      <mat-panel-description class="flex place-content-end">
+      @if(filtersOpen()) {
 
-        <mat-icon>tune</mat-icon>
+        <span class="material-symbols-outlined">keyboard_arrow_up</span>
 
-      </mat-panel-description>
+      } @else {
 
-    </mat-expansion-panel-header>
-
-    <form [formGroup]="filterForm" (ngSubmit)="filterList(pageSize())">
-
-      <div class="my-2 grid grid-cols-1 lg:grid-cols-2 gap-2">
-
-        <!-- Fecha desde -->
-        <mat-form-field class="w-full">
-
-          <mat-label class="flex">
-
-            <span>From date</span>
-
-            @if(filterForm.get('fromDate')?.value) {
-
-              <mat-icon class="cursor-pointer ml-2 place-self-center"
-              (click)="filterForm.get('fromDate')?.setValue(null)">
-                close
-              </mat-icon>
-  
-            }
-
-          </mat-label>
-
-          <input matInput 
-          [matDatepicker]="dp" 
-          formControlName="fromDate"
-          [max]="filterForm.get('toDate')?.value"
-          readonly>
-          <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
-          <mat-datepicker #dp></mat-datepicker>
-
-
-
-        </mat-form-field>
-
-        <!-- Fecha hasta -->
-        <mat-form-field class="w-full">
-
-          <mat-label class="flex">
-
-            <span>To date</span>
-
-            @if(filterForm.get('toDate')?.value) {
-
-              <mat-icon class="cursor-pointer ml-2 place-self-center"
-              (click)="filterForm.get('toDate')?.setValue(null)">
-                close
-              </mat-icon>
-  
-            }
-
-          </mat-label>
-
-          <input matInput 
-          [matDatepicker]="dp1" 
-          formControlName="toDate" 
-          [min]="filterForm.get('fromDate')?.value"
-          readonly>
-          <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
-          <mat-datepicker #dp1></mat-datepicker>
-
-        </mat-form-field>
-
-        <!-- Selector tipo -->
-        <mat-form-field class="w-full">
-
-          <mat-label>Type</mat-label>
-
-          <mat-select formControlName="type" (selectionChange)="onChangeSelect($event)">
-
-            @for (type of ['', 'income', 'expense']; track $index) {
-
-              <mat-option [value]="type">{{ type === '' ? 'No selection' : capitalize(type) }}</mat-option>
-
-            }
-
-          </mat-select>
-
-        </mat-form-field>
-
-        <!-- Divisa -->
-        <mat-form-field class="w-full">
-
-          <mat-label>Currencies</mat-label>
-
-          <mat-select formControlName="currencies" multiple>
-
-            @for (currency of currencyExchangeService.currencies(); track $index) {
-
-              <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
-
-            }
-
-          </mat-select>
-
-        </mat-form-field>
-
-        <!-- Categorías -->
-        <mat-form-field class="w-full">
-          <mat-label>Categories</mat-label>
-          <mat-select formControlName="categories" multiple (selectionChange)="filterSubcategories()">
-
-            <mat-select-trigger>
-
-              {{ filterForm.get('categories')?.value && filterForm.get('categories')?.value.length > 0 
-                  ? filterForm.get('categories')?.value[0].name
-                  : '' 
-              }}
-
-              @if ((filterForm.get('categories')?.value?.length || 0) > 1) {
-
-                <span class="opacity-75 text-xs leading-none">
-
-                  (+{{(filterForm.get('categories')?.value?.length || 0) - 1}} {{filterForm.get('categories')?.value?.length === 2 ? 'other' : 'others'}})
-
-                </span>
-
-              }
-
-            </mat-select-trigger>
-
-            @for (category of filteredCategories; track $index) {
-              <mat-option [value]="category">{{ category.name }}</mat-option>
-            }
-
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Subcategorías -->
-        <mat-form-field class="w-full"
-        [matTooltip]="(filterForm.get('categories')?.value && (filterForm.get('categories')?.value.length > 0 && filterSubcategories.length === 0))
-        ? 'The categories doesn\'t have any subcategories'
-        : 'Please select a category first'"
-        [matTooltipDisabled]="filterForm.get('subcategories')?.enabled">
-
-          <mat-label>Subcategories</mat-label>
-          <mat-select formControlName="subcategories" multiple>
-
-            <mat-select-trigger>
-
-              {{ filterForm.get('subcategories')?.value && filterForm.get('subcategories')?.value.length > 0 
-                  ? filterForm.get('subcategories')?.value[0].viewValue 
-                  : '' 
-              }}
-
-              @if ((filterForm.get('subcategories')?.value?.length || 0) > 1) {
-
-                <span class="opacity-75 text-xs leading-none">
-
-                  (+{{(filterForm.get('subcategories')?.value?.length || 0) - 1}} {{filterForm.get('subcategories')?.value?.length === 2 ? 'other' : 'others'}})
-
-                </span>
-
-              }
-
-            </mat-select-trigger>
-
-            @for (group of filteredSubcategories; track $index) {
-
-              <mat-optgroup [label]="group.name">
-
-                @for (subcategory of group.values; track $index) {
-
-                  <mat-option [value]="subcategory">{{ subcategory.viewValue }}</mat-option>
-
-                }
-
-              </mat-optgroup>
-            }
-
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Recurrencia -->
-        <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
-
-      </div>
-
-      <!-- Botón filtrar -->
-      <div class="text-end">
-
-        <button 
-        mat-button 
-        type="button"
-        [disabled]="filterLoader()"
-        (click)="resetFilter()">
-          <mat-icon>restart_alt</mat-icon>
-          <span>Reset filter</span>
-        </button>
-
-        <button 
-        mat-flat-button 
-        type="submit" 
-        class="ml-2"
-        [disabled]="filterLoader()">
-          <mat-icon>tune</mat-icon>
-          <span>Filter</span>
-        </button>
-
-      </div>
-
-    </form>
-
-  </mat-expansion-panel>
-
-  <!-- Botón añadir ingreso / gasto -->
-  <div class="text-center">
-
-    <div
-    matTooltip="You have to add at least one category to create an income or expense"
-    [matTooltipDisabled]="categories.length > 0">
-
-      <button 
-      mat-button
-      [disabled]="categories.length === 0"
-      (click)="openIncomeOrExpenseDialog(actionType.CREATE)">
-      <mat-icon>add</mat-icon>
-      Add income / expense
-      </button>
-      
-    </div>
-
-    <button mat-button (click)="openCategoriesDialog()">
-      <mat-icon>settings</mat-icon>
-      Manage categories / subcategories
-    </button>
-
-  </div>
-
-  <!-- Lista de ingresos y gastos -->
-  <section>
-
-    @if(filterLoader()) {
-
-      <div class="place-items-center p-3">
-        <mat-spinner [diameter]="40"></mat-spinner>
-      </div>
-
-    } @else {
-
-      @for (year of sortedYears; track $index) {
-
-        <h2 class="text-xl font-semibold mb-4">{{ year }}</h2>
-  
-        @for (record of groupedRecords[year]; track $index) {
-  
-          <mat-card class="flex p-4 cursor-pointer shadow-none component-bg-hover"
-          [ngClass]="{'component-bg': selectedRecordId === record.id, 'mb-4': selectedRecordId !== record.id}"
-          (click)="toggleDetails(record.id!)">
-  
-            <div class="flex w-full items-center">
-  
-              <!-- Fecha -->
-              <div class="flex flex-col items-center w-[7%]">
-                <div class="text-lg font-bold">{{ record.transactionDate | date: 'dd' }}</div>
-                <div class="text-base font-semibold">{{ record.transactionDate | date: 'MMM' }}</div>
-              </div>
-      
-              <!-- Categoría y subcategoría -->
-              <div class="flex flex-col w-[58%] pl-4">
-  
-                <p class="text-sm font-medium break-words text-balance">
-                  {{ record.category.name }}
-                </p>
-  
-                <p class="text-xs break-words text-balance">
-                  {{ record.subcategory ? record.subcategory.name : '' }}
-                </p>
-                
-              </div>
-      
-              <!-- Icono recurrencia -->
-              @if (record.recurrenceDetails) {
-  
-                <mat-icon class="text-sm text-center absolute top-1 right-1"
-                matTooltip="This {{ record.type }} has a recurrency">
-                  currency_exchange
-                </mat-icon>
-  
-              }
-  
-              <!-- Cantidad y divisa -->
-              <div class="flex flex-grow justify-end w-[35%]">
-      
-                <div class="font-medium">
-                  
-                  <span class="mr-1 hidden lg:inline">{{ 0 | currencySymbol: record.currency }}</span>
-  
-                  <span [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}"
-                  matTooltip="{{ record.amount | formatThousandSeparators }}"
-                  [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)">
-                    {{ record.amount | formatAmount }}
-                  </span>
-                  
-                </div>
-  
-              </div>
-            </div>
-          </mat-card>
-  
-          <!-- Componente de detalles -->
-          @if (selectedRecordId === record.id) {
-  
-            <article @fadeInOut class="p-4 mb-4 rounded-lg shadow-md mx-2">
-              
-              <!-- Cabecera -->
-              <header class="mb-4 flex justify-between items-center">
-  
-                <h3 class="text-xl font-semibold">Detalles</h3>
-  
-                <span 
-                  class="px-2 py-1 rounded text-xs font-medium"
-                  [ngClass]="{
-                    'bg-green-100 text-green-800': record.type === 'income',
-                    'bg-red-100 text-red-800': record.type === 'expense'
-                  }">
-                  {{ record.type === 'income' ? 'Income' : 'Expense' }}
-                </span>
-              </header>
-            
-              <!-- Detalles generales -->
-              <div class="mb-4">
-  
-                <p class="text-sm">
-                  <strong>Category:</strong> {{ record.category.name }}
-                </p>
-  
-                <p class="text-sm">
-                  <strong>Subcategory:</strong> {{ record.subcategory ? record.subcategory.name : '' }}
-                </p>
-  
-                <p 
-                  class="text-sm font-semibold" 
-                  [ngClass]="{'income': record.type === 'income', 'expense': record.type === 'expense'}">
-                  <strong>Amount:</strong> 
-                  {{ 0 | currencySymbol: record.currency }} 
-                  {{ record.amount | formatThousandSeparators }}
-                </p>
-  
-                <p class="text-sm">
-                  <strong>Notes:</strong> {{ record.notes }}
-                </p>
-  
-              </div>
-            
-              <!-- Detalles de recurrencia -->
-              @if(record.recurrenceDetails) {
-  
-                <section class="mb-4">
-  
-                  <h4 class="text-lg font-semibold mb-2">Recurrence</h4>
-  
-                  <p class="text-sm">
-                    {{ getRecurrenceMessage(record.recurrenceDetails.recurrenceType, record.recurrenceDetails.frequency) }}
-                  </p>
-  
-                  <p class="text-sm">
-                    <strong>Occurrences:</strong> {{ record.recurrenceDetails.occurrences }}
-                  </p>
-  
-                  <p class="text-sm">
-                    <strong>End Date:</strong> {{ record.recurrenceDetails.endDate }}
-                  </p>
-  
-                </section>
-  
-              }
-            
-              <!-- Actions -->
-              <footer class="flex justify-end space-x-2">
-  
-                <button 
-                  mat-button 
-                  class="delete flex items-center space-x-1"
-                  (click)="openDeleteDialog(record)">
-  
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-  
-                </button>
-            
-                <button 
-                  mat-button 
-                  (click)="openIncomeOrExpenseDialog(actionType.EDIT, record)" 
-                  class="flex items-center space-x-1">
-  
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
-  
-                </button>
-  
-              </footer>
-  
-            </article>
-          
-          }
-  
-        }
-      } @empty {
-  
-        
-        <!-- Primera línea de separación -->
-        <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
-  
-        <div class="text-center">Empty list</div>
-        
-        <!-- Segunda línea de separación -->
-        <div class="mx-auto w-11/12 border-t mt-4 mb-4"></div>
-  
-      }  
-
-    }
-
-    <!-- Botonera del listado -->
-    <section class="rounded-xl sticky bottom-0 component-bg p-4 flex justify-between items-center">
-
-      <div class="hidden md:flex items-center space-x-1 self-center"
-      matTooltip="Records loaded / total records">
-        <mat-icon>visibility</mat-icon>
-        <span>{{ recordsToShow.length + ' / ' + totalElements() }}</span>
-      </div>
-
-      <button mat-flat-button 
-      (click)="getFilteredIncomeOrExpenses(buildFilter())"
-      [disabled]="recordsToShow.length >= totalElements()"
-      class="w-fit self-center">
-
-        @if(recordsToShow.length >= totalElements()) {
-
-          <mat-icon>keyboard_arrow_up</mat-icon>
-
-        } @else {
-
-          <mat-icon>keyboard_arrow_down</mat-icon>
-
-        }
-
-        <span>{{ recordsToShow.length >= totalElements() ? 'All records are loaded' : 'Load more' }}</span>
-
-      </button>
-
-      @if(recordsToShow.length < totalElements()) {
-
-        <button mat-flat-button 
-        (click)="getFilteredIncomeOrExpenses(buildFilter(true))"
-        class="w-fit self-center">
-
-          <mat-icon>keyboard_double_arrow_down</mat-icon>
-          <span>Load all</span>
-  
-        </button>
+        <span class="material-symbols-outlined">keyboard_arrow_down</span>
 
       }
 
-      <!-- Selector tamaño de página -->
-      <button mat-button 
-      [matMenuTriggerFor]="pageSizeMenu" 
-      matTooltip="Change how many records you want to load" 
-      class="w-fit self-end">
+    </div>
 
-        <span>Size: {{ pageSize() }}</span>
+    <!-- Cuerpo del filtro -->
+    @if(filtersOpen()) {
 
-      </button>
+      <div @fadeAnimation>
+    
+        <form [formGroup]="filterForm" class="p-4" (ngSubmit)="filterList(pageSize())">
 
-    </section>
+          <div class="grid grid-cols-2 gap-4">
 
-  </section>
+            <!-- Fecha desde -->
+            <mat-form-field>
 
-  <!-- Menú selector de tamaño -->
-  <mat-menu #pageSizeMenu="matMenu">
+              <mat-label class="flex">
 
-    @for (size of [5, 10, 20, 30]; track $index) {
+                <span>From date</span>
 
-      <button mat-menu-item (click)="filterList(size)">
-        {{ size }}
-      </button>
+                @if(filterForm.get('fromDate')?.value) {
 
-    } @empty {
+                  <mat-icon class="cursor-pointer ml-2 place-self-center"
+                  (click)="filterForm.get('fromDate')?.setValue(null)">
+                    close
+                  </mat-icon>
 
-      <button mat-menu-item>
-        <mat-icon>report</mat-icon>
-        <span>No sizes available</span>
-      </button>
+                }
+
+              </mat-label>
+
+              <input matInput 
+              [matDatepicker]="dp" 
+              formControlName="fromDate"
+              [max]="filterForm.get('toDate')?.value"
+              readonly>
+              <mat-datepicker-toggle matIconSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp></mat-datepicker>
+
+            </mat-form-field>
+
+            <!-- Fecha hasta -->
+            <mat-form-field>
+
+              <mat-label class="flex">
+
+                <span>To date</span>
+
+                @if(filterForm.get('toDate')?.value) {
+
+                  <mat-icon class="cursor-pointer ml-2 place-self-center"
+                  (click)="filterForm.get('toDate')?.setValue(null)">
+                    close
+                  </mat-icon>
+
+                }
+
+              </mat-label>
+
+              <input matInput 
+              [matDatepicker]="dp1" 
+              formControlName="toDate" 
+              [min]="filterForm.get('fromDate')?.value"
+              readonly>
+              <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
+              <mat-datepicker #dp1></mat-datepicker>
+
+            </mat-form-field>
+
+
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+
+            <!-- Selector tipo -->
+            <mat-form-field>
+
+              <mat-label>Type</mat-label>
+
+              <mat-select formControlName="type" (selectionChange)="onChangeSelect($event)">
+
+                @for (type of ['', 'income', 'expense']; track $index) {
+
+                  <mat-option [value]="type">{{ type === '' ? 'No selection' : capitalize(type) }}</mat-option>
+
+                }
+
+              </mat-select>
+
+            </mat-form-field>
+
+            <!-- Divisa -->
+            <mat-form-field>
+
+              <mat-label>Currencies</mat-label>
+
+              <mat-select formControlName="currencies" multiple>
+
+                @for (currency of currencyExchangeService.currencies(); track $index) {
+
+                  <mat-option [value]="currency.currencyCode"> {{ currency.currencyName }} </mat-option>
+
+                }
+
+              </mat-select>
+
+            </mat-form-field>
+
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+
+            <!-- Categorías -->
+            <mat-form-field class="w-full">
+              <mat-label>Categories</mat-label>
+              <mat-select formControlName="categories" multiple (selectionChange)="filterSubcategories()">
+
+                <mat-select-trigger>
+
+                  {{ filterForm.get('categories')?.value && filterForm.get('categories')?.value.length > 0 
+                      ? filterForm.get('categories')?.value[0].name
+                      : '' 
+                  }}
+
+                  @if ((filterForm.get('categories')?.value?.length || 0) > 1) {
+
+                    <span class="opacity-75 text-xs leading-none">
+
+                      (+{{(filterForm.get('categories')?.value?.length || 0) - 1}} {{filterForm.get('categories')?.value?.length === 2 ? 'other' : 'others'}})
+
+                    </span>
+
+                  }
+
+                </mat-select-trigger>
+
+                @for (category of filteredCategories; track $index) {
+                  <mat-option [value]="category">{{ category.name }}</mat-option>
+                }
+
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Subcategorías -->
+            <mat-form-field class="w-full"
+            [matTooltip]="(filterForm.get('categories')?.value && (filterForm.get('categories')?.value.length > 0 && filterSubcategories.length === 0))
+            ? 'The categories doesn\'t have any subcategories'
+            : 'Please select a category first'"
+            [matTooltipDisabled]="filterForm.get('subcategories')?.enabled">
+
+              <mat-label>Subcategories</mat-label>
+              <mat-select formControlName="subcategories" multiple>
+
+                <mat-select-trigger>
+
+                  {{ filterForm.get('subcategories')?.value && filterForm.get('subcategories')?.value.length > 0 
+                      ? filterForm.get('subcategories')?.value[0].viewValue 
+                      : '' 
+                  }}
+
+                  @if ((filterForm.get('subcategories')?.value?.length || 0) > 1) {
+
+                    <span class="opacity-75 text-xs leading-none">
+
+                      (+{{(filterForm.get('subcategories')?.value?.length || 0) - 1}} {{filterForm.get('subcategories')?.value?.length === 2 ? 'other' : 'others'}})
+
+                    </span>
+
+                  }
+
+                </mat-select-trigger>
+
+                @for (group of filteredSubcategories; track $index) {
+
+                  <mat-optgroup [label]="group.name">
+
+                    @for (subcategory of group.values; track $index) {
+
+                      <mat-option [value]="subcategory">{{ subcategory.viewValue }}</mat-option>
+
+                    }
+
+                  </mat-optgroup>
+                }
+
+              </mat-select>
+            </mat-form-field>
+
+          </div>
+
+          <!-- Recurrencia -->
+          <div class="flex items-center gap-2 pt-2">
+            <mat-checkbox formControlName="recurrences" class="text-center">Only recurrences</mat-checkbox>
+          </div>
+
+          <div class="flex justify-between pt-4">
+            <button class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] disabled:opacity-50 disabled:pointer-events-none"
+            [disabled]="filterLoader()"
+            (click)="resetFilter()">
+              <span class="material-symbols-outlined">restart_alt</span>
+              <span>Reset filter</span>
+            </button>
+            <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:pointer-events-none"
+            [disabled]="filterLoader()"
+            type="submit">
+              <span class="material-symbols-outlined">filter_alt</span>
+              <span>Filter</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
 
     }
 
-  </mat-menu>
+    <!-- Botones de acción -->
+    <div class="flex flex-col gap-3 border-t border-[var(--component-hover)] p-4">
+
+      <div 
+      matTooltip="Add a category first"
+      [matTooltipDisabled]="categories.length !== 0">
+        <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
+        (click)="newTransaction()"
+        [disabled]="categories.length === 0"
+        matTooltip="You have to add at least one category to create an income or expense"
+        [matTooltipDisabled]="categories.length > 0">
+  
+          <span class="material-symbols-outlined">add</span>
+          <span>New transaction</span>
+  
+        </button>
+      </div>
+
+      <button class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)]"
+      (click)="goToCategories()">
+
+        <span class="material-symbols-outlined">settings</span>
+        <span>Manage categories / subcategories</span>
+
+      </button>
+
+    </div>
+
+    <!-- Lista de transacciones -->
+    <div>
+
+      @if(filterLoader()) {
+
+        <div class="place-items-center p-3">
+          <mat-spinner [diameter]="40"></mat-spinner>
+        </div>
+
+      } @else {
+  
+        @for (year of sortedYears; track $index) {
+  
+          <h3 class="text-lg font-semibold py-2 px-4 border-b border-[var(--component-hover)]">{{ year }}</h3>
+    
+          <ul class="list-none">
+            
+            @for (record of groupedRecords[year]; track record.id) {
+
+              <li (click)="toggleDetails(record.id!)"
+              class="border-b border-[var(--component-hover)] hover:bg-[var(--component-hover)] transition-colors duration-200 py-3 px-4 cursor-pointer">
+
+                <!-- Información escueta -->
+                <div class="flex justify-between items-center">
+
+                  <div>
+
+                    <span class="text-sm text-[var(--text-secondary)] mr-2">
+                      {{ record.transactionDate | date: 'dd' }} {{ record.transactionDate | date: 'MMM' }}
+                    </span>
+                    <span>{{ record.category.name }}</span>
+
+                  </div>
+
+                  <div matTooltip="{{ record.amount | formatThousandSeparators }}"
+                  [matTooltipDisabled]="!shouldShowAmountTooltip(record.amount)"
+                  [ngStyle]="{'color': record.type === 'income' ? 'var(--positive)' : 'var(--negative)'}"
+                  class="cursor-default whitespace-nowrap">
+                    {{ record.amount | formatAmount }} {{ 0 | currencySymbol: record.currency }}
+                  </div>
+
+                </div>
+
+                <!-- Información detallada -->
+                <div [@slideInOut]="selectedRecordId === record.id ? '*' : 'void'">
+
+                  <div class="flex gap-2 mb-2 place-self-center">
+
+                    <button (click)="deleteTransaction(record)"
+                    matTooltip="Delete"
+                    class="button-icon hover:text-[var(--negative)] hover:border-[var(--negative)]">
+                      <span class="material-symbols-outlined">delete</span>
+                    </button>  
+
+                    <button class="button-icon hover:text-[var(--text-primary)] hover:border-[var(--primary)]"
+                    matTooltip="Edit"
+                    (click)="editTransaction(record)">
+                      <span class="material-symbols-outlined">edit</span>
+                    </button>
+
+                  </div>
+
+                  @if(record.subcategory) {
+
+                    <!-- Subcategoría -->
+                    <div class="mb-3">
+                      <div class="text-[var(--text-secondary)] text-xs mb-1">
+                        Subcategory
+                      </div>
+                      <div class="text-sm">
+                        {{ record.subcategory.name }}
+                      </div>
+                    </div>
+
+                  }
+
+                  <!-- Tipo de cambio de divisa -->
+                  <div class="mb-3">
+                    <div class="text-[var(--text-secondary)] text-xs mb-1">
+                      Exchange currency rate
+                    </div>
+                    <div class="text-sm">
+                      1$ = {{ record.exchangeRateToUsd }} {{ 0 | currencySymbol: record.currency }}
+                    </div>
+                  </div>
+
+                  <!-- Tipo de transacción -->
+                  <div class="mb-3">
+                    <div class="text-[var(--text-secondary)] text-xs mb-1">
+                      Transaction type
+                    </div>
+                    <div class="text-sm badge" 
+                    [ngClass]="{ 'badge-income': record.type === 'income', 'badge-expense': record.type === 'expense' }">
+                      {{ capitalize(record.type) }}
+                    </div>
+                  </div>
+
+                  <!-- Notas -->
+                  @if(record.notes) {
+
+                    <div class="mb-3">
+                      <div class="text-[var(--text-secondary)] text-xs mb-1">
+                        Notes
+                      </div>
+                      <div class="text-sm">
+                        {{ record.notes }}
+                      </div>
+                    </div>
+
+                  }
+
+                  @if(record.recurrenceDetails) {
+
+                    <!-- Detalles de recurrencia -->
+                    <div class="border-t border-[var(--secondary-component-hover)] mt-4 pt-4">
+  
+                      <div class="text-[var(--text-secondary)] text-xs mb-3">
+                        Recurrence details
+                      </div>
+  
+                      <!-- Tipo de recurrencia -->
+                      <div class="mb-3">
+                        <div class="text-[var(--text-secondary)] text-xs mb-1">
+                          Recurrence type
+                        </div>
+                        <div class="text-sm">
+                          {{ record.recurrenceDetails.recurrenceType }}
+                        </div>
+                      </div>
+    
+                      <!-- Frecuencia -->
+                      <div class="mb-3">
+                        <div class="text-[var(--text-secondary)] text-xs mb-1">
+                          Frequency
+                        </div>
+                        <div class="text-sm">
+                          {{ getRecurrenceMessage(
+                            record.recurrenceDetails.recurrenceType, 
+                            record.recurrenceDetails.frequency
+                            ) 
+                          }}
+                        </div>
+                      </div>
+    
+                      @if(record.recurrenceDetails.endDate) {
+
+                        <!-- Fecha fin -->
+                        <div class="mb-3">
+                          <div class="text-[var(--text-secondary)] text-xs mb-1">
+                            End date
+                          </div>
+                          <div class="text-sm">
+                            {{ record.recurrenceDetails.endDate | date: 'dd/MM/yyyy' }}
+                          </div>
+                        </div>
+
+                      }
+    
+                      @if(record.recurrenceDetails.occurrences) {
+
+                        <!-- Ocurrencias -->
+                        <div class="mb-3">
+                          <div class="text-[var(--text-secondary)] text-xs mb-1">
+                            Ocurrences
+                          </div>
+                          <div class="text-sm">
+                            {{ record.recurrenceDetails.occurrences }}
+                          </div>
+                        </div>
+
+                      }
+  
+                    </div>
+
+                  }
+                  
+
+                </div>
+
+              </li>
+      
+            }
+
+          </ul>
+
+        } @empty {
+          
+          <!-- Primera línea de separación -->
+          <div class="border-t border-[var(--component-hover)]"></div>
+    
+          <div class="text-center py-3 px-4">Empty list</div>
+          
+          <!-- Segunda línea de separación -->
+          <div class="border-b border-[var(--component-hover)]"></div>
+    
+        }  
+  
+      }
+
+      <div class="p-3 flex items-center justify-between text-sm text-[var(--text-secondary)]">
+
+        <div matTooltip="Records loaded / total records" class="flex items-center pr-1 gap-1 cursor-default">
+          <span class="material-symbols-outlined text-base">visibility</span> 
+          {{ recordsToShow.length + ' / ' + totalElements() }}
+        </div>
+        
+        @if(recordsToShow.length < totalElements()) {
+
+          <div class="flex gap-1">
+
+            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
+            (click)="getFilteredIncomeOrExpenses(buildFilter())">
+              <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span> Load more
+            </button>
+  
+            <button class="tertiary-button bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
+            (click)="getFilteredIncomeOrExpenses(buildFilter(true))">
+              <span class="material-symbols-outlined text-sm">keyboard_double_arrow_down</span> Load all
+            </button>  
+
+          </div>
+
+        } @else {
+
+          <span class="cursor-default">All loaded</span>
+
+        }
+
+        <div class="relative inline-block">
+
+          <button id="button-dropdown" 
+          class="tertiary-button bg-transparent hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
+          matTooltip="Change how many records you want to load"
+          (click)="toggleDropdown($event)">
+            Size: {{ pageSize() }}
+          </button>
+  
+          <div id="size-dropdown-menu" class="absolute top-full left-0 min-w-12 overflow-y-auto bg-[var(--component)] rounded-sm shadow-md z-[1000] hidden mt-1 w-full">
+  
+            @for(size of [5,10,20,30]; track size) {
+  
+              <div class="flex hover:bg-[var(--component-hover)] items-center px-4 py-3 transition-colors duration-200 gap-3" 
+              (click)="filterList(size)">
+  
+                <span>{{ size }}</span>
+  
+              </div>
+  
+            }
+  
+          </div>
+          
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

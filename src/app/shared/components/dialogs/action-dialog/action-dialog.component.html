@@ -1,4 +1,4 @@
-<mat-dialog-content class="max-w-max rounded-lg shadow-lg text-center">
+<!-- <mat-dialog-content class="max-w-max rounded-lg shadow-lg text-center">
 
   <div class="text-5xl mb-4" 
   [ngClass]="{'warning': data.type === 'warning',
@@ -45,3 +45,66 @@
 
   </div>
 </mat-dialog-content>
+
+ -->
+
+<div class="modal-overlay" [class.active]="isActive">
+  <div class="modal" [ngClass]="[config.type, animationClass]">
+    <div class="modal-header">
+      <div class="modal-icon">
+
+        @switch (config.type) {
+
+          @case(actionType.DELETE) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+            </svg>
+          }
+
+          @case (actionType.WARNING) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="currentColor"/>
+            </svg>
+          }
+
+          @case (actionType.INFO) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/>
+            </svg>
+          }
+
+        }
+
+      </div>
+
+      <h3 class="modal-title">{{ config.title }}</h3>
+
+    </div>
+
+    <div class="modal-content">
+      <p>{{ config.message }}</p>
+    </div>
+
+    <div class="modal-actions">
+
+      @if(config.cancelText) {
+        <button class="modal-btn cancel" 
+        (click)="onCancel()">
+          {{ config.cancelText }}
+        </button>
+      }
+
+      <button class="modal-btn confirm" 
+      [class.pulse]="config.type === actionType.DELETE" 
+      (click)="onConfirm()">
+        {{ config.confirmText }}
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+

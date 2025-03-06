@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { LoginComponent } from './bienvenida/login/login.component';
-import { activateAccountRoute, signUpRoute, incomeExpensesRoute, newPasswordRoute, loginRoute } from './shared/constants/variables.constants';
+import { activateAccountRoute, signUpRoute, incomeExpensesRoute, newPasswordRoute, loginRoute, categoriesRoute, incomeExpensesFormRoute } from './shared/constants/variables.constants';
 import { CreateAccountComponent } from './bienvenida/create-account/create-account.component';
 import { ActivateAccountComponent } from './bienvenida/activate-account/activate-account.component';
 import { NewPasswordComponent } from './shared/components/new-password/new-password.component';
@@ -10,11 +10,23 @@ import { NewPasswordResolverService } from './auth/service/resolvers/NewPassword
 import { LoggedResolverService } from './auth/service/resolvers/LoggedResolver/logged-resolver.service';
 import { ActivateAccountResolverService } from './auth/service/resolvers/ActivateAccountResolver/activate-account-resolver.service';
 import { IncomeOrExpenseComponent } from './mis-ingresos-gastos/income-or-expense.component';
+import { CategoriesSubcategoriesFormComponent } from './mis-ingresos-gastos/categories-subcategories-form/categories-subcategories-form.component';
+import { IncomeOrExpenseFormComponent } from './mis-ingresos-gastos/income-or-expense-form/income-or-expense-form.component';
 
 export const routes: Routes = [
   {
     path: incomeExpensesRoute, 
     component: IncomeOrExpenseComponent,
+    resolve: { auth: AuthResolverService }
+  },
+  {
+    path: incomeExpensesFormRoute, 
+    component: IncomeOrExpenseFormComponent,
+    resolve: { auth: AuthResolverService }
+  },
+  {
+    path: categoriesRoute, 
+    component: CategoriesSubcategoriesFormComponent,
     resolve: { auth: AuthResolverService }
   },
   {

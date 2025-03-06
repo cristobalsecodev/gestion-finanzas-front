@@ -1,241 +1,208 @@
+@if(!isResetPassword()) {
 
-
-
-  <div class="h-screen md:grid place-items-center">
-
-    <!-- Login -->
-    <mat-card class="p-9 md:max-w-[400px] max-w-3xl w-full !rounded-none md:!rounded-lg">
-
-      @if(!changeForm()) {
+  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg place-self-center animate-slideDown">
   
-      <!-- Sección cabecera -->
-      <section class="flex space-x-4 place-content-center">
+    <div class="mb-8 text-center">
   
-        <h1 class="w-1/2 mb-8">Login here</h1>
+      <div class="w-12 h-12 inline-flex items-center justify-center bg-[var(--primary)] rounded-md font-bold mb-2">
+        F
+      </div>
+      <h1>Financia Sphere</h1>
+      <p class="text-[var(--text-secondary)] mt-1">Manage your income and expenses efficiently</p>
   
-        <button 
-          id="button-lg" 
-          mat-button 
-          class="w-1/2 show-lg" 
-          [routerLink]="['/' + signUpRoute]">
-            <mat-icon> person_add </mat-icon>
-            <span> Create account </span>
-        </button>
+    </div>
   
-        <span class="flex-auto show-md"></span>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
   
-        <button 
-          mat-icon-button
-          matTooltip="Create account"
-          class="w-1/6 show-md" 
-          [routerLink]="['/' + signUpRoute]">
-            <mat-icon> person_add </mat-icon>
-        </button>
+      <div class="mb-3">
   
-      </section>
-  
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  
-        <!-- Sección formulario -->
-        <section>
-  
-          <!-- Email -->
-          <mat-form-field appearance="fill">
-              
-            <mat-label> Enter your email </mat-label>
-            <input matInput placeholder="example@domain.com" formControlName="email" required>
-  
-            @if(form.get('email')?.hasError('pattern')) {
-  
-              <mat-error> Email is invalid. </mat-error>
-  
-            }
-  
-            @if(form.get('email')?.hasError('required')) {
-  
-              <mat-error> Email is required. </mat-error>
-  
-            }
-  
-          </mat-form-field>
-      
-          <!-- Contraseña -->
-          <mat-form-field appearance="fill">
+        <mat-form-field>
                 
-            <mat-label> Enter your password </mat-label>
-          
-            <input 
-              matInput 
-              formControlName="password" 
-              [type]="hidePassword() ? 'password' : 'text'" 
-              placeholder="epic password" />
-          
-            <button
-              mat-icon-button
-              matSuffix
-              type="button"
-              (click)="hidePassword.set(!hidePassword())">
+          <mat-label> Enter your email </mat-label>
+          <input matInput placeholder="example@domain.com" formControlName="email" required>
   
-              <mat-icon> {{hidePassword() ? 'visibility_off' : 'visibility'}} </mat-icon>
-              
-            </button>
+          @if(form.get('email')?.hasError('pattern')) {
   
-            @if(form.get('password')?.hasError('required')) {
+            <mat-error> Email is invalid. </mat-error>
   
-              <mat-error> Password is required. </mat-error>
-  
-            }
-          
-          </mat-form-field>
-          
-        </section>
-  
-        <!-- Sección botón de login -->
-        <app-dynamic-button
-        type="submit"
-        buttonText="Log in"
-        matIcon="login"
-        [textSizeRem]="textSizeRem"
-        [shapePx]="10"
-        [heightPx]="70"
-        [disabled]="buttonLoader()"
-        [loader]="buttonLoader()"
-        buttonType="flat"
-        buttonClass="w-full">     
-        </app-dynamic-button>
-
-      </form>
-
-      <!-- Botón usuario test -->
-      <button 
-      mat-flat-button 
-      class="mt-2"
-      [disabled]="testButtonLoader()"
-      (click)="testLogin()">
-
-        <mat-icon>
-
-          @if(testButtonLoader()) {
-
-            <mat-spinner [diameter]="15"></mat-spinner>
-
-          } @else {
-
-            bug_report
-
           }
-
-        </mat-icon>
-
-        Try it without login!
-
-      </button>
-      
-      <!-- Botón contraseña olvidada -->
-      <button mat-button class="mt-2" (click)="changeForm.set(!changeForm())">
-        <mat-icon> lock_reset </mat-icon>
-        Forgot your password?
-      </button>
-
-    } @else {
-
-      @if(resetPasswordSteps()) {
-
-        <h1 class="mb-8">Next steps</h1>
-
-        <section>
-          <p>Remember </p>
-          <p class="mb-4 font-semibold">To reset your password, please follow these steps:</p>
-          <ol>
-            <li>1. Check your email for a message from FinanciaSphere.</li>
-            <li>2. Click on the password recovery link in the email.</li>
-            <li>3. Enter a new password and confirm it.</li>
-            <li>4. Return to the login page.</li>
-          </ol>
-          <p class="mt-4 text-red-600">Note: You have 15 minutes before this request expires.</p>
-        </section>
+  
+          @if(form.get('email')?.hasError('required')) {
+  
+            <mat-error> Email is required. </mat-error>
+  
+          }
+  
+        </mat-form-field>
+    
+      </div>
+  
+      <div class="mb-3">
+  
+        <mat-form-field>
+                  
+          <mat-label> Enter your password </mat-label>
         
-        <section class="flex space-x-4 mt-4 place-content-end">
-          
-          <button mat-button type="button" (click)="changeForm.set(!changeForm()); serviceCalled.set(!serviceCalled())">
-  
-            <mat-icon>undo</mat-icon>
-            <span>Return to login</span>
-
-          </button>
-
-        </section>
-
-      } @else {
-
-        <h1 class="mb-8">Reset your password</h1>
-
-        <!-- Formulario para resetear la contraseña -->
-        <form [formGroup]="resetPaswordForm" (ngSubmit)="wantResetPassword()">
-
-          <mat-form-field appearance="fill">
-              
-            <mat-label> Enter your email </mat-label>
-            <input matInput placeholder="example@domain.com" formControlName="email" required>
-    
-            @if(resetPaswordForm.get('email')?.hasError('pattern')) {
-    
-              <mat-error> Email is invalid. </mat-error>
-    
-            }
-    
-            @if(resetPaswordForm.get('email')?.hasError('required')) {
-    
-              <mat-error> Email is required. </mat-error>
-    
-            }
-
-          </mat-form-field>
-
-          <!-- Botonera -->
-          <section class="flex space-x-4 mt-2 place-content-end">
-    
-            <button mat-button type="button" (click)="changeForm.set(!changeForm())">
-
-              <mat-icon>undo</mat-icon>
-              <span>Return to login</span>
-              
-            </button>
-
-            <button mat-flat-button type="submit">
-
+          <input 
+            matInput 
+            formControlName="password" 
+            [type]="hidePassword() ? 'password' : 'text'" 
+            placeholder="Your password" />
+        
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword.set(!hidePassword())">
               <mat-icon>
-
-                @if(buttonLoader()) {
-
-                  <mat-spinner [diameter]="15"></mat-spinner>
-
-                } @else {
-
-                  key
-
-                }
-
+                {{hidePassword() ? 'visibility_off' : 'visibility'}}
               </mat-icon>
-
-              <span> Reset </span>
-
-            </button>
-      
-          </section>
-
-
-
-        </form>
-
-      }
-
-    }
+          </button>
   
-    </mat-card>
+          @if(form.get('password')?.hasError('required')) {
+  
+            <mat-error> Password is required. </mat-error>
+  
+          }
+        
+        </mat-form-field>
+        
+      </div>
+  
+      <button type="submit"
+      class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
+      [disabled]="buttonLoader()">
+  
+        @if(buttonLoader()) {
+          <span class="material-symbols-outlined"> 
+            <mat-spinner [diameter]="15"></mat-spinner> 
+          </span>
+        } @else {
+          Log in
+        }
+       
+      </button>
+  
+      <div class="flex items-center my-5 text-xs text-[var(--text-secondary)]">
+        <div class="flex-grow h-px bg-[var(--component-hover)] mr-3"></div>
+        O
+        <div class="flex-grow h-px bg-[var(--component-hover)] ml-3"></div>
+      </div>
+  
+      <div class="flex justify-between gap-3 mt-5">
+        <button type="button"
+        [routerLink]="['/' + signUpRoute]"
+        class="tertiary-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
+          Create account
+        </button>
+        <button type="button"
+        (click)="testLogin()"
+        class="tertiary-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
+          Test user
+        </button>
+      </div>
+  
+      <button 
+      (click)="isResetPassword.set(!isResetPassword())"
+      class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] place-self-center mt-5">
+        <span class="material-symbols-outlined">lock_reset</span>
+        <span>Forgot your password?</span>
+      </button>
+  
+    </form>
+    
   
   </div>
 
+} @else {
 
+  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg place-self-center animate-slideDown">
 
+    @if(resetPasswordSteps()) {
 
+      <h1 class="mb-8">Next steps</h1>
+
+      <section>
+        <p>Remember </p>
+        <p class="mb-4 font-semibold">To reset your password, please follow these steps:</p>
+        <ol>
+          <li>1. Check your email for a message from Financia Sphere.</li>
+          <li>2. Click on the password recovery link in the email.</li>
+          <li>3. Enter a new password and confirm it.</li>
+          <li>4. Return to the login page.</li>
+        </ol>
+        <p class="mt-4 text-[var(--negative)]">Note: You have 15 minutes before this request expires.</p>
+      </section>
+      
+      <button
+      (click)="isResetPassword.set(!isResetPassword()); serviceCalled.set(!serviceCalled())"
+      class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center mt-3">
+  
+      <span class="material-symbols-outlined"> 
+        arrow_forward
+      </span>
+      Go to login
+       
+      </button>
+      
+    } @else {
+
+      <h1 class="mb-8">Reset your password</h1>
+
+      <!-- Formulario para resetear la contraseña -->
+      <form [formGroup]="resetPaswordForm" (ngSubmit)="wantResetPassword()">
+
+        <mat-form-field>
+            
+          <mat-label> Enter your email </mat-label>
+          <input matInput placeholder="example@domain.com" formControlName="email" required>
+  
+          @if(resetPaswordForm.get('email')?.hasError('pattern')) {
+  
+            <mat-error> Email is invalid. </mat-error>
+  
+          }
+  
+          @if(resetPaswordForm.get('email')?.hasError('required')) {
+  
+            <mat-error> Email is required. </mat-error>
+  
+          }
+
+        </mat-form-field>
+
+        <!-- Botonera -->
+        <div class="flex justify-end pt-4 border-t border-[var(--component-hover)]">
+
+          <button
+          type="button" 
+          (click)="isResetPassword.set(!isResetPassword())"
+          class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] mr-2">
+      
+          <span class="material-symbols-outlined"> 
+            undo
+          </span>
+          Go to login
+           
+          </button>
+
+          <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] justify-center disabled:opacity-50 disabled:pointer-events-none"
+          type="submit"
+          [disabled]="buttonLoader() || resetPaswordForm.invalid">
+      
+            @if(buttonLoader()) {
+              <span class="material-symbols-outlined"> 
+                <mat-spinner [diameter]="15"></mat-spinner> 
+              </span>
+            } @else {
+              Reset
+            }
+              
+          </button>
+    
+        </div>
+      </form>
+    }
+  </div>
+
+}
