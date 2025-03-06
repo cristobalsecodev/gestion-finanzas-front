@@ -26,6 +26,7 @@ import { Router, RouterLink } from '@angular/router';
 import { allCategories, incomeOrExpenseToEdit } from '../utils/SharedList';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-income-or-expense-form',
@@ -44,6 +45,7 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
     MatDatepickerModule,
     MatSelectModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
     // Pipes
     CurrencySymbolPipe,
     TypeCheckPipe
@@ -53,6 +55,9 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeOrExpenseFormComponent implements OnInit {
+
+  // Loader
+  buttonLoader = signal<boolean>(false)
 
   // Rutas
   incomeExpensesRoute = incomeExpensesRoute
@@ -179,6 +184,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     } else {
 
+      this.selectedType.set('income')
       this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.selectedCurrency())
       this.incomeOrExpenseForm.get('exchangeRate')?.setValue(this.currencyExchangeService.selectedCurrency().exchangeRateToUsd)
 
@@ -363,6 +369,8 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
         }
 
+        this.buttonLoader.set(true)
+
         this.incomeOrExpenseService.saveIncomeOrExpense(saveIncomeOrExpense).subscribe({
 
           next: () => {
@@ -372,7 +380,14 @@ export class IncomeOrExpenseFormComponent implements OnInit {
               'success'
             )
 
+            this.buttonLoader.set(false)
+
             this.router.navigate([this.incomeExpensesRoute])
+
+          },
+          error: () => {
+
+            this.buttonLoader.set(false)
 
           }
 

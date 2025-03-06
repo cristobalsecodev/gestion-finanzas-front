@@ -35,14 +35,14 @@
         <!-- Selector de tipo -->
         <div class="flex justify-center gap-4 mb-6">
           <button 
-          class="secondary-button bg-transparent hover:bg-[var(--positive-hover)]"
+          class="secondary-button bg-transparent hover:bg-[var(--positive-hover)] disabled:opacity-50 disabled:pointer-events-none"
           (click)="onTypeSelection('income')"
           [ngClass]="{ 'badge-income': selectedType() === 'income' }">
             Income
           </button>
     
           <button
-          class="secondary-button bg-transparent hover:bg-[var(--negative-hover)]"
+          class="secondary-button bg-transparent hover:bg-[var(--negative-hover)] disabled:opacity-50 disabled:pointer-events-none"
           (click)="onTypeSelection('expense')"
           [ngClass]="{ 'badge-expense': selectedType() === 'expense' }">
             Expense
@@ -476,20 +476,16 @@
           <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] disabled:opacity-50 disabled:pointer-events-none"
           type="submit"
           (click)="submitForm()"
-          [disabled]="!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid)">
+          [disabled]="(!selectedType() || incomeOrExpenseForm.invalid || (isRecurrence() && recurrenceForm.invalid) || buttonLoader())">
     
-            <span class="material-symbols-outlined">
-    
-              @if(actionType === actionTypes.EDIT) {
-                edit
-              } @else {
-                add
-              }
-    
-            </span>
-            
-            {{ actionType }}    
-            
+            @if(buttonLoader()) {
+              <span class="material-symbols-outlined"> 
+                <mat-spinner [diameter]="15"></mat-spinner> 
+              </span>
+            } @else {
+              {{ actionType }} 
+            }
+
           </button>
           
         </div>

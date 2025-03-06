@@ -1,7 +1,7 @@
-@if(isCreateCategory()) {
+@if(isCreateCategory() && !tableLoader()) {
 
   <!-- Crear categorías -->
-  <form [formGroup]="categoryForm" class="border-t border-[var(--component)] rounded-lg p-4 mt-40 animate-slideDown bg-[var(--component)] shadow-lg max-w-80 place-self-center">
+  <form [formGroup]="categoryForm" class="border-t border-[var(--component)] rounded-lg p-4 md:mt-24 animate-slideDown bg-[var(--component)] shadow-lg max-w-80 place-self-center">
               
     <h4 class="text-sm font-medium text-[var(--text-secondary)] mb-3">Create category</h4>
     

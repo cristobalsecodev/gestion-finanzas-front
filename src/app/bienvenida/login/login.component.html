@@ -98,7 +98,15 @@
         <button type="button"
         (click)="testLogin()"
         class="tertiary-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
-          Test user
+
+          @if(testButtonLoader()) {
+            <span class="material-symbols-outlined"> 
+              <mat-spinner [diameter]="15"></mat-spinner> 
+            </span>
+          } @else {
+            Test user
+          }
+
         </button>
       </div>
   
