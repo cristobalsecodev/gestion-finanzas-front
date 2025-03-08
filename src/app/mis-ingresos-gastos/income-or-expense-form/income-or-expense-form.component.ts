@@ -258,6 +258,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     // Formulario de ingreso / gasto
     this.incomeOrExpenseForm.get('amount')?.setValue(Math.abs(incomeOrExpense.amount))
     this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.currencies().find(currency => currency.currencyCode === incomeOrExpense.currency))
+    this.incomeOrExpenseForm.get('exchangeRate')?.setValue(incomeOrExpense.exchangeRateToUsd)
     this.incomeOrExpenseForm.get('date')?.setValue(incomeOrExpense.transactionDate)
     this.incomeOrExpenseForm.get('notes')?.setValue(incomeOrExpense.notes ? incomeOrExpense.notes : '')
 
