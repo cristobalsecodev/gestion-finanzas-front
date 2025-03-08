@@ -131,7 +131,7 @@ export class IncomeOrExpenseStatisticsComponent {
       category: name,
       amount: data.amount,
       color: data.color
-    }))
+    })).sort((a, b) => b.amount - a.amount)
   }
 
   get incomeWidth(): string {

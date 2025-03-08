@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ActionType } from 'src/app/shared/enums/ActionType.enum';
+import { ActionFormType } from 'src/app/shared/enums/ActionFormType.enum';
 import { MatInputModule } from '@angular/material/input';
 import { BaseCategory, Categories, IncomeOrExpense, RecurrenceDetails } from '../interfaces/IncomeOrExpense.interface';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -69,11 +69,11 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   // Controla el formulario de recurrencia
   isRecurrence = signal(false)
 
-  // Acción del formulario
-  actionType: string = 'Create'
+  // Tipos de acción de formulario
+  actionFormTypes = ActionFormType
 
-  // Tipos de acción
-  readonly actionTypes = ActionType
+  // Acción del formulario
+  actionFormType: string = ActionFormType.CREATE
 
   // Tipos de recurrencia
   readonly recurrenceTypes: string[] = ['daily', 'weekly', 'monthly', 'yearly']
@@ -119,7 +119,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
       date: new FormControl('', [Validators.required]),
 
-      category: new FormControl({value: '', disabled: true}, [Validators.required, Validators.maxLength(50), objectSelectedValidator]),
+      category: new FormControl('', [Validators.required, Validators.maxLength(50), objectSelectedValidator]),
 
       subcategory: new FormControl({value: '', disabled: true}, [Validators.maxLength(50), objectSelectedValidator]),
 
@@ -169,22 +169,23 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
 
     if(allCategories().length === 0) {
 
-      this.getCategories()
+      await this.getCategories()
 
     }
 
     if(this.incomeOrExpenseToEdit()) {
 
-      this.actionType = 'Edit'
+      this.actionFormType = ActionFormType.EDIT
       this.loadForm(this.incomeOrExpenseToEdit()!)
 
     } else {
 
       this.selectedType.set('income')
+      this.onTypeSelection('income')
       this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.selectedCurrency())
       this.incomeOrExpenseForm.get('exchangeRate')?.setValue(this.currencyExchangeService.selectedCurrency().exchangeRateToUsd)
 
@@ -192,14 +193,22 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   }
 
-  getCategories(): void {
+  getCategories(): Promise<void> {
 
-    this.categoriesService.getCategories(true).subscribe({
-      next: (categories) => {
+    return new Promise((resolve, reject) => {
 
-        allCategories.set(categories) 
+      this.categoriesService.getCategories(true).subscribe({
+        next: (categories) => {
 
-      }
+          allCategories.set(categories) 
+          resolve()
+
+        },
+        error: () => {
+          reject()
+        }
+      })
+
     })
 
   }
@@ -213,10 +222,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     this.filteredCategories = categoriesFiltered ?? []
 
-    // Habilita el form de categoría en caso de que existan con el mismo tipo
-    if (this.filteredCategories.length > 0) {
+    if(this.filteredCategories.length === 0) {
 
-      this.incomeOrExpenseForm.get('category')?.enable()
+      this.notificationsService.addNotification(`No categories of type '${this.selectedType()}' are available. Try creating a new one`, 'warning')
 
     }
 
@@ -248,7 +256,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     this.isRecurrence.set(!!incomeOrExpense.recurrenceDetails)
 
     // Formulario de ingreso / gasto
-    this.incomeOrExpenseForm.get('amount')?.setValue(incomeOrExpense.amount)
+    this.incomeOrExpenseForm.get('amount')?.setValue(Math.abs(incomeOrExpense.amount))
     this.incomeOrExpenseForm.get('currency')?.setValue(this.currencyExchangeService.currencies().find(currency => currency.currencyCode === incomeOrExpense.currency))
     this.incomeOrExpenseForm.get('date')?.setValue(incomeOrExpense.transactionDate)
     this.incomeOrExpenseForm.get('notes')?.setValue(incomeOrExpense.notes ? incomeOrExpense.notes : '')
@@ -301,7 +309,6 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   resetCategory(): void {
 
     // Reseta el form
-    this.incomeOrExpenseForm.get('category')?.disable()
     this.incomeOrExpenseForm.get('category')?.reset()
 
     // Vacía la lista filtrada
@@ -354,46 +361,56 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
     if(this.shouldSaveIncomeOrExpense()) {
 
-        let saveIncomeOrExpense: IncomeOrExpense = {
+      let saveIncomeOrExpense: IncomeOrExpense = {
 
-          id: this.incomeOrExpenseToEdit() ? this.incomeOrExpenseToEdit()!.id : undefined,
-          amount: this.selectedType() === 'expense' ? Number(-this.incomeOrExpenseForm.get('amount')?.value) : Number(this.incomeOrExpenseForm.get('amount')?.value),
-          category: this.incomeOrExpenseForm.get('category')?.value,
-          currency: this.incomeOrExpenseForm.get('currency')?.value.currencyCode,
-          exchangeRateToUsd: this.incomeOrExpenseForm.get('exchangeRate')?.value,
-          transactionDate: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
-          type: this.selectedType()!,
-          notes: this.incomeOrExpenseForm.get('notes')?.value,
-          subcategory: this.incomeOrExpenseForm.get('subcategory')?.value ? this.incomeOrExpenseForm.get('subcategory')?.value : undefined,
-          ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    
+        id: this.incomeOrExpenseToEdit() ? this.incomeOrExpenseToEdit()!.id : undefined,
+        amount: this.selectedType() === 'expense' ? Number(-this.incomeOrExpenseForm.get('amount')?.value) : Number(this.incomeOrExpenseForm.get('amount')?.value),
+        category: this.incomeOrExpenseForm.get('category')?.value,
+        currency: this.incomeOrExpenseForm.get('currency')?.value.currencyCode,
+        exchangeRateToUsd: this.incomeOrExpenseForm.get('exchangeRate')?.value,
+        transactionDate: moment(this.incomeOrExpenseForm.get('date')?.value).format('YYYY-MM-DD'),
+        type: this.selectedType()!,
+        notes: this.incomeOrExpenseForm.get('notes')?.value,
+        subcategory: this.incomeOrExpenseForm.get('subcategory')?.value ? this.incomeOrExpenseForm.get('subcategory')?.value : undefined,
+        ...(this.isRecurrence() && { recurrenceDetails: this.buildRecurrenceDetails() })    
+
+      }
+
+      this.buttonLoader.set(true)
+
+      this.incomeOrExpenseService.saveIncomeOrExpense(saveIncomeOrExpense).subscribe({
+
+        next: () => {
+
+          this.notificationsService.addNotification(
+            `${capitalizeString(saveIncomeOrExpense.type)} saved`, 
+            'success'
+          )
+
+          this.buttonLoader.set(false)
+
+          this.router.navigate([this.incomeExpensesRoute])
+
+        },
+        error: () => {
+
+          this.buttonLoader.set(false)
 
         }
 
-        this.buttonLoader.set(true)
-
-        this.incomeOrExpenseService.saveIncomeOrExpense(saveIncomeOrExpense).subscribe({
-
-          next: () => {
-
-            this.notificationsService.addNotification(
-              `${capitalizeString(saveIncomeOrExpense.type)} saved`, 
-              'success'
-            )
-
-            this.buttonLoader.set(false)
-
-            this.router.navigate([this.incomeExpensesRoute])
-
-          },
-          error: () => {
-
-            this.buttonLoader.set(false)
-
-          }
-
-        })
+      })
 
     }
+
+  }
+
+  goToCreateCategory(): void {
+
+    this.router.navigate([categoriesRoute], {
+      queryParams: {
+        fromRequest: 'transactionForm'
+      }
+    })
 
   }
 
@@ -456,7 +473,7 @@ export class IncomeOrExpenseFormComponent implements OnInit {
     
     if (isUSD) {
 
-      // tar si no está ya deshabilitado
+      // Habilitar si no está ya deshabilitado
       if (exchangeRateControl?.enabled) {
         exchangeRateControl.disable()
       }

@@ -1,5 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,6 +22,7 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
     ReactiveFormsModule,
     // Angular material
     MatFormFieldModule,
+    MatButtonModule,
     MatIconModule,
     MatInputModule,
     MatTooltipModule,

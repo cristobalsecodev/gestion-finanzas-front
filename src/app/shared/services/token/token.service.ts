@@ -66,9 +66,7 @@ export class TokenService {
   // Checkea el token
   checkTokenValidity(): void {
 
-    const timeRemaining = this.calculateTokenTimeExp()
-
-    const isValid = timeRemaining > 0
+    const isValid = this.isAuthenticated()
 
     if(!isValid) {
 

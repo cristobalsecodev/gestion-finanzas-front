@@ -1,4 +1,4 @@
-export enum ActionType {
+export enum ActionFormType {
   
   CREATE = 'Create',
   EDIT = 'Edit',

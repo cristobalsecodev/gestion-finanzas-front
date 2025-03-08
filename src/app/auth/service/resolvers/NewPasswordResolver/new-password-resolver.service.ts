@@ -21,9 +21,8 @@ export class NewPasswordResolverService {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
 
     // Recuperamos la url completa con el token de url
-    const urlParts: string[] = this.storageService.getFullUrl().split('/')
-    const urlToken = urlParts.pop() || ''
-
+    const urlToken: string = route.paramMap.get('urlToken') || ''
+    
     return this.authService.checkOneTimeUrl(urlToken).pipe(
       map((response) => {
 

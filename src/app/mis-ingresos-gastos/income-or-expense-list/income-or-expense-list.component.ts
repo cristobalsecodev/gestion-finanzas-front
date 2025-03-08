@@ -9,7 +9,6 @@ import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amoun
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { BaseCategory, Categories, IncomeOrExpense } from '../interfaces/IncomeOrExpense.interface';
-import { ActionType } from 'src/app/shared/enums/ActionType.enum';
 import { IncomeOrExpenseService } from '../services/IncomeOrExpense/income-or-expense.service';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
@@ -105,9 +104,6 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   // ID registro seleccionado
   selectedRecordId: number | null = null
-
-  // Tipos de acciones
-  readonly actionType = ActionType
 
   // Servicios
   currencyExchangeService = inject(CurrencyExchangeService)
@@ -572,7 +568,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
     const unit = frequency === 1 ? recurrence.singular : recurrence.plural
 
-    return `Every ${frequency} ${unit}.`
+    return `Every ${frequency} ${unit}`
 
   }
 

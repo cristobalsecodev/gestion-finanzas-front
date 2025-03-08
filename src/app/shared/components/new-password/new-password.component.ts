@@ -1,7 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { passwordMatchValidator } from '../../functions/Validators';
@@ -10,9 +8,10 @@ import { AuthService } from 'src/app/auth/service/auth.service';
 import { StorageService } from '../../services/Storage/storage.service';
 import { ResetPassword } from 'src/app/auth/interfaces/ResetPassword.interface';
 import { loginRoute } from '../../constants/variables.constants';
-import { Router, RouterLink } from '@angular/router';
-import { NotificacionesService } from '../../services/Notifications/notificaciones.service';
-import { DetailError } from '../../interfaces/DetailError.interface';
+import { RouterLink } from '@angular/router';
+import { PasswordStrengthService } from '../../services/PasswordStrength/password-strength.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-new-password',
@@ -22,16 +21,19 @@ import { DetailError } from '../../interfaces/DetailError.interface';
     ReactiveFormsModule,
     RouterLink,
     // Angular material
-    MatCardModule,
     MatFormFieldModule,
-    MatIconModule,
     MatButtonModule,
-    MatInputModule
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './new-password.component.html',
   styleUrl: './new-password.component.scss'
 })
-export class NewPasswordComponent implements OnInit {
+export class NewPasswordComponent {
+
+  // Loader
+  buttonLoader = signal<boolean>(false)
 
   // Oculta o muestra el tipado de la contraseña
   hidePassword = signal(true)
@@ -44,12 +46,10 @@ export class NewPasswordComponent implements OnInit {
 
   form!: FormGroup
 
-
   constructor(
     private authService: AuthService,
     private storageService: StorageService,
-    private notificationService: NotificacionesService,
-    private router: Router
+    private passwordStrengthService: PasswordStrengthService
   ) {
 
     this.form = new FormGroup({
@@ -58,28 +58,6 @@ export class NewPasswordComponent implements OnInit {
       passwordConfirm: new FormControl('', [Validators.required])
 
     }, passwordMatchValidator)
-
-  }
-  
-  ngOnInit(): void {
-
-    // Recuperamos la url completa con el token de url
-    // const urlParts: string[] = this.storageService.getFullUrl().split('/')
-
-    // const urlToken = urlParts.pop() || ''
-
-    // this.authService.checkOneTimeUrl(urlToken).subscribe({
-    //   next: (response) => {
-
-    //     this.notificationService.addNotification(response.message, 'success')
-
-    //   },
-    //   error: () => {
-
-    //     this.router.navigate([loginRoute])
-
-    //   }
-    // }) 
 
   }
 
@@ -94,17 +72,28 @@ export class NewPasswordComponent implements OnInit {
 
       }
 
+      this.buttonLoader.set(true)
+
       this.authService.resetPassword(resetPassword).subscribe({
         next:() => {
 
           this.serviceCalled.set(!this.serviceCalled())
 
+          this.buttonLoader.set(false)
+
+        },
+        error: () => {
+          this.buttonLoader.set(false)
         }
       })
 
     }
 
-    
+  }
+
+  passwordStrength(): void {
+
+    this.passwordStrengthService.passwordStrength('passwordStrengthNewPassword', this.form.get('password')?.value)
 
   }
 }

@@ -17,9 +17,10 @@ import { NotificacionesService } from 'src/app/shared/services/Notifications/not
 import { CommonModule } from '@angular/common';
 import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
-import { incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { incomeExpensesFormRoute, incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
 import { ActionDialogService, ActionType } from 'src/app/shared/services/Dialogs/action-dialog.service';
+import { ActionFormType } from 'src/app/shared/enums/ActionFormType.enum';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -83,6 +84,8 @@ export class CategoriesSubcategoriesFormComponent {
   categoriesService = inject(CategoriesAndSubCategoriesService)
   private dialog = inject(ActionDialogService)
   notificationsService = inject(NotificacionesService)
+  private route = inject(ActivatedRoute)
+  private router = inject(Router)
 
   // Avisos formulario
   typeMessage: string = 'Type is required.'
@@ -95,6 +98,9 @@ export class CategoriesSubcategoriesFormComponent {
 
   // Acciones de modal
   actionType = ActionType
+
+  // Parámetro de query opcional
+  paramFromRequest: string | undefined
 
   // Función para capitalizar strings
   capitalize = capitalizeString
@@ -118,6 +124,17 @@ export class CategoriesSubcategoriesFormComponent {
   }
 
   ngOnInit(): void {
+
+    this.route.queryParamMap.subscribe(params => {
+
+      this.paramFromRequest = params.get('fromRequest') || undefined
+
+      if(this.checkTransactionParamRequest()) {
+        this.isCreateCategory.set(true)
+      }
+
+    })
+
 
     this.tableLoader.set(true)
 
@@ -177,10 +194,18 @@ export class CategoriesSubcategoriesFormComponent {
 
   resetCreateCategory(): void {
 
-    this.isCreateCategory.set(false)
+    if(this.checkTransactionParamRequest()) {
 
-    this.categoryForm.reset()
-    this.selectedType = undefined
+      this.router.navigate([incomeExpensesFormRoute])
+      
+    } else {
+      
+      this.isCreateCategory.set(false)
+  
+      this.categoryForm.reset()
+      this.selectedType = undefined
+
+    }
 
   }
 
@@ -269,19 +294,28 @@ export class CategoriesSubcategoriesFormComponent {
     this.categoriesService.saveCategory(categoryToSave).subscribe({
       next: (category: Categories) => {
 
-        if(index !== undefined) {
+        if(this.checkTransactionParamRequest()) {
 
-          const indexCategories = this.categories.findIndex(category => category.id === categoryToSave.id)
-          this.categories[indexCategories] = category
-          this.filteredCategories[index] = category
+          this.router.navigate([incomeExpensesFormRoute])
 
         } else {
 
-          this.categories.push(category)
+          if(index !== undefined) {
+  
+            const indexCategories = this.categories.findIndex(category => category.id === categoryToSave.id)
+            this.categories[indexCategories] = category
+  
+          } else {
+  
+            this.categories.push(category)
+
+          }
+
+          this.filterSearch()
 
         }
 
-        this.showNotificationMessage('Category updated')
+        this.showNotificationMessage('Category saved')
 
       }
     })
@@ -309,7 +343,7 @@ export class CategoriesSubcategoriesFormComponent {
     }
   
     const index = this.editingCategory.subcategories.findIndex(
-      (subcategory) => subcategory.id === this.editingSubcategory!.id || subcategory.name === this.editingSubcategory!.name
+      (subcategory) => subcategory.id === this.editingSubcategory!.id
     )
   
     if (index !== -1) {
@@ -463,6 +497,12 @@ export class CategoriesSubcategoriesFormComponent {
       message, 
       'success'
     )
+
+  }
+
+  private checkTransactionParamRequest(): boolean {
+
+    return this.paramFromRequest === 'transactionForm'
 
   }
 

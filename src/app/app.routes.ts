@@ -30,7 +30,7 @@ export const routes: Routes = [
     resolve: { auth: AuthResolverService }
   },
   {
-    path: `${newPasswordRoute}/:urlToken`, 
+    path: `${newPasswordRoute}/:urlToken`,
     component: NewPasswordComponent,
     resolve: { auth: NewPasswordResolverService }
   },

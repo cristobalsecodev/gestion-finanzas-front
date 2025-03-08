@@ -23,7 +23,7 @@
     <!-- Cabecera -->
     <div class="p-5 border-b border-[var(--component-hover)]">
   
-      <h1 class="text-2xl font-medium">{{ actionType }} {{ selectedType() ? selectedType() : 'income or expense' }}</h1>
+      <h1 class="text-2xl font-medium">{{ actionFormType }} {{ selectedType() ? selectedType() : 'income or expense' }}</h1>
   
     </div>
   
@@ -35,14 +35,14 @@
         <!-- Selector de tipo -->
         <div class="flex justify-center gap-4 mb-6">
           <button 
-          class="secondary-button bg-transparent hover:bg-[var(--positive-hover)] disabled:opacity-50 disabled:pointer-events-none"
+          class="secondary-button bg-transparent hover:bg-[var(--positive-hover)]"
           (click)="onTypeSelection('income')"
           [ngClass]="{ 'badge-income': selectedType() === 'income' }">
             Income
           </button>
     
           <button
-          class="secondary-button bg-transparent hover:bg-[var(--negative-hover)] disabled:opacity-50 disabled:pointer-events-none"
+          class="secondary-button bg-transparent hover:bg-[var(--negative-hover)]"
           (click)="onTypeSelection('expense')"
           [ngClass]="{ 'badge-expense': selectedType() === 'expense' }">
             Expense
@@ -76,9 +76,7 @@
           </mat-form-field>
         
           <!-- Categoría -->
-          <mat-form-field
-          matTooltip="Please select a type first"
-          [matTooltipDisabled]="incomeOrExpenseForm.get('category')?.enabled">
+          <mat-form-field>
   
             <mat-label>Category</mat-label>
     
@@ -102,6 +100,13 @@
               }
     
             </mat-autocomplete>
+
+            <mat-icon matIconPrefix
+            class="cursor-pointer"
+            matTooltip="Create a category"
+            (click)="goToCreateCategory()">
+              add
+            </mat-icon>
     
             @if(categories.length > 0) {
     
@@ -109,7 +114,7 @@
               matTooltip="Choose the category that best describes the {{ selectedType() ? selectedType() : 'income or expense' }}">
                 info
               </mat-icon>
-    
+
             }
     
             @if(incomeOrExpenseForm.get('category')?.hasError('required')) {
@@ -308,9 +313,9 @@
           <mat-slide-toggle
           [checked]="isRecurrence()"
           (change)="isRecurrence.set(!isRecurrence())"
-          [disabled]="actionType === actionTypes.EDIT"
+          [disabled]="actionFormType === actionFormTypes.EDIT"
           matTooltip="You cannot edit the recurrence"
-          [matTooltipDisabled]="actionType !== actionTypes.EDIT">
+          [matTooltipDisabled]="actionFormType !== actionFormTypes.EDIT">
             <span class="ml-2">In case your {{ selectedType() || 'income or expense' }} entry is recurring. (Note: The recurrence starts from the date selected above.)</span>
           </mat-slide-toggle>
         
@@ -483,7 +488,7 @@
                 <mat-spinner [diameter]="15"></mat-spinner> 
               </span>
             } @else {
-              {{ actionType }} 
+              {{ actionFormType }} 
             }
 
           </button>

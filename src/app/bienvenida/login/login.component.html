@@ -97,7 +97,7 @@
         </button>
         <button type="button"
         (click)="testLogin()"
-        class="tertiary-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
+        class="tertiary-button test-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
 
           @if(testButtonLoader()) {
             <span class="material-symbols-outlined"> 
@@ -110,7 +110,7 @@
         </button>
       </div>
   
-      <button 
+      <button type="button"
       (click)="isResetPassword.set(!isResetPassword())"
       class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] place-self-center mt-5">
         <span class="material-symbols-outlined">lock_reset</span>

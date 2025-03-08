@@ -235,7 +235,7 @@
     <div class="flex flex-col gap-3 border-t border-[var(--component-hover)] p-4">
 
       <div 
-      matTooltip="Add a category first"
+      matTooltip="Add at least one category"
       [matTooltipDisabled]="categories.length !== 0">
         <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center disabled:opacity-50 disabled:pointer-events-none"
         (click)="newTransaction()"
@@ -385,7 +385,7 @@
                           Recurrence type
                         </div>
                         <div class="text-sm">
-                          {{ record.recurrenceDetails.recurrenceType }}
+                          {{ capitalize(record.recurrenceDetails.recurrenceType) }}
                         </div>
                       </div>
     

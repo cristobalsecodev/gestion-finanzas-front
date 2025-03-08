@@ -14,5 +14,6 @@ export const signUpRoute = 'sign-up'
 export const activateAccountRoute = 'activate-account'
 export const newPasswordRoute = 'new-password'
 
-// Rutas de servicio
+// Rutas del back a excluir
 export const authRoute = 'auth'
+export const currenciesRoute = 'currency-exchange-ratio'

@@ -20,7 +20,7 @@ import { TokenService } from './shared/services/token/token.service';
 import packageJson from '../../package.json'
 import { CurrencyExchange } from './shared/services/CurrencyExchange/CurrencyExchange.interface';
 import { ActionDialogService } from './shared/services/Dialogs/action-dialog.service';
-import { incomeOrExpenseToEdit } from './mis-ingresos-gastos/utils/SharedList';
+import { allTransactions, incomeOrExpenseToEdit } from './mis-ingresos-gastos/utils/SharedList';
 
 @Component({
   selector: 'app-root',
@@ -98,6 +98,12 @@ export class AppComponent implements OnInit {
           if(!this.currentUrl().includes(incomeExpensesFormRoute)) {
 
             incomeOrExpenseToEdit.set(undefined)
+
+          }
+
+          if(!this.currentUrl().includes(incomeExpensesRoute)) {
+
+            allTransactions.set([])
 
           }
 

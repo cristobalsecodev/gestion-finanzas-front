@@ -13,6 +13,7 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { PasswordStrengthService } from 'src/app/shared/services/PasswordStrength/password-strength.service';
 
 @Component({
   selector: 'app-create-account',
@@ -46,7 +47,8 @@ export class CreateAccountComponent {
 
   constructor(
     private authService: AuthService,
-    private storageervice: StorageService
+    private storageervice: StorageService,
+    private passwordStrengthService: PasswordStrengthService
   ) {
 
     this.signUpForm = new FormGroup({
@@ -136,36 +138,7 @@ export class CreateAccountComponent {
 
   passwordStrength(): void {
 
-    const passwordStrengthElement = this.storageervice.documentElementById('passwordStrength')
+    this.passwordStrengthService.passwordStrength('passwordStrengthCreateAccount', this.signUpForm.get('password')?.value)
 
-    if(passwordStrengthElement) {
-
-      const password: string = this.signUpForm.get('password')?.value
-      let strength: number = 0
-  
-      // Más de 8 caracteres
-      if (password.length >= 8) strength += 20
-      // Al menos una minúscula
-      if (password.match(/[a-z]+/)) strength += 20
-      // Al menos una mayúscula
-      if (password.match(/[A-Z]+/)) strength += 20
-      // Al menos un número
-      if (password.match(/[0-9]+/)) strength += 20
-      // Al menos un caracter raro
-      if (password.match(/[^a-zA-Z0-9]/)) strength += 20
-  
-      passwordStrengthElement.style.width = strength + '%'
-
-      if (strength < 40) {
-        passwordStrengthElement.style.backgroundColor = '#ef4444';
-      } else if (strength < 60) {
-        passwordStrengthElement.style.backgroundColor = '#f59e0b';
-      } else if(strength < 80) {
-        passwordStrengthElement.style.backgroundColor = '#10b981';
-      } else {
-        passwordStrengthElement.style.backgroundColor = '#00a550';
-      }
-
-    }
   }
 }
