@@ -48,7 +48,7 @@
         <div class="flex items-center text-lg">
           <h2 class="mr-2">Total balance:</h2>
           <div [ngStyle]="{'color': sumIncome - sumExpense >= 0 ? 'var(--positive)' : 'var(--negative)'}">
-            {{ sumIncome - sumExpense >= 0 ? '+' : '-' }}{{ sumIncome - sumExpense }} {{ 0 | currencySymbol: selectedCurrency.currencyCode }}
+            {{ sumIncome - sumExpense >= 0 ? '+' : '' }}{{ sumIncome - sumExpense }} {{ 0 | currencySymbol: selectedCurrency.currencyCode }}
           </div>
         </div>
 
