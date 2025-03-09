@@ -2,7 +2,7 @@
 <div>
   <div class="bg-[var(--component)] rounded-lg shadow-lg mb-6">
     <div class="p-4">
-      <div class="relative flex justify-between mb-4">
+      <div class="relative md:flex md:justify-between place-items-center mb-4">
 
         <button id="graphics-button-dropdown" 
         class="secondary-button bg-[var(--component-hover)] hover:bg-[var(--secondary-component-hover)] disabled:opacity-50 disabled:pointer-events-none text-base"
@@ -45,7 +45,7 @@
 
         </div>
 
-        <div class="flex items-center text-lg">
+        <div class="flex items-center text-lg mt-4 md:mt-0">
           <h2 class="mr-2">Total balance:</h2>
           <div [ngStyle]="{'color': sumIncome - sumExpense >= 0 ? 'var(--positive)' : 'var(--negative)'}">
             {{ sumIncome - sumExpense >= 0 ? '+' : '' }}{{ sumIncome - sumExpense }} {{ 0 | currencySymbol: selectedCurrency.currencyCode }}
