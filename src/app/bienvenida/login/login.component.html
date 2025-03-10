@@ -1,11 +1,11 @@
 @if(!isResetPassword()) {
 
-  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg place-self-center animate-slideDown">
+  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg mx-auto my-auto animate-slideDown">
   
     <div class="mb-8 text-center">
   
       <div class="w-12 h-12 inline-flex items-center justify-center bg-[var(--primary)] rounded-md font-bold mb-2">
-        F
+        <span class="text-[#f1f5f9]">F</span>
       </div>
       <h1>Financia Sphere</h1>
       <p class="text-[var(--text-secondary)] mt-1">Manage your income and expenses efficiently</p>
@@ -97,7 +97,8 @@
         </button>
         <button type="button"
         (click)="testLogin()"
-        class="tertiary-button test-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5">
+        class="tertiary-button test-button !block bg-[var(--component-hover)] hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] rounded-md flex-1 w-full py-2.5"
+        [disabled]="testButtonLoader()">
 
           @if(testButtonLoader()) {
             <span class="material-symbols-outlined"> 
@@ -112,7 +113,7 @@
   
       <button type="button"
       (click)="isResetPassword.set(!isResetPassword())"
-      class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] place-self-center mt-5">
+      class="secondary-button bg-transparent hover:bg-[var(--secondary-component-hover)] text-[var(--secondary)] mx-auto my-auto mt-5">
         <span class="material-symbols-outlined">lock_reset</span>
         <span>Forgot your password?</span>
       </button>
@@ -124,7 +125,7 @@
 
 } @else {
 
-  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg place-self-center animate-slideDown">
+  <div class="w-full border-t border-[var(--component)] rounded-lg p-7 md:mt-24 bg-[var(--component)] max-w-sm shadow-lg mx-auto my-auto animate-slideDown">
 
     @if(resetPasswordSteps()) {
 

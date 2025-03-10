@@ -56,8 +56,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class IncomeOrExpenseFormComponent implements OnInit {
 
-  // Loader
+  // Loaders
   buttonLoader = signal<boolean>(false)
+  categoriesLoader = signal<boolean>(false)
 
   // Rutas
   incomeExpensesRoute = incomeExpensesRoute
@@ -171,8 +172,9 @@ export class IncomeOrExpenseFormComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
 
-    if(allCategories().length === 0) {
+    if(this.categories().length === 0) {
 
+      this.categoriesLoader.set(true)
       await this.getCategories()
 
     }
@@ -200,11 +202,14 @@ export class IncomeOrExpenseFormComponent implements OnInit {
       this.categoriesService.getCategories(true).subscribe({
         next: (categories) => {
 
-          allCategories.set(categories) 
+          allCategories.set(categories)
+          this.categoriesLoader.set(false)
+
           resolve()
 
         },
         error: () => {
+          this.categoriesLoader.set(false)
           reject()
         }
       })
@@ -406,6 +411,8 @@ export class IncomeOrExpenseFormComponent implements OnInit {
   }
 
   goToCreateCategory(): void {
+
+    allCategories.set([])
 
     this.router.navigate([categoriesRoute], {
       queryParams: {

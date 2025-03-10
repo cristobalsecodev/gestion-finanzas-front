@@ -13,11 +13,9 @@
   }
 }
 
-// Lista con scroll independeinte
+// Lista con scroll independiente
 app-income-or-expense-list {
   overflow-y: auto;
-  max-height: 100vh;
-  padding-right: 5px;
 }
 
 // Estadísticas debe estar estático
@@ -26,11 +24,9 @@ app-income-or-expense-statistics {
   top: 0;
 }
 
-// Personaliza las barras de desplazamiento
-
+// Personalización los scroll bars
 app-income-or-expense-list::-webkit-scrollbar {
   width: 8px;
-  
 }
 
 app-income-or-expense-list::-webkit-scrollbar-track {

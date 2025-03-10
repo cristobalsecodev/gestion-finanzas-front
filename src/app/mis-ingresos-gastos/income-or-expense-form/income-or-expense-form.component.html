@@ -1,24 +1,34 @@
 @if(categories().length === 0) {
 
-  <div class="bg-[var(--component)] max-w-4xl rounded-lg p-8 text-center flex flex-col items-center place-self-center justify-center gap-4 col-span-full">
+  <div class="bg-[var(--component)] max-w-4xl rounded-lg p-8 text-center flex flex-col items-center mx-auto my-auto justify-center gap-4 col-span-full">
+
+    @if(categoriesLoader()) {
+
+      <div class="place-items-center p-3">
+        <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+    } @else {
+
+      <span class="material-symbols-outlined animate-pulse text-3xl">priority_high</span>
+
+      <p class="text-base m-0 text-[var(--text-secondary)]">
+        You have no categories. Please create or enable at least one before adding a transaction.
+      </p>
   
-    <span class="material-symbols-outlined animate-pulse text-3xl">priority_high</span>
+      <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center"
+      [routerLink]="['/' + categoriesRoute]">
+        <span class="material-symbols-outlined">arrow_forward</span>
+          Go to categories
+      </button>
 
-    <p class="text-base m-0 text-[var(--text-secondary)]">
-      You have no categories. Please create or enable at least one before adding a transaction.
-    </p>
-
-    <button class="primary-button bg-[var(--primary)] hover:bg-[var(--primary-hover)] w-full justify-center"
-    [routerLink]="['/' + categoriesRoute]">
-      <span class="material-symbols-outlined">arrow_forward</span>
-        Go to categories
-    </button>
-
+    }
+  
   </div>
 
 } @else {
   
-  <div class="border-t border-[var(--component)] rounded-lg p-4 mt-24 bg-[var(--component)] max-w-4xl shadow-lg place-self-center">
+  <div class="border-t border-[var(--component)] rounded-lg p-4 mt-24 bg-[var(--component)] max-w-4xl shadow-lg mx-auto my-auto">
   
     <!-- Cabecera -->
     <div class="p-5 border-b border-[var(--component-hover)]">
@@ -405,7 +415,7 @@
   
                   @if(recurrenceForm.get('endDate')?.value) {
   
-                    <mat-icon class="cursor-pointer ml-2 place-self-center"
+                    <mat-icon class="cursor-pointer ml-2 mx-auto my-auto"
                     (click)="recurrenceForm.get('endDate')?.setValue(null)">
                       close
                     </mat-icon>

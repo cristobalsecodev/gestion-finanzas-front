@@ -1,7 +1,9 @@
 # Gestión de Finanzas - Frontend
 
+### Echa un vistazo a la aplicación: https://gestion-finanzas-front.vercel.app
+
 ## Descripción
-Gestión de Finanzas es una aplicación web diseñada para ayudar a los usuarios a administrar sus ingresos y gastos de manera eficiente. Permite la categorización de transacciones y el uso de múltiples divisas, ofreciendo una visión clara de las finanzas personales a través de gráficos interactivos.
+Gestión de Finanzas es una aplicación web diseñada para ayudar a los usuarios a administrar sus ingresos y gastos. Permite la categorización de transacciones y el uso de múltiples divisas, ofreciendo una visión clara de las finanzas personales a través de gráficos interactivos.
 
 ## Funcionalidades Principales
 - **Gestión de Ingresos y Gastos**: Registra y administra ingresos y gastos en diversas divisas.
@@ -16,7 +18,6 @@ Gestión de Finanzas es una aplicación web diseñada para ayudar a los usuarios
 - **Angular 18** (Framework principal del frontend)
 - **TypeScript** (Lenguaje de programación)
 - **Tailwind** (Estilización y diseño responsivo)
-- **Highcharts** (Librería dedicada a los gráficos)
 - **Vercel** (Plataforma de despliegue)
 
 ## 🚀 Instalación y Uso

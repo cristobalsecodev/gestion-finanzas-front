@@ -44,6 +44,8 @@ export class DonutChartComponent {
   private innerRadius!: number
   private total = 0
 
+  private isHoverActive: boolean = false
+
   constructor(
     private currencySymbolPipe: CurrencySymbolPipe,
     private formatThousandSeparatorsPipe: FormatThousandSeparatorsPipe
@@ -119,7 +121,7 @@ export class DonutChartComponent {
   
   calculatePercentage(amount: number): string {
     
-    return ((amount / this.total) * 100).toFixed(1)
+    return ((amount / this.total) * 100).toFixed(2)
 
   }
   
@@ -224,17 +226,24 @@ export class DonutChartComponent {
       centerText.setAttribute('fill', 'var(--text-primary)') // Color del texto (gris oscuro)
       centerText.setAttribute('y', '-10') // Mover un poco hacia arriba
       g.appendChild(centerText)
-  
+
       // Suma total del centro
+      const totalAmount = `${this.formatThousandSeparatorsPipe.transform(this.total)} ${this.currencySymbolPipe.transform(0, this.currencyCode)}`
       const totalText = document.createElementNS(svgns, 'text')
+
+      if(totalAmount.length >= 18) {
+        totalText.setAttribute('font-size', '12px')
+      } else {
+        totalText.setAttribute('font-size', '18px')
+      }
+
       totalText.setAttribute('text-anchor', 'middle')
       totalText.setAttribute('dominant-baseline', 'middle')
-      totalText.setAttribute('font-size', '18px')
       totalText.setAttribute('font-weight', 'bold')
       totalText.setAttribute('y', '30')
-      totalText.setAttribute('fill', 'var(--text-primary)') // Color del texto
-      totalText.setAttribute('y', '20') // Distancia reducida
-      totalText.textContent = `${this.formatThousandSeparatorsPipe.transform(this.total)} ${this.currencySymbolPipe.transform(0, this.currencyCode)}`
+      totalText.setAttribute('fill', 'var(--text-primary)')
+      totalText.setAttribute('y', '20')
+      totalText.textContent = totalAmount
   
       g.appendChild(totalText)
   
@@ -244,19 +253,16 @@ export class DonutChartComponent {
   
   private addTooltipEvents(path: SVGPathElement, item: DonutChartData): void {
 
-    // Variable para controlar el estado
-    let isHovering = false
-    
     path.addEventListener('mouseover', (e) => {
 
-      isHovering = true
+      this.isHoverActive = true
       
       // Obtener posición
       const mouseX = (e as MouseEvent).clientX
       const mouseY = (e as MouseEvent).clientY
       
       // Calcular porcentaje
-      const percentage = ((item.amount / this.total) * 100).toFixed(1)
+      const percentage = ((item.amount / this.total) * 100).toFixed(2)
       
       // Mejorar el contenido del tooltip
       this.tooltip.innerHTML = `
@@ -318,7 +324,7 @@ export class DonutChartComponent {
     
     path.addEventListener('mousemove', (e) => {
 
-      if (!isHovering) return
+      if (!this.isHoverActive) return
       
       const mouseX = (e as MouseEvent).clientX
       const mouseY = (e as MouseEvent).clientY
@@ -354,25 +360,40 @@ export class DonutChartComponent {
 
     })
     
-    path.addEventListener('mouseout', () => {
+    path.addEventListener('mouseout', (e) => {
 
-      isHovering = false
-      
-      // Ocultar tooltip
-      this.tooltip.style.opacity = '0'
-      
-      // Restaurar segmento a estado normal
-      path.classList.remove('active-segment')
-      path.style.filter = ''
-      path.style.stroke = ''
-      path.style.strokeWidth = ''
-      
-      // Ocultar después de la transición
       setTimeout(() => {
-        if (!isHovering) {
-          this.tooltip.style.display = 'none'
+
+        // Comprobar si el ratón está sobre otro segmento del gráfico
+        const newTarget = document.elementFromPoint(e.clientX, e.clientY)
+
+        const isOverAnotherSegment = newTarget && 
+          (newTarget.tagName.toLowerCase() === 'path') && 
+          (newTarget !== path) &&
+          (newTarget.parentElement === path.parentElement)
+        
+        // Si no estamos sobre otro segmento, ocultar el tooltip
+        if (!isOverAnotherSegment) {
+
+          this.isHoverActive = false
+          this.tooltip.style.opacity = '0'
+          
+          path.classList.remove('active-segment')
+          path.style.filter = ''
+          path.style.stroke = ''
+          path.style.strokeWidth = ''
+
+          setTimeout(() => {
+
+            if (!this.isHoverActive) {
+              this.tooltip.style.display = 'none'
+            }
+
+          }, 200)
+
         }
-      }, 200);
+      }, 10)
+
     });
   }
 }

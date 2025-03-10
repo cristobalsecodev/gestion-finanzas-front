@@ -16,35 +16,9 @@ $custom-theme: mat.define-theme((
 ));
 
 html {
-  /* Angular material */
-  --mat-full-pseudo-checkbox-selected-icon-color: #2563eb;
-  --mdc-checkbox-selected-icon-color: #2563eb;
-  --mdc-checkbox-selected-hover-icon-color: #2563EB1A;
-
-  --mat-option-selected-state-layer-color: #2563EB1A;
-  --mat-option-selected-state-label-text-color: #2563eb;
-  --mat-select-panel-background-color: #f8fafc;
-
-  --mat-select-trigger-text-size: 0.875rem;
-  --mat-form-field-container-text-size: 0.875rem;
-
-  --sys-surface-variant: #e2e8f0;
-  --sys-on-error-container: #b91c1c;
-  --sys-on-secondary-container: #1e293b;
-  --sys-error: #ef4444;
-  --sys-on-surface: #1e293b;
-
-  --sys-surface-container: #f8fafc;
-  --sys-surface-container-high: #f1f5f9;
-  --sys-on-surface-variant: #64748b;
-  --sys-on-primary-container: #ffffff;
-  --sys-primary-container: #60a5fa;
-  --sys-primary: #2563eb;
-
-  --mat-sys-inverse-surface: #f8fafc;
 
   /* Custom - Modo día */
-  --background: #ffffff;
+  --background: #F0F5F9;
   --component: #f8fafc;
   --component-hover: #f1f5f9;
   --primary: #2563eb;
@@ -65,37 +39,14 @@ html {
   --warning-color: #f39c12;
   --info-color: #3498db;
   --success-color: #2ecc71;
+
+  // Contenedor de error material
+  --sys-on-error-container: #b91c1c;
 }
 
 .dark {
-  // Angular material
-  --mat-full-pseudo-checkbox-selected-icon-color: #60a5fa;
-  --mdc-checkbox-selected-icon-color: #60a5fa;
-  --mdc-checkbox-selected-hover-icon-color: #60A5FA1A;
 
-  --mat-option-selected-state-layer-color: #60A5FA1A;
-  --mat-option-selected-state-label-text-color: #60a5fa;
-  --mat-select-panel-background-color: #1e293b;
-
-  --mat-select-trigger-text-size: 0.875rem;
-  --mat-form-field-container-text-size: 0.875rem;
-
-  --sys-surface-variant: #334155;
-  --sys-on-error-container: #fca5a5;
-  --sys-on-secondary-container: #f1f5f9;
-  --sys-error: #f87171;
-  --sys-on-surface: #f1f5f9;
-
-  --sys-surface-container: #1e293b;
-  --sys-surface-container-high: #1e293b;
-  --sys-on-surface-variant: #94A3B8;
-  --sys-on-primary-container: #60a5fa;
-  --sys-primary-container: #2563eb;
-  --sys-primary: #60a5fa;
-
-  --mat-sys-inverse-surface: #0f172a;
-
-  /* Custom */
+  /* Custom - Modo noche */
   --background: #0f172a;
   --component: #1e293b;
   --component-hover: #334155;
@@ -117,12 +68,47 @@ html {
   --warning-color: #f39c12;
   --info-color: #3498db;
   --success-color: #2ecc71;
+
+  // Contenedor de error material
+  --sys-on-error-container: #fca5a5;
+
 }
 
 html {
 
-  @include mat.all-component-themes($custom-theme);
+  // Selector de material
+  --mat-option-selected-state-label-text-color: var(--secondary);
 
+  // Formularios de material
+  --mat-select-trigger-text-size: 0.875rem;
+  --mat-form-field-container-text-size: 0.875rem;
+
+  // Variables generales de material
+  --sys-surface-variant: var(--component-hover);
+  --sys-on-secondary-container: var(--text-primary);
+  --sys-error: var(--negative);
+  --sys-on-surface: var(--text-primary);
+  --sys-surface-container: var(--component);
+  --sys-surface-container-high: var(--component);
+  --sys-on-surface-variant: var(--text-secondary);
+  --sys-on-primary-container: var(--secondary);
+  --sys-primary-container: var(--primary);
+  --sys-primary: var(--secondary);
+  --mat-sys-inverse-surface: var(--background);
+  --mat-app-inverse-surface: var(--component);
+  
+  @include mat.core-theme($custom-theme);
+
+  @include mat.autocomplete-theme($custom-theme);
+  @include mat.button-theme($custom-theme);
+  @include mat.slide-toggle-theme($custom-theme);
+  @include mat.checkbox-theme($custom-theme);
+  @include mat.form-field-theme($custom-theme);
+  @include mat.icon-theme($custom-theme);
+  @include mat.input-theme($custom-theme);
+  @include mat.select-theme($custom-theme);
+  @include mat.tooltip-theme($custom-theme);
+  @include mat.datepicker-theme($custom-theme);
 }
 
 body {
@@ -137,20 +123,6 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-// Aplica el color de fondo a las filas de registros de las tablas
-td {
-
-  background-color: transparent !important;
-
-}
-
-// Aplica el color de fondo a la cabecera de las tablas
-th {
-
-  background-color: transparent !important;
-
-}
 
 // Título primario
 h1 {

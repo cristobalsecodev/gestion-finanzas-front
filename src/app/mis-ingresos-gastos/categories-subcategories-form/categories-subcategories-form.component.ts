@@ -10,9 +10,7 @@ import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCat
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
-import { ActionDialogComponent } from 'src/app/shared/components/dialogs/action-dialog/action-dialog.component';
 import { NotificacionesService } from 'src/app/shared/services/Notifications/notificaciones.service';
 import { CommonModule } from '@angular/common';
 import { whiteSpaceValidator } from 'src/app/shared/functions/Validators';
@@ -20,7 +18,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { incomeExpensesFormRoute, incomeExpensesRoute } from 'src/app/shared/constants/variables.constants';
 import { ActionDialogService, ActionType } from 'src/app/shared/services/Dialogs/action-dialog.service';
-import { ActionFormType } from 'src/app/shared/enums/ActionFormType.enum';
 
 @Component({
   selector: 'app-categories-subcategories-form',
@@ -131,27 +128,30 @@ export class CategoriesSubcategoriesFormComponent {
 
       if(this.checkTransactionParamRequest()) {
         this.isCreateCategory.set(true)
+      } else {
+
+        this.tableLoader.set(true)
+
+        this.categoriesService.getCategories(false).subscribe({
+          next: (categories) => {
+    
+            this.categories = categories
+            this.filteredCategories = categories
+    
+            this.tableLoader.set(false)
+    
+          },
+          error: () => {
+    
+            this.tableLoader.set(false)
+    
+          }
+        })
+
       }
 
-    })
 
 
-    this.tableLoader.set(true)
-
-    this.categoriesService.getCategories(false).subscribe({
-      next: (categories) => {
-
-        this.categories = categories
-        this.filteredCategories = categories
-
-        this.tableLoader.set(false)
-
-      },
-      error: () => {
-
-        this.tableLoader.set(false)
-
-      }
     })
 
   }

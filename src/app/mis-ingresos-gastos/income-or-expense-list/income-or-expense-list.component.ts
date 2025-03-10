@@ -1,9 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatAmountPipe } from 'src/app/shared/pipes/FormatAmount/format-amount.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
@@ -20,11 +18,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CategoriesAndSubCategoriesService } from '../services/Categories&SubCategories/categories-and-sub-categories.service';
 import { SelectGroup, SelectValue } from 'src/app/shared/interfaces/SelectGroup.interface';
 import { CurrencyExchangeService } from 'src/app/shared/services/CurrencyExchange/currency-exchange.service';
@@ -47,13 +43,9 @@ import { ActionDialogService } from 'src/app/shared/services/Dialogs/action-dial
     MatFormFieldModule,
     MatIconModule,
     MatTooltipModule,
-    MatMenuModule,
-    MatExpansionModule,
     MatButtonModule,
-    MatCardModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatButtonToggleModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
     // Pipes
@@ -180,7 +172,7 @@ export class IncomeOrExpenseListComponent implements OnInit {
 
   getCategories(): void {
 
-    this.categoriesService.getCategories(true).subscribe({
+    this.categoriesService.getCategories(false).subscribe({
       next: (categories) => {
 
         allCategories.set(categories)
@@ -579,23 +571,53 @@ export class IncomeOrExpenseListComponent implements OnInit {
   }
 
   toggleDropdown(event: MouseEvent) {
-
+    
     this.dropdownOpen = !this.dropdownOpen
-
     event.stopPropagation()
-
+  
     const dropdown = document.getElementById('size-dropdown-menu')
-
-    if (dropdown) {
+    const button = document.getElementById('button-dropdown')
+    
+    if (dropdown && button) {
 
       if (this.dropdownOpen) {
+
+        // Calcular su altura
+        dropdown.style.visibility = 'hidden'
         dropdown.classList.add('show-dropdown-menu')
+        const dropdownHeight = dropdown.offsetHeight
+        
+        // Obtener la posición del botón
+        const buttonRect = button.getBoundingClientRect()
+        
+        // Calcular espacio disponible
+        const windowHeight = window.innerHeight
+        const spaceBelow = windowHeight - buttonRect.bottom
+        
+        // Determinar si debe abrirse hacia arriba o hacia abajo
+        if (spaceBelow < dropdownHeight && buttonRect.top > dropdownHeight) {
+
+          // Abrir hacia arriba - posicionar por encima del botón
+          dropdown.style.left = buttonRect.left + 'px'
+          dropdown.style.top = 'auto'
+          dropdown.style.bottom = (windowHeight - buttonRect.top + 4) + 'px'
+
+        } else {
+
+          // Abrir hacia abajo - posicionar por debajo del botón
+          dropdown.style.left = buttonRect.left + 'px'
+          dropdown.style.top = (buttonRect.bottom + 4) + 'px'
+          dropdown.style.bottom = 'auto'
+
+        }
+        
+        dropdown.style.width = buttonRect.width + 'px'
+        dropdown.style.visibility = 'visible'
+
       } else {
         dropdown.classList.remove('show-dropdown-menu')
       }
-
     }
-
   }
 
   // Cierra el dropdown si se hace clic fuera

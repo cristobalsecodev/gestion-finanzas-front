@@ -5,9 +5,6 @@ import { filter } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FLAGS } from './shared/constants/svg.constants';
@@ -31,9 +28,6 @@ import { allTransactions, incomeOrExpenseToEdit } from './mis-ingresos-gastos/ut
     CommonModule,
     // Angular Material
     MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatMenuModule,
     MatTooltipModule,
     // Componentes
     NotificacionesComponent

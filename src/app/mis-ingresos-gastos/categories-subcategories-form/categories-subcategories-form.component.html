@@ -1,7 +1,7 @@
 @if(isCreateCategory() && !tableLoader()) {
 
   <!-- Crear categorías -->
-  <form [formGroup]="categoryForm" class="border-t border-[var(--component)] rounded-lg p-4 md:mt-24 animate-slideDown bg-[var(--component)] shadow-lg max-w-80 place-self-center">
+  <form [formGroup]="categoryForm" class="border-t border-[var(--component)] rounded-lg p-4 md:mt-24 animate-slideDown bg-[var(--component)] shadow-lg max-w-80 mx-auto my-auto">
               
     <h4 class="text-sm font-medium text-[var(--text-secondary)] mb-3">Create category</h4>
     
@@ -123,15 +123,18 @@
     
       @for(category of filteredCategories; track $index) {
     
-        <article class="group bg-[var(--component)] rounded-lg relative">
+        <article class="group bg-[var(--component)] rounded-lg relative hover:translate-y-[-2px] duration-200 transition-all hover:shadow-xl">
     
-          <div class="hover:translate-y-[-2px] duration-200 transition-all hover:shadow-xl">
+          <div>
             
             <div class="h-1 w-full rounded-t-lg" [ngStyle]="{ 'background-color': category.color }"></div>
             <div class="p-4">
       
               <div class="flex justify-between items-center mb-2">
-                <h3 class="font-semibold text-lg m-0">{{ category.name }}</h3>
+                <h3 class="font-semibold text-lg m-0"
+                [ngClass]="category.name.includes(' ') ? 'break-words' : 'break-all'">
+                  {{ category.name }}
+                </h3>
               </div>
       
               <span class="badge cursor-default" 
@@ -382,7 +385,9 @@
         
                       <div class="flex justify-between items-center">
         
-                        <span class="break-words">{{ subcategory.name }}</span>
+                        <span [ngClass]="category.name.includes(' ') ? 'break-words' : 'break-all'">
+                          {{ subcategory.name }}
+                        </span>
       
                         <div class="flex gap-1">
         

@@ -13,6 +13,7 @@ import { DonutChartComponent, DonutChartData } from './donut-chart/donut-chart.c
 import { CurrencySymbolPipe } from 'src/app/shared/pipes/SimboloDivisa/currency-symbol.pipe';
 import { FormatThousandSeparatorsPipe } from 'src/app/shared/pipes/FormatThousandSeparators/format-thousand-separators.pipe';
 import { StorageService } from 'src/app/shared/services/Storage/storage.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-income-or-expense-statistics',
@@ -22,6 +23,7 @@ import { StorageService } from 'src/app/shared/services/Storage/storage.service'
     CommonModule,
     // Angular material
     MatIconModule,
+    MatTooltipModule,
     // Componentes
     DonutChartComponent,
     // Pipes

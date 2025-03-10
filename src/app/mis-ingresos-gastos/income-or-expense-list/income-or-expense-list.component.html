@@ -37,7 +37,7 @@
 
                 @if(filterForm.get('fromDate')?.value) {
 
-                  <mat-icon class="cursor-pointer ml-2 place-self-center"
+                  <mat-icon class="cursor-pointer ml-2 mx-auto my-auto"
                   (click)="filterForm.get('fromDate')?.setValue(null)">
                     close
                   </mat-icon>
@@ -65,7 +65,7 @@
 
                 @if(filterForm.get('toDate')?.value) {
 
-                  <mat-icon class="cursor-pointer ml-2 place-self-center"
+                  <mat-icon class="cursor-pointer ml-2 mx-auto my-auto"
                   (click)="filterForm.get('toDate')?.setValue(null)">
                     close
                   </mat-icon>
@@ -286,7 +286,8 @@
 
                   <div>
 
-                    <span class="text-sm text-[var(--text-secondary)] mr-2">
+                    <span class="text-sm text-[var(--text-secondary)] mr-2"
+                    [ngClass]="record.category.name.includes(' ') ? 'break-words' : 'break-all'">
                       {{ record.transactionDate | date: 'dd' }} {{ record.transactionDate | date: 'MMM' }}
                     </span>
                     <span>{{ record.category.name }}</span>
@@ -305,7 +306,7 @@
                 <!-- Información detallada -->
                 <div [@slideInOut]="selectedRecordId === record.id ? '*' : 'void'">
 
-                  <div class="flex gap-2 mb-2 place-self-center">
+                  <div class="flex gap-2 mb-2 mx-auto my-auto">
 
                     <button (click)="deleteTransaction(record)"
                     matTooltip="Delete"
@@ -491,11 +492,12 @@
           <button id="button-dropdown" 
           class="tertiary-button bg-transparent hover:bg-[var(--tertiary-hover)] border-none text-[var(--text-primary)] py-1 px-3 rounded-md text-sm"
           matTooltip="Change how many records you want to load"
+          matTooltipPosition="right"
           (click)="toggleDropdown($event)">
             Size: {{ pageSize() }}
           </button>
   
-          <div id="size-dropdown-menu" class="absolute top-full left-0 min-w-12 overflow-y-auto bg-[var(--component)] rounded-sm shadow-md z-[1000] hidden mt-1 w-full">
+          <div id="size-dropdown-menu" class="fixed left-0 min-w-12 overflow-y-auto bg-[var(--component)] rounded-lg shadow-md z-[1000] hidden mt-1 w-full">
   
             @for(size of [5,10,20,30]; track size) {
   
