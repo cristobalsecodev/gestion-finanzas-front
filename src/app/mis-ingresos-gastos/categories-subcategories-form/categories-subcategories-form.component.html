@@ -123,16 +123,16 @@
     
       @for(category of filteredCategories; track $index) {
     
-        <article class="group bg-[var(--component)] rounded-lg relative hover:translate-y-[-2px] duration-200 transition-all hover:shadow-xl">
+        <article class="group bg-[var(--component)] rounded-lg relative">
     
-          <div>
+          <div class="hover:translate-y-[-2px] duration-200 transition-all hover:shadow-xl">
             
             <div class="h-1 w-full rounded-t-lg" [ngStyle]="{ 'background-color': category.color }"></div>
             <div class="p-4">
       
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="font-semibold text-lg m-0"
-                [ngClass]="category.name.includes(' ') ? 'break-words' : 'break-all'">
+              <div class="flex justify-between items-center mb-2 cursor-default">
+                <h3 class="font-semibold text-lg m-0 truncate-large-text max-w-32"
+                [matTooltip]="category.name">
                   {{ category.name }}
                 </h3>
               </div>

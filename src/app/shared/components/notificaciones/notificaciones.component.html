@@ -3,38 +3,37 @@
   @for (notification of notificacionesService.notifications(); track $index) {
 
     <div [ngClass]="{
-      'bg-green-100 text-green-800 border-green-500': notification.tipo === 'success',
-      'bg-red-100 text-red-800 border-red-500': notification.tipo === 'error',
-      'bg-orange-100 text-orange-800 border-orange-500': notification.tipo === 'warning',
-      'bg-blue-100 text-blue-800 border-blue-500': notification.tipo === 'info'
-    }" 
+      'border-[var(--success-color)] text-[var(--success-color)] bg-[var(--success-color-light)]': notification.tipo === 'success',
+      'border-[var(--delete-color)] text-[var(--delete-color)] bg-[var(--delete-color-light)]': notification.tipo === 'error',
+      'border-[var(--warning-color)] text-[var(--warning-color)] bg-[var(--warning-color-light)]': notification.tipo === 'warning',
+      'border-[var(--info-color)] text-[var(--info-color)] bg-[var(--info-color-light)]': notification.tipo === 'info'    }" 
     [@fadeInRight]
-    class="border-l-4 p-4 rounded shadow-lg transition-opacity duration-300">
+    class="border-l-4 p-4 rounded-md shadow-lg transition-opacity duration-300">
 
     <!-- Icono de notificación -->
     <div class="flex items-center space-x-2">
 
       @if(notification.tipo === 'success') {
 
-        <mat-icon class="text-green-600">check_circle</mat-icon>
+        <mat-icon class="text-[var(--success-color)]">check_circle</mat-icon>
 
       }
 
       @if(notification.tipo === 'error') {
 
-        <mat-icon class="text-red-600">error</mat-icon>
+        <mat-icon class="text-[var(--delete-color)]">error</mat-icon>
 
       }
 
       @if(notification.tipo === 'warning') {
 
-        <mat-icon class="text-orange-600">warning</mat-icon>
+        <mat-icon class="text-[var(--warning-color)]">warning</mat-icon>
 
       }
 
       @if(notification.tipo === 'info') {
 
-        <mat-icon class="text-blue-600">info</mat-icon>
+        <mat-icon class="text-[var(--info-color)]">info</mat-icon>
 
       }
 
@@ -46,8 +45,6 @@
       <mat-icon class="cursor-pointer text-gray-500 hover:text-gray-800" (click)="close(notification.id)">close</mat-icon>
 
     </div>
-
-
 
   </div>
   }

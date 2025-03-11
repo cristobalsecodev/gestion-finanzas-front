@@ -76,6 +76,12 @@ html {
 
 html {
 
+  // Colores de las acciones con tono claro
+  --delete-color-light: #fdecea;
+  --warning-color-light: #fef5e7;
+  --info-color-light: #ebf5fb;
+  --success-color-light: #eafaf1;
+
   // Selector de material
   --mat-option-selected-state-label-text-color: var(--secondary);
 
@@ -108,6 +114,7 @@ html {
   @include mat.input-theme($custom-theme);
   @include mat.select-theme($custom-theme);
   @include mat.tooltip-theme($custom-theme);
+  @include mat.progress-spinner-theme($custom-theme);
   @include mat.datepicker-theme($custom-theme);
 }
 
@@ -134,15 +141,11 @@ h1 {
 }
 
 // Trunca un texto largo para añadir ... al final
-.truncar-texto-largo {
+.truncate-large-text {
 
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
+  white-space: nowrap;        /* Evita que el texto se divida en múltiples líneas */
+  overflow: hidden;           /* Oculta el contenido que se desborda */
+  text-overflow: ellipsis;    /* Muestra los puntos suspensivos (...) */
 
 }
 
