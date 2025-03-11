@@ -8,7 +8,7 @@
         class="secondary-button bg-[var(--component-hover)] hover:bg-[var(--secondary-component-hover)] disabled:opacity-50 disabled:pointer-events-none text-base"
         (click)="toggleDropdown($event)"
         matTooltip="Note: The currencies are displayed in the current exchange rate">
-          <span>All graphs are displayed in:</span>
+          <span>Display in:</span>
           <mat-icon [svgIcon]="selectedCurrency.currencyCode"></mat-icon>
           <span>{{ selectedCurrency.currencyCode }}</span>
 
